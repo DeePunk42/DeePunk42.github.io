@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="$V_D$表大DC，$v_D$表全信号，$v_d$表小AC 热电压常数$V_T&#x3D;\frac{k}{q}T$在常温(27度)默认为26mV $V_S$域值电压	$V_{TH}$为BJT重要参数  电容&amp;电感电容模型$$q&#x3D;CU$$ $$i(t)&#x3D;\frac{dq}{dt}&#x3D;C\frac{du}{dt}$$ $$u_c(t)&#x3D;\frac{1}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态电路及瞬态分析">
+<meta property="og:url" content="http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Whirling-In-Rags">
+<meta property="og:description" content="$V_D$表大DC，$v_D$表全信号，$v_d$表小AC 热电压常数$V_T&#x3D;\frac{k}{q}T$在常温(27度)默认为26mV $V_S$域值电压	$V_{TH}$为BJT重要参数  电容&amp;电感电容模型$$q&#x3D;CU$$ $$i(t)&#x3D;\frac{dq}{dt}&#x3D;C\frac{du}{dt}$$ $$u_c(t)&#x3D;\frac{1}">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192230226.png">
+<meta property="og:image" content="http://example.com/img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192259513.png">
+<meta property="og:image" content="http://example.com/img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192307785.png">
+<meta property="og:image" content="http://example.com/img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192313567.png">
+<meta property="article:published_time" content="2023-05-20T02:12:43.000Z">
+<meta property="article:modified_time" content="2023-12-09T07:11:23.576Z">
+<meta property="article:author" content="DeePunk">
+<meta property="article:tag" content="电路分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192230226.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>动态电路及瞬态分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/05/20/%E7%94%B5%E8%B7%AF%E7%A8%B3%E6%80%81%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/05/13/PWN%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%87%BA%E5%85%A5%E5%B9%B3%E5%AE%89%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94ROP/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&text=动态电路及瞬态分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&is_video=false&description=动态电路及瞬态分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=动态电路及瞬态分析&body=Check out this article: http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&name=动态电路及瞬态分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&t=动态电路及瞬态分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B5%E5%AE%B9-%E7%94%B5%E6%84%9F"><span class="toc-number">1.</span> <span class="toc-text">电容&amp;电感</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E5%AE%B9"><span class="toc-number">1.1.</span> <span class="toc-text">电容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.1.</span> <span class="toc-text">模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E5%8E%8B%E7%9A%84%E8%AE%B0%E5%BF%86%E6%80%A7"><span class="toc-number">1.1.2.</span> <span class="toc-text">电压的记忆性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E5%8E%8B%E7%9A%84%E8%BF%9E%E7%BB%AD%E6%80%A7"><span class="toc-number">1.1.3.</span> <span class="toc-text">电压的连续性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%A8%E8%83%BD"><span class="toc-number">1.1.4.</span> <span class="toc-text">储能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E5%B9%B6%E8%81%94"><span class="toc-number">1.1.5.</span> <span class="toc-text">串并联</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E6%84%9F"><span class="toc-number">1.2.</span> <span class="toc-text">电感</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%B5%81%E7%9A%84%E8%AE%B0%E5%BF%86%E6%80%A7"><span class="toc-number">1.2.2.</span> <span class="toc-text">电流的记忆性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%B5%81%E7%9A%84%E8%BF%9E%E7%BB%AD%E6%80%A7"><span class="toc-number">1.2.3.</span> <span class="toc-text">电流的连续性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%A8%E8%83%BD-1"><span class="toc-number">1.2.4.</span> <span class="toc-text">储能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E5%B9%B6%E8%81%94-1"><span class="toc-number">1.2.5.</span> <span class="toc-text">串并联</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E7%94%B5%E8%B7%AF%E7%9A%84%E6%9A%82%E6%80%81%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">一阶电路的暂态过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E5%93%8D%E5%BA%94-%E4%B8%89%E8%A6%81%E7%B4%A0%E6%B3%95%EF%BC%88%E4%BB%85%E9%99%90%E7%9B%B4%E6%B5%81%E6%BF%80%E5%8A%B1%E4%B8%80%E9%98%B6%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">全响应-三要素法（仅限直流激励一阶）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#warning-%E6%B3%A8%E6%84%8F"><span class="toc-number">2.1.1.</span> <span class="toc-text">:warning:注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E5%BC%80%E5%85%B3%E5%BA%8F%E5%88%97%E7%9A%84%E7%9B%B4%E6%B5%81%E4%B8%80%E9%98%B6%E7%94%B5%E8%B7%AF"><span class="toc-number">2.2.</span> <span class="toc-text">包含开关序列的直流一阶电路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B6%E8%B7%83%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.1.</span> <span class="toc-text">阶跃函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B6%E8%B7%83%E5%93%8D%E5%BA%94"><span class="toc-number">2.2.2.</span> <span class="toc-text">阶跃响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B2%E6%BF%80%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.3.</span> <span class="toc-text">冲激函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B2%E6%BF%80%E5%93%8D%E5%BA%94"><span class="toc-number">2.2.4.</span> <span class="toc-text">冲激响应</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E7%94%B5%E8%B7%AF%E7%9A%84%E6%9A%82%E6%80%81%E8%BF%87%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">二阶电路的暂态过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RLC%E4%B8%B2%E8%81%94%E7%94%B5%E8%B7%AF%E7%9A%84%E9%9B%B6%E8%BE%93%E5%85%A5%E5%93%8D%E5%BA%94"><span class="toc-number">3.1.</span> <span class="toc-text">RLC串联电路的零输入响应</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E9%98%BB%E5%B0%BC"><span class="toc-number">3.1.1.</span> <span class="toc-text">过阻尼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B4%E7%95%8C%E9%98%BB%E5%B0%BC"><span class="toc-number">3.1.2.</span> <span class="toc-text">临界阻尼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AC%A0%E9%98%BB%E5%B0%BC"><span class="toc-number">3.1.3.</span> <span class="toc-text">欠阻尼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E6%B5%81%E6%BF%80%E5%8A%B1%E4%B8%8BRLC%E4%B8%B2%E8%81%94%E7%94%B5%E8%B7%AF%E7%9A%84%E5%93%8D%E5%BA%94"><span class="toc-number">3.1.4.</span> <span class="toc-text">直流激励下RLC串联电路的响应</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RLC%E5%B9%B6%E8%81%94%E7%94%B5%E8%B7%AF%E7%9A%84%E9%9B%B6%E8%BE%93%E5%85%A5%E5%93%8D%E5%BA%94"><span class="toc-number">3.2.</span> <span class="toc-text">RLC并联电路的零输入响应</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        动态电路及瞬态分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">DeePunk</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-05-20T02:12:43.000Z" class="dt-published" itemprop="datePublished">2023-05-20</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/ESE/">ESE</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E7%94%B5%E8%B7%AF%E5%88%86%E6%9E%90/" rel="tag">电路分析</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <blockquote>
+<p>$V_D$表大DC，$v_D$表全信号，$v_d$表小AC</p>
+<p>热电压常数$V_T&#x3D;\frac{k}{q}T$在常温(27度)默认为26mV</p>
+<p>$V_S$域值电压	$V_{TH}$为BJT重要参数</p>
+</blockquote>
+<h1 id="电容-电感"><a href="#电容-电感" class="headerlink" title="电容&amp;电感"></a>电容&amp;电感</h1><h2 id="电容"><a href="#电容" class="headerlink" title="电容"></a>电容</h2><h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>$$<br>q&#x3D;CU<br>$$</p>
+<p>$$<br>i(t)&#x3D;\frac{dq}{dt}&#x3D;C\frac{du}{dt}<br>$$</p>
+<p>$$<br>u_c(t)&#x3D;\frac{1}{C}\int_{-\infty}^0i(\xi)d\xi+\frac{1}{C}\int^t_0i(\xi)d\xi<br>$$</p>
+<h3 id="电压的记忆性"><a href="#电压的记忆性" class="headerlink" title="电压的记忆性"></a>电压的记忆性</h3><p>峰值检测器电路</p>
+<h3 id="电压的连续性"><a href="#电压的连续性" class="headerlink" title="电压的连续性"></a>电压的连续性</h3><p>电容电流<strong>有界</strong>时，电压不能突变</p>
+<h3 id="储能"><a href="#储能" class="headerlink" title="储能"></a>储能</h3><p>$$<br>p(t)&#x3D;u(t)C\frac{du}{dt}<br>$$</p>
+<p>$$<br>W(t_0,t)&#x3D;\int_{t_0}^tp(\xi)d\xi&#x3D;\frac{1}{2}C[u^2(t)-u^2(t_0)]<br>$$</p>
+<p>若初始储能为0，则任意时刻能量：<br>$$<br>W(t)&#x3D;\frac{1}{2}Cu^2(t)<br>$$<br>某时刻电容储能只取决于<strong>电压</strong>，与电流无关</p>
+<h3 id="串并联"><a href="#串并联" class="headerlink" title="串并联"></a>串并联</h3><p>并联变大，串联变小</p>
+<h2 id="电感"><a href="#电感" class="headerlink" title="电感"></a>电感</h2><h3 id="模型-1"><a href="#模型-1" class="headerlink" title="模型"></a>模型</h3><p>$$<br>\psi &#x3D;Li<br>$$</p>
+<p>$$<br>u(t)&#x3D;\frac{d\psi}{dt}&#x3D;L\frac{di}{dt}<br>$$</p>
+<p>$$<br>i(t)&#x3D;\frac{1}{L}\int_{-\infty}^0u(\xi)d\xi+\frac{1}{L}\int_0^tu(\xi)d\xi<br>$$</p>
+<h3 id="电流的记忆性"><a href="#电流的记忆性" class="headerlink" title="电流的记忆性"></a>电流的记忆性</h3><h3 id="电流的连续性"><a href="#电流的连续性" class="headerlink" title="电流的连续性"></a>电流的连续性</h3><h3 id="储能-1"><a href="#储能-1" class="headerlink" title="储能"></a>储能</h3><p>$$<br>p(t)&#x3D;i(t)L\frac{di}{dt}<br>$$</p>
+<p>$$<br>w(t_0,t)&#x3D;\frac{1}{2}L[i^2(t)-i^2(t_0)]<br>$$</p>
+<p>某时刻电容储能只取决于<strong>电流</strong>，与电感无关</p>
+<h3 id="串并联-1"><a href="#串并联-1" class="headerlink" title="串并联"></a>串并联</h3><p>并联变小，串联变大</p>
+<h1 id="一阶电路的暂态过程"><a href="#一阶电路的暂态过程" class="headerlink" title="一阶电路的暂态过程"></a>一阶电路的暂态过程</h1><h2 id="全响应-三要素法（仅限直流激励一阶）"><a href="#全响应-三要素法（仅限直流激励一阶）" class="headerlink" title="全响应-三要素法（仅限直流激励一阶）"></a>全响应-三要素法（仅限直流激励一阶）</h2><p>$$<br>f(t)&#x3D;[f(0_+)-f(\infty)]e^{-\frac{t}{\tau}}+f(\infty)\space (t\geq0)<br>$$</p>
+<blockquote>
+<p>全响应 &#x3D; 固有响应（瞬态响应） + 强制响应（稳态响应）</p>
+<p>注意：<strong>非直流激励</strong>下，固有响应<strong>不等于</strong>瞬态响应，稳态响应<strong>不等于</strong>稳态响应</p>
+<p>瞬态响应：随t变化	固有响应：由内部电路原本状态引起的变化</p>
+</blockquote>
+<p>$$<br>f(t)&#x3D;f(0_+)e^{-\frac{t}{\tau}}+f(\infty)(1-e^{-\frac{t}{\tau}})\space(t\geq 0)<br>$$</p>
+<blockquote>
+<p>全响应 &#x3D; 零输入响应 + 零状态响应</p>
+</blockquote>
+<p>$$<br>\tau&#x3D;R_0C\space or\space\tau&#x3D;\frac{L}{R_0}<br>$$</p>
+<p>$\tau$ 具有时间但量纲，称为RC电路的<strong>时间常数</strong></p>
+<p>一般用$3\tau$ 法判断放电过程结束，即90%</p>
+<p>计算R时，电容用<strong>戴维宁等效</strong>，电感用<strong>诺顿等效</strong></p>
+<h3 id="warning-注意"><a href="#warning-注意" class="headerlink" title=":warning:注意"></a>:warning:注意</h3><p>电容电路里，电流<strong>可以跃变</strong>；电感电路里，电压<strong>可以跃变</strong></p>
+<p>注意表达式范围是否包含0</p>
+<h2 id="包含开关序列的直流一阶电路"><a href="#包含开关序列的直流一阶电路" class="headerlink" title="包含开关序列的直流一阶电路"></a>包含开关序列的直流一阶电路</h2><h3 id="阶跃函数"><a href="#阶跃函数" class="headerlink" title="阶跃函数"></a>阶跃函数</h3><p>$$<br>\varepsilon(t)&#x3D;\begin{cases}<br>0 &amp; t&lt;0\\<br>1 &amp; t&gt;0<br>\end{cases}<br>$$</p>
+<p>引入阶跃电流源和阶跃电压源可以省去电路中的开关，可以应用叠加定理计算电路的零状态响应</p>
+<h3 id="阶跃响应"><a href="#阶跃响应" class="headerlink" title="阶跃响应"></a>阶跃响应</h3><p>单位阶跃信号作用下电路的<strong>零状态响应</strong>，用$s(t)$表示</p>
+<p>已知电路的阶跃响应，利用<strong>叠加定理</strong>易得任意分段恒定信号激励下线性时不变电路的零状态响应</p>
+<h3 id="冲激函数"><a href="#冲激函数" class="headerlink" title="冲激函数"></a>冲激函数</h3><p>一个无界信号$\delta(t)$为<strong>单位冲激函数</strong>当且仅当<br>$$<br>\begin{cases}<br>\delta(t)&#x3D;\begin{cases}<br>        奇异值&amp;t&#x3D;0\\<br>        0&amp;t\neq 0<br>    \end{cases}\\<br>    \int_{-\varepsilon_2}^{\varepsilon_1}\delta(t)dt&#x3D;1&amp;\varepsilon_1&gt;0,\varepsilon_2&gt;0<br>\end{cases}<br>$$<br>单位阶跃函数与单位冲激函数间存在关系<br>$$<br>\delta(t)&#x3D;\frac{d\varepsilon(t)}{dt}<br>$$</p>
+<p>$$<br>\varepsilon(t)&#x3D;\int^t_{-\infty}\delta(\xi)d\xi<br>$$</p>
+<h3 id="冲激响应"><a href="#冲激响应" class="headerlink" title="冲激响应"></a>冲激响应</h3><p>单位冲激信号作用下电路的<strong>零状态响应</strong>，表示为$h(t)$</p>
+<p>可先求出$s(t)$，对时间求导</p>
+<h1 id="二阶电路的暂态过程"><a href="#二阶电路的暂态过程" class="headerlink" title="二阶电路的暂态过程"></a>二阶电路的暂态过程</h1><blockquote>
+<p>仅讨论含两个动态原件的线性二阶电路</p>
+</blockquote>
+<h2 id="RLC串联电路的零输入响应"><a href="#RLC串联电路的零输入响应" class="headerlink" title="RLC串联电路的零输入响应"></a>RLC串联电路的零输入响应</h2><p>常系数非齐次线性二阶微分方程:<br>$$<br>LC\frac{d^2u_c}{dt^2}+RC\frac{du_c}{dt}+u_c&#x3D;u_s(t)<br>$$<br>电路微分方程的特征根（电路的<strong>固有频率</strong>）:<br>$$<br>s_{1,2}&#x3D;-\frac{R}{2L}\pm\sqrt{(\frac{R}{2L})^2-\frac{1}{LC}}<br>$$</p>
+<ol>
+<li>$R&gt;2\sqrt{\frac{L}{C}}$ ，$s_{1,2}$为不相等实根，<strong>过阻尼情况</strong></li>
+<li>$R&#x3D;2\sqrt{\frac{L}{C}}$ ，$s_{1,2}$为相等实根，<strong>临界阻尼情况</strong></li>
+<li>$R&lt;2\sqrt{\frac{L}{C}}$ ，$s_{1,2}$共轭复数根，<strong>欠阻尼情况</strong></li>
+</ol>
+<blockquote>
+<p>对R来说，越大越不易震荡，R趋近$\infty$时开路；越小越易震荡，R为0时为LC震荡电路</p>
+<p>L越大（L储能越大，$\frac{1}{2}L\Delta i^2$大，电流变化大）C越小（$q&#x3D;CU$电压变化越大），越容易震荡</p>
+</blockquote>
+<h3 id="过阻尼"><a href="#过阻尼" class="headerlink" title="过阻尼"></a>过阻尼</h3><p><img src="/../img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192230226.png" alt="image-20230521192230226"></p>
+<h3 id="临界阻尼"><a href="#临界阻尼" class="headerlink" title="临界阻尼"></a>临界阻尼</h3><p><img src="/../img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192259513.png" alt="image-20230521192259513"></p>
+<h3 id="欠阻尼"><a href="#欠阻尼" class="headerlink" title="欠阻尼"></a>欠阻尼</h3><p>$$<br>s_{1,2}&#x3D;-\frac{R}{2L}\pm\sqrt{(\frac{R}{2L})^2-\frac{1}{LC}}&#x3D;-\alpha\pm j\sqrt{w_0^2-\alpha^2}&#x3D;-\alpha\pm jw_d<br>$$</p>
+<p>衰减因子$\alpha&#x3D;\frac{R}{2L}$，因为RCL串联电路震荡快慢由i决定，故用电感时间常数，等于$\frac{1}{2\tau}$</p>
+<p>无阻尼自然（谐振）频率$w_0&#x3D;\frac{1}{\sqrt{LC}}$</p>
+<p>有阻尼自然频率$w_d&#x3D;\sqrt{w_0^2-\alpha^2}$</p>
+<p><img src="/../img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192307785.png" alt="image-20230521192307785"></p>
+<p>欠阻尼能量在<strong>电容与电感</strong>之间交换</p>
+<p><img src="/../img/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90.assets/image-20230521192313567.png" alt="image-20230521192313567"></p>
+<h3 id="直流激励下RLC串联电路的响应"><a href="#直流激励下RLC串联电路的响应" class="headerlink" title="直流激励下RLC串联电路的响应"></a>直流激励下RLC串联电路的响应</h3><p>全响应由对应齐次微分方程通解与微分方程特解之和组成<br>$$<br>u_c(t)&#x3D;u_{Ch}(t)+u_{Cp}(t)<br>$$<br> $s_1\neq s_2$时<br>$$<br>u_c(t)&#x3D;K_1e^{s_1t}+K_2e^{s_2t}+U_S<br>$$<br>利用<br>$$<br>u_c(0),\frac{du_c(t)}{dt}\Bigg |_{t&#x3D;0}&#x3D;\frac{i_L(0)}{C}<br>$$<br>求解$K_1K_2$</p>
+<h2 id="RLC并联电路的零输入响应"><a href="#RLC并联电路的零输入响应" class="headerlink" title="RLC并联电路的零输入响应"></a>RLC并联电路的零输入响应</h2><p>$$<br>LC\frac{d^2i_L}{dt^2}+GL\frac{di_L}{dt}+i_L&#x3D;i_s(t)<br>$$</p>
+<p>$$<br>s_{1,2}&#x3D;-\frac{R}{2L}\pm\sqrt{(\frac{R}{2L})^2-\frac{1}{LC}}<br>$$</p>
+<p>$$<br>s_{1,2}&#x3D;-\frac{G}{2C}\pm\sqrt{(\frac{G}{2C})^2-\frac{1}{LC}}&#x3D;-\alpha\pm j\sqrt{w_0^2-\alpha^2}&#x3D;-\alpha\pm jw_d<br>$$</p>
+<p>衰减因子$\alpha&#x3D;\frac{G}{2C}$，因为RCL并联电路震荡快慢由u决定，故用电容时间常数，等于$\frac{1}{2\tau}$</p>
+<p>无阻尼自然（谐振）频率$w_0&#x3D;\frac{1}{\sqrt{LC}}$</p>
+<p>有阻尼自然频率$w_d&#x3D;\sqrt{w_0^2-\alpha^2}$</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B5%E5%AE%B9-%E7%94%B5%E6%84%9F"><span class="toc-number">1.</span> <span class="toc-text">电容&amp;电感</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E5%AE%B9"><span class="toc-number">1.1.</span> <span class="toc-text">电容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.1.</span> <span class="toc-text">模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E5%8E%8B%E7%9A%84%E8%AE%B0%E5%BF%86%E6%80%A7"><span class="toc-number">1.1.2.</span> <span class="toc-text">电压的记忆性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E5%8E%8B%E7%9A%84%E8%BF%9E%E7%BB%AD%E6%80%A7"><span class="toc-number">1.1.3.</span> <span class="toc-text">电压的连续性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%A8%E8%83%BD"><span class="toc-number">1.1.4.</span> <span class="toc-text">储能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E5%B9%B6%E8%81%94"><span class="toc-number">1.1.5.</span> <span class="toc-text">串并联</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B5%E6%84%9F"><span class="toc-number">1.2.</span> <span class="toc-text">电感</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%B5%81%E7%9A%84%E8%AE%B0%E5%BF%86%E6%80%A7"><span class="toc-number">1.2.2.</span> <span class="toc-text">电流的记忆性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B5%E6%B5%81%E7%9A%84%E8%BF%9E%E7%BB%AD%E6%80%A7"><span class="toc-number">1.2.3.</span> <span class="toc-text">电流的连续性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%A8%E8%83%BD-1"><span class="toc-number">1.2.4.</span> <span class="toc-text">储能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E5%B9%B6%E8%81%94-1"><span class="toc-number">1.2.5.</span> <span class="toc-text">串并联</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E7%94%B5%E8%B7%AF%E7%9A%84%E6%9A%82%E6%80%81%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">一阶电路的暂态过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E5%93%8D%E5%BA%94-%E4%B8%89%E8%A6%81%E7%B4%A0%E6%B3%95%EF%BC%88%E4%BB%85%E9%99%90%E7%9B%B4%E6%B5%81%E6%BF%80%E5%8A%B1%E4%B8%80%E9%98%B6%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">全响应-三要素法（仅限直流激励一阶）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#warning-%E6%B3%A8%E6%84%8F"><span class="toc-number">2.1.1.</span> <span class="toc-text">:warning:注意</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E5%BC%80%E5%85%B3%E5%BA%8F%E5%88%97%E7%9A%84%E7%9B%B4%E6%B5%81%E4%B8%80%E9%98%B6%E7%94%B5%E8%B7%AF"><span class="toc-number">2.2.</span> <span class="toc-text">包含开关序列的直流一阶电路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B6%E8%B7%83%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.1.</span> <span class="toc-text">阶跃函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B6%E8%B7%83%E5%93%8D%E5%BA%94"><span class="toc-number">2.2.2.</span> <span class="toc-text">阶跃响应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B2%E6%BF%80%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.3.</span> <span class="toc-text">冲激函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%B2%E6%BF%80%E5%93%8D%E5%BA%94"><span class="toc-number">2.2.4.</span> <span class="toc-text">冲激响应</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E7%94%B5%E8%B7%AF%E7%9A%84%E6%9A%82%E6%80%81%E8%BF%87%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">二阶电路的暂态过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RLC%E4%B8%B2%E8%81%94%E7%94%B5%E8%B7%AF%E7%9A%84%E9%9B%B6%E8%BE%93%E5%85%A5%E5%93%8D%E5%BA%94"><span class="toc-number">3.1.</span> <span class="toc-text">RLC串联电路的零输入响应</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E9%98%BB%E5%B0%BC"><span class="toc-number">3.1.1.</span> <span class="toc-text">过阻尼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B4%E7%95%8C%E9%98%BB%E5%B0%BC"><span class="toc-number">3.1.2.</span> <span class="toc-text">临界阻尼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AC%A0%E9%98%BB%E5%B0%BC"><span class="toc-number">3.1.3.</span> <span class="toc-text">欠阻尼</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E6%B5%81%E6%BF%80%E5%8A%B1%E4%B8%8BRLC%E4%B8%B2%E8%81%94%E7%94%B5%E8%B7%AF%E7%9A%84%E5%93%8D%E5%BA%94"><span class="toc-number">3.1.4.</span> <span class="toc-text">直流激励下RLC串联电路的响应</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RLC%E5%B9%B6%E8%81%94%E7%94%B5%E8%B7%AF%E7%9A%84%E9%9B%B6%E8%BE%93%E5%85%A5%E5%93%8D%E5%BA%94"><span class="toc-number">3.2.</span> <span class="toc-text">RLC并联电路的零输入响应</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&text=动态电路及瞬态分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&is_video=false&description=动态电路及瞬态分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=动态电路及瞬态分析&body=Check out this article: http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&title=动态电路及瞬态分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&name=动态电路及瞬态分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/05/20/%E5%8A%A8%E6%80%81%E7%94%B5%E8%B7%AF%E5%8F%8A%E7%9E%AC%E6%80%81%E5%88%86%E6%9E%90/&t=动态电路及瞬态分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    DeePunk
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+
+@font-face {
+  /* 为载入的字体取名字(随意) */
+  font-family: 'wqy';	
+  /* 字体文件地址(相对或者绝对路径都可以) */
+  src: https://github.com/DeePunk42/DeePunk42.github.io/blob/master/font/wqy-microhei.ttc;
+  /* 定义加粗样式(加粗多少) */
+  font-weight: normal;
+  /* 定义字体样式(斜体/非斜体) */
+  font-style: normal;
+  /* 定义显示样式 */
+  font-display: block;
+}
+
+@font-face {
+  /* 为载入的字体取名字(随意) */
+  font-family: 'hack'; 
+  /* 字体文件地址(相对或者绝对路径都可以) */
+  src: https://github.com/DeePunk42/DeePunk42.github.io/blob/master/font/Hack-Regular.ttf;
+  /* 定义加粗样式(加粗多少) */
+  font-weight: normal;
+  /* 定义字体样式(斜体/非斜体) */
+  font-style: normal;
+  /* 定义显示样式 */
+  font-display: block;
+}
