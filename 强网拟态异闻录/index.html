@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="很久没打过这么久的线下了。 在南京，持续72小时，和世界各地的强力战队同台竞技。不得不说，听起来挺酷。 我在南京遇到困难睡大觉之前从来没有接触过iot、iov一类的东西，于是我在比赛前一周开始零零散散地学。最后感觉有了一点固件分析和日路由器的基础; 车联网方面能找到的资料大多比较模糊零散且抽象，没有实际上手过，最后还是一头雾水。 实际上比赛中占大头的还是车联网。这个赛道包含t-box、ADAS黑白">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强网拟态异闻录">
+<meta property="og:url" content="http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/index.html">
+<meta property="og:site_name" content="Whirling-In-Rags">
+<meta property="og:description" content="很久没打过这么久的线下了。 在南京，持续72小时，和世界各地的强力战队同台竞技。不得不说，听起来挺酷。 我在南京遇到困难睡大觉之前从来没有接触过iot、iov一类的东西，于是我在比赛前一周开始零零散散地学。最后感觉有了一点固件分析和日路由器的基础; 车联网方面能找到的资料大多比较模糊零散且抽象，没有实际上手过，最后还是一头雾水。 实际上比赛中占大头的还是车联网。这个赛道包含t-box、ADAS黑白">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-12-09T08:35:50.000Z">
+<meta property="article:modified_time" content="2023-12-09T14:13:23.580Z">
+<meta property="article:author" content="DeePunk">
+<meta property="article:tag" content="摸">
+<meta property="article:tag" content="iot">
+<meta property="article:tag" content="iov">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>强网拟态异闻录</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Whirling-In-Rags" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/php-pwn/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&text=强网拟态异闻录"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&is_video=false&description=强网拟态异闻录"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=强网拟态异闻录&body=Check out this article: http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&name=强网拟态异闻录&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&t=强网拟态异闻录"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%91%E5%9C%A8%E5%8D%97%E4%BA%AC%E9%81%87%E5%88%B0%E5%9B%B0%E9%9A%BE%E7%9D%A1%E5%A4%A7%E8%A7%89"><span class="toc-number">1.</span> <span class="toc-text">我在南京遇到困难睡大觉</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%91%E5%8E%BB%EF%BC%8CALLES"><span class="toc-number">2.</span> <span class="toc-text">我去，ALLES!</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B0%8F%E5%8E%A8%E5%A8%98%E4%B8%8E%E4%B8%8A%E6%B5%81%E9%85%92%E5%BA%97"><span class="toc-number">3.</span> <span class="toc-text">小厨娘与上流酒店</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        强网拟态异闻录
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">DeePunk</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-12-09T08:35:50.000Z" class="dt-published" itemprop="datePublished">2023-12-09</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/misc/">misc</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/iot/" rel="tag">iot</a>, <a class="p-category" href="/tags/iov/" rel="tag">iov</a>, <a class="p-category" href="/tags/%E6%91%B8/" rel="tag">摸</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>很久没打过这么久的线下了。</p>
+<p>在南京，持续72小时，和世界各地的强力战队同台竞技。不得不说，听起来挺酷。</p>
+<h1 id="我在南京遇到困难睡大觉"><a href="#我在南京遇到困难睡大觉" class="headerlink" title="我在南京遇到困难睡大觉"></a>我在南京遇到困难睡大觉</h1><p>之前从来没有接触过iot、iov一类的东西，于是我在比赛前一周开始零零散散地学。最后感觉有了一点固件分析和日路由器的基础; 车联网方面能找到的资料大多比较模糊零散且抽象，没有实际上手过，最后还是一头雾水。</p>
+<p>实际上比赛中占大头的还是车联网。这个赛道包含t-box、ADAS黑白盒渗透，还有一个实地日车的挑战。</p>
+<p>t-box黑盒题中有几个设备提供了arm固件，但是分析之后我确实找不到如何下手。有的看起来是一道逆向题，然而就算给出正确的输入，最后拿到的也不是题目要求的flag，此外也没有别的漏洞可以利用。还有一道存在一个数组2byte的越界，但是这个越界没有任何卵用，只能覆盖一个垃圾变量。或许调的libc存在漏洞？我没找到。</p>
+<p>别的车联网相关利用就超出我的知识范围了，只能帮队友试试弱密码，找找敏感文件。属于参与感不强。不过看队友伪造CAN报文什么的还是挺炫酷，可能以后研究一下这方面？</p>
+<p>此外比赛还有传统的ctf，不过并不计入总分，而是获取挑战其他题目资格的途径。做了道qiling框架的栈溢出，不过没啥新东西，最后还因为手输flag字符串导致末尾带\n，orw读不出来，debug了两个小时。度过了一段相对失败的比赛时间。</p>
+<h1 id="我去，ALLES"><a href="#我去，ALLES" class="headerlink" title="我去，ALLES!"></a>我去，ALLES!</h1><p>之前因为一个比较喜欢的youtube博主LiveOverflow，了解到了他所在的这个德国战队。看到这次比赛邀请了ALLES，我还挺期待，虽然最后他没有来。</p>
+<p>比赛第三天的时候，我还是受不了8：30出发的作息，于是睡大觉到了十一点。出门打车时，在酒店门口偶遇了ALLES!的三个哥们（有一个还没下来）。</p>
+<p>于是我社交大师属性大爆发，上前搭讪。顺便问了问他们对这次比赛的看法，几位老哥很热情，轮流说了一大堆。总的来说就是比赛题目很有新意、也很难，顺便吐槽了以下这次比赛的文档”like random English words”，令人难绷。</p>
+<p>不得不说，在这次国际战队普遍开摆的情况下，ALLES老哥反而玩的挺开心，还冲到了车联网前几。</p>
+<h1 id="小厨娘与上流酒店"><a href="#小厨娘与上流酒店" class="headerlink" title="小厨娘与上流酒店"></a>小厨娘与上流酒店</h1><p>连着比赛几天，都是送的同一家店的盒饭（xx小厨娘），口味应该达到了生命体征维持餐的标准。除了第二天晚上送的是麦麦，不过每人只有一份汉堡和鸡翅，这种主办方就该被逐出麦门！</p>
+<p>酒店倒挺豪华，每天还送一个水果。缺点是每天早上大家抢着吃早饭，电梯和餐厅的容量都不足以应对瞬时人流而接近瘫痪。还好我后面早上都睡大觉。</p>
+<hr>
+<p>iov渗透看起来还挺好玩，以后有空学学。</p>
+<p>不过短期目标还是先考好这个B期末吧，不然以后想读研没学上了</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%91%E5%9C%A8%E5%8D%97%E4%BA%AC%E9%81%87%E5%88%B0%E5%9B%B0%E9%9A%BE%E7%9D%A1%E5%A4%A7%E8%A7%89"><span class="toc-number">1.</span> <span class="toc-text">我在南京遇到困难睡大觉</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%91%E5%8E%BB%EF%BC%8CALLES"><span class="toc-number">2.</span> <span class="toc-text">我去，ALLES!</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B0%8F%E5%8E%A8%E5%A8%98%E4%B8%8E%E4%B8%8A%E6%B5%81%E9%85%92%E5%BA%97"><span class="toc-number">3.</span> <span class="toc-text">小厨娘与上流酒店</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&text=强网拟态异闻录"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&is_video=false&description=强网拟态异闻录"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=强网拟态异闻录&body=Check out this article: http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&title=强网拟态异闻录"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&name=强网拟态异闻录&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/&t=强网拟态异闻录"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    DeePunk
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
