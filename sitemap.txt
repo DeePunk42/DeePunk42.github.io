@@ -39,6 +39,7 @@ http://deepunk.icu/tags/iot/
 http://deepunk.icu/tags/iov/
 http://deepunk.icu/tags/literature/
 http://deepunk.icu/tags/drama/
+http://deepunk.icu/tags/geekctf/
 http://deepunk.icu/categories/CS/
 http://deepunk.icu/categories/%E6%95%B0%E7%90%86%E7%AC%94%E8%AE%B0/
 http://deepunk.icu/categories/misc/
