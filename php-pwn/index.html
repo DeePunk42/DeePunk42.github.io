@@ -22,7 +22,7 @@
 <meta property="og:image" content="http://deepunk.icu/img/php-pwn.assets/image-20230915150945514.png">
 <meta property="og:image" content="http://deepunk.icu/img/php-pwn.assets/image-20230915151632552.png">
 <meta property="article:published_time" content="2023-09-14T11:59:41.000Z">
-<meta property="article:modified_time" content="2023-12-09T14:12:29.283Z">
+<meta property="article:modified_time" content="2024-04-30T12:18:00.121Z">
 <meta property="article:author" content="DeePunk">
 <meta property="article:tag" content="PWN">
 <meta property="article:tag" content="CTF">
@@ -213,8 +213,7 @@
 
 <p>Both of the functions lake security checks .If we replace the fd of it by out target address, we get an arbitrary address allocate!  That makes small runs vulnerable.</p>
 <h1 id="WACON2023-heaphp"><a href="#WACON2023-heaphp" class="headerlink" title="WACON2023-heaphp"></a>WACON2023-heaphp</h1><p>A typical php-pwn, we are given a docker environment and a vulnerable php extension module heaphp.so.</p>
-<p>It took me quite a long time building local php environment following the guideline on blogs. I complied php locally aming to debug it easily.  <a target="_blank" rel="noopener" href="https://learnku.com/docs/php-internals/php7/building_php/6840">This document</a> helped a lot. However, if you try to complie php with debug-symbol, the ABI of the binary will change, which makes your extension unable to load properly. That ‘s actually what I encountered. </p>
-<p>So, What ‘s the point of it ? I don ‘t know.</p>
+<p>It took me quite a long time building local php environment following the guideline on blogs. I complied php locally aming to debug it easily.  <a target="_blank" rel="noopener" href="https://learnku.com/docs/php-internals/php7/building_php/6840">This document</a> helped a lot. However, if you try to complie php with debug-symbol, the ABI of the binary will change, which should match extensions build with same debug-symbol. It could be useful when developing extensions. But I recommend to turn it off in ctf game. </p>
 <h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><p>All protection is on except Partial RELRO .The extension mainly consists of 5 functions: add, view, edit, list, delete. Because of zend engine, the pseudo-code are hard to understand (especially for noobs like me). There are tons of code of uncertain significance like:</p>
 <p><img src="/../img/php-pwn.assets/image-20230914223544720.png" alt="image-20230914223544720"></p>
 <p>Then we must dig into the basic data type in zend. That`s <code>_zend_value</code> and <code>_zval_struct</code></p>
@@ -235,9 +234,10 @@
 <h3 id="Debuging-Tricks"><a href="#Debuging-Tricks" class="headerlink" title="Debuging Tricks"></a>Debuging Tricks</h3><p>To load the target extension, you should put the extension in correct path. To find the path, run</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">php -i | grep -i extension_dir</span></span><br></pre></td></tr></table></figure>
 
-<p>And modify the php.ini file. You can <code>find</code> it in root directory.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo find / -name <span class="string">&quot;php.ini&quot;</span></span></span><br></pre></td></tr></table></figure>
+<p>And modify the php.ini file. You can <code>find</code> it by</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">php --ini</span></span><br></pre></td></tr></table></figure>
 
+<p>Usually it doesn&#96;t exist at first and you have to create one manually.</p>
 <p>Add the config at the file end</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extension=heaphp.so</span><br></pre></td></tr></table></figure>
 

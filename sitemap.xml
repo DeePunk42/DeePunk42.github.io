@@ -2,9 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://deepunk.icu/php-pwn/</loc>
+    
+    <lastmod>2024-04-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/SROP/</loc>
+    
+    <lastmod>2024-04-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://deepunk.icu/GeekCTF2024wp/</loc>
     
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -13,7 +31,16 @@
   <url>
     <loc>http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB%E6%B1%87%E6%80%BB/</loc>
     
-    <lastmod>2024-03-05</lastmod>
+    <lastmod>2024-04-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/Tricks-of-Shellcode/</loc>
+    
+    <lastmod>2024-04-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -84,15 +111,6 @@
   
   <url>
     <loc>http://deepunk.icu/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81%E5%BC%82%E9%97%BB%E5%BD%95/</loc>
-    
-    <lastmod>2023-12-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://deepunk.icu/php-pwn/</loc>
     
     <lastmod>2023-12-09</lastmod>
     
@@ -218,24 +236,6 @@
   </url>
   
   <url>
-    <loc>http://deepunk.icu/SROP/</loc>
-    
-    <lastmod>2023-12-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://deepunk.icu/Tricks-of-Shellcode/</loc>
-    
-    <lastmod>2023-12-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://deepunk.icu/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/</loc>
     
     <lastmod>2023-12-09</lastmod>
@@ -247,7 +247,7 @@
 
   <url>
     <loc>http://deepunk.icu/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -255,98 +255,133 @@
   
   <url>
     <loc>http://deepunk.icu/tags/PWN/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/CTF/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/caculus/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/Physics/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/wp/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/awd/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/%E6%91%B8/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/PHP/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/%E7%94%B5%E8%B7%AF%E5%88%86%E6%9E%90/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/iot/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/iov/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/literature/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/drama/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/tags/geekctf/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/tags/dlresolve/</loc>
+    <lastmod>2024-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/tags/shellcode/</loc>
+    <lastmod>2024-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/tags/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%94/</loc>
+    <lastmod>2024-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/tags/srop/</loc>
+    <lastmod>2024-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/tags/%E4%BE%A7%E4%BF%A1%E9%81%93/</loc>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -355,35 +390,35 @@
   
   <url>
     <loc>http://deepunk.icu/categories/CS/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/categories/%E6%95%B0%E7%90%86%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/categories/misc/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/categories/ESE/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://deepunk.icu/categories/literature/</loc>
-    <lastmod>2024-04-27</lastmod>
+    <lastmod>2024-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
