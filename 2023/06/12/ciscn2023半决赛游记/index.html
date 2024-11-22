@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="IDA你真该死啊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ciscn2023半决赛游记">
+<meta property="og:url" content="http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Whirling-In-Rags">
+<meta property="og:description" content="IDA你真该死啊">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194620801.png">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194711287.png">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612195202307.png">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612195909839.png">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612200128649.png">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612200535096.png">
+<meta property="og:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612203259477.png">
+<meta property="article:published_time" content="2023-06-12T11:14:12.000Z">
+<meta property="article:modified_time" content="2024-11-22T15:05:58.801Z">
+<meta property="article:author" content="DeePunk">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="awd">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194620801.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ciscn2023半决赛游记</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/05/29/%E6%B9%8D%E6%B5%81/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&text=ciscn2023半决赛游记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&is_video=false&description=ciscn2023半决赛游记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ciscn2023半决赛游记&body=Check out this article: http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&name=ciscn2023半决赛游记&description=IDA你真该死啊"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&t=ciscn2023半决赛游记"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#6-10"><span class="toc-number">1.</span> <span class="toc-text">6.10</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-11"><span class="toc-number">2.</span> <span class="toc-text">6.11</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#artist-patch"><span class="toc-number">2.1.</span> <span class="toc-text">artist_patch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#over-patch"><span class="toc-number">2.2.</span> <span class="toc-text">over_patch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#over-getflag"><span class="toc-number">2.3.</span> <span class="toc-text">over_getflag</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-12"><span class="toc-number">3.</span> <span class="toc-text">6.12</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ciscn2023半决赛游记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">DeePunk</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-06-12T11:14:12.000Z" class="dt-published" itemprop="datePublished">2023-06-12</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/misc/">misc</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/awd/" rel="tag">awd</a>, <a class="p-category" href="/tags/pwn/" rel="tag">pwn</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="6-10"><a href="#6-10" class="headerlink" title="6.10"></a>6.10</h1><p>飞往云南</p>
+<p>东航的空乘小姐姐还给我送来一个生日蛋糕，泪目，还挺好吃</p>
+<p>云大的赛场多少有点寒酸了，大门比我寝室门大不了多少</p>
+<p>没网线转接器，去外面买。老板说不开发票90一个，开发票110</p>
+<p>买了两个，这时西华的队伍也来买转接器。我们眼睁睁看着老板坐地起价，不开发票110，开发票130</p>
+<p>晚上吃了红伞伞、白伞伞、黄伞伞，心满意足地等着小人教我打pwn</p>
+<p>回去把unlink看完，小人还没出现，大抵是鸽了</p>
+<h1 id="6-11"><a href="#6-11" class="headerlink" title="6.11"></a>6.11</h1><p>本来想的是Beethoven负责补补补，我负责杀杀杀，结果第一波题就给了我小小的震撼</p>
+<p>一道是堆题，另一道也是堆题</p>
+<p>我artist还没逆完，别人CNSS已经把洞补好了，急死我了</p>
+<hr>
+<h2 id="artist-patch"><a href="#artist-patch" class="headerlink" title="artist_patch"></a>artist_patch</h2><p>整道题的功能大概是，选项1分配一个80h的chunk，并读取不超过80h的输入；选项2将指定chunk内容输出并free掉，free之前可以更改chunk开头的10h字节；选项3是将某个chunk开始的第任意个字节置为NULL</p>
+<p>整个程序中没有发现溢出，但是似乎可以利用3的功能实现对chunk header的改写，然后打一个unlink</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194620801.png" alt="image-20230612194620801"></p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194711287.png" alt="image-20230612194711287"></p>
+<p>但是因为开了Full RELRO，无法进行got hijacking，俺横竖想了半天也找不到劫持控制流的办法，但是patch还是可以做到的，只需要让更改的byte不超过chunk范围就可以了</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612195202307.png" alt="image-20230612195202307"></p>
+<p>于是我将my_read中canary部分改写成rax与80h的比较跳转语句，成功patch</p>
+<h2 id="over-patch"><a href="#over-patch" class="headerlink" title="over_patch"></a>over_patch</h2><p>本场唯一一道非堆题，怎么办怎么办我还是不会</p>
+<p>逻辑很简单，有四个选项，前三个选项都是读入一个小于等于4的数，进行一通很猛的计算，然后将某个地址的内容修改</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612195909839.png" alt="image-20230612195909839"></p>
+<p>选项4是将程序开头输入的名称再次输出。实现方法是：程序开始时把puts的plt地址放入某个地址，然后再调用这个地址。很显然，这里可以更改这个地址的内容，轻松地system(“&#x2F;bin&#x2F;sh”)</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612200128649.png" alt="image-20230612200128649"></p>
+<p>所以patch也非常简单，只需要把调用地址改成直接调用函数就行了</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612200535096.png" alt="image-20230612200535096"></p>
+<p>没想到这个patch折磨了我几个小时</p>
+<p>首先，我的patch流程非常的原始，因为linux本找不到合适的ida，win本搞忘装wsl，我都是在win本上用ida进行patch，再用u盘拷到linux本上验证。这样操作u盘和接口都挺累的，Beethoven和Sparkl的u盘就是这样被玩得识别不了（</p>
+<p>然后我发现，不管我怎么改，最后运行的时候都会segment fault。我以为是我的问题，于是尝试了各种方法：直接call puts、直接call my_write、把puts的plt再覆写到原位置再call（这个操作很长，需要jump到en_frame段），甚至我还试过在每次更改后都调用一遍初始化函数、把初始化函数放进while循环这些离谱操作，结果都是悲伤的segment fault。</p>
+<p>我怀着沉痛的心情决定用gdb跑一遍，看看问题在哪里。于是我一路走下去，走到选项四，看到一行熟悉的汇编：jmp 0x……</p>
+<p>我超，这不是我几轮之前的版本吗！我以为是我操作失误没有拷贝上，于是重新应用了一遍patch，重新拷过来，结果依旧能看到熟悉的jmp</p>
+<p>此前，我一直是个坚定的无神论者</p>
+<p>我用ida又应用了一份patch，然后用ida打开，果不其然，还是有jmp</p>
+<p>我的ida烂了！</p>
+<p>（严格来说，U盘也是烂的，后面我发现有时改动U盘文件，拔插后竟然可以恢复如初）</p>
+<p>我抢来Beethoven的电脑，改了两遍就好了，call my_write，没有segment fault</p>
+<p>喜闻乐见的是，我们交上去之后，结果是这样的：</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612203259477.png" alt="image-20230612203259477"></p>
+<p>乐，折磨了我两个多小时的洞，改半天连关键点都没改对</p>
+<p>我盯着代码看了半天，横竖没看到别的洞。</p>
+<p>直到比赛结束前二十分钟，我还是不相信，怀疑是打包的问题，于是又打了一遍。准备再次提交时，我看到提交要求：patch脚本应命名为update.sh，我一直写的是over.sh</p>
+<p>哄堂大笑了</p>
+<p>樂</p>
+<h2 id="over-getflag"><a href="#over-getflag" class="headerlink" title="over_getflag"></a>over_getflag</h2><p>没做出来，解法是shino教的</p>
+<p>我一直以为那几个修改是什么高深的算法，一度唆使密码学大师Beethoven进行破解。他发现v5并没有用上，然后我们止步于此。事实上，整个算法都是障眼法，真正有用的部分只有：将<code> *((_DWORD *)&amp;qword_4060 + v3 + 12)</code>的内容减去读入的<code>my_read</code>，因为v3可以为负，可以直接修改存储puts_plt处的内容</p>
+<p>实际上我最大的问题是把<code>qword_4060 += v4</code>这句误以为是地址会加上v4，于是认为v4会影响最后修改的地址</p>
+<p>所谓逆向不规范，打pwn两行泪</p>
+<hr>
+<p>走的时候听见一个指导老师在跟队员说：你之前的作业又没有认真做吧，你看这次出原题了吧</p>
+<h1 id="6-12"><a href="#6-12" class="headerlink" title="6.12"></a>6.12</h1><p>计划：上午逛云大</p>
+<p>现实：11：30被电话叫醒</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>不会堆，我好菜（你以为你菜只是因为不会堆吗）</p>
+<p>为了打patch补了一些汇编知识，对于一个只会f5的pwn手已经很难得了</p>
+<p>学点逆向吧</p>
+<p>CNSS好强</p>
+<p>什么时候才能有钱换电脑啊</p>
+<p>云南美女真多</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#6-10"><span class="toc-number">1.</span> <span class="toc-text">6.10</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-11"><span class="toc-number">2.</span> <span class="toc-text">6.11</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#artist-patch"><span class="toc-number">2.1.</span> <span class="toc-text">artist_patch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#over-patch"><span class="toc-number">2.2.</span> <span class="toc-text">over_patch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#over-getflag"><span class="toc-number">2.3.</span> <span class="toc-text">over_getflag</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-12"><span class="toc-number">3.</span> <span class="toc-text">6.12</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&text=ciscn2023半决赛游记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&is_video=false&description=ciscn2023半决赛游记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ciscn2023半决赛游记&body=Check out this article: http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&title=ciscn2023半决赛游记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&name=ciscn2023半决赛游记&description=IDA你真该死啊"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/&t=ciscn2023半决赛游记"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    DeePunk
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

