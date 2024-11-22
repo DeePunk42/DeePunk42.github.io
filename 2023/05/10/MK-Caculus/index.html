@@ -1,171 +1,71 @@
 <!DOCTYPE html>
-<html lang=en>
+<html>
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="函数基础双曲函数$$ 双曲正弦函数\space y&#x3D;sh \space x &#x3D;\frac{e^x-e^{-x}}{2} $$ $$ 双曲余弦函数\space y&#x3D;ch \space x &#x3D;\frac{e^x+e^{-x}}{2} $$ $$ 双曲正切函数\space y&#x3D;th \space x&#x3D;\frac{sh\space x}{ch\s">
-<meta property="og:type" content="article">
-<meta property="og:title" content="MK_Caculus">
-<meta property="og:url" content="http://example.com/2023/05/10/MK-Caculus/index.html">
-<meta property="og:site_name" content="Whirling-In-Rags">
-<meta property="og:description" content="函数基础双曲函数$$ 双曲正弦函数\space y&#x3D;sh \space x &#x3D;\frac{e^x-e^{-x}}{2} $$ $$ 双曲余弦函数\space y&#x3D;ch \space x &#x3D;\frac{e^x+e^{-x}}{2} $$ $$ 双曲正切函数\space y&#x3D;th \space x&#x3D;\frac{sh\space x}{ch\s">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-05-10T02:22:14.000Z">
-<meta property="article:modified_time" content="2024-11-22T15:05:58.803Z">
-<meta property="article:author" content="DeePunk">
-<meta property="article:tag" content="caculus">
-<meta name="twitter:card" content="summary">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
     
+    MK_Caculus 丨
     
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>MK_Caculus</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
 
+    typo
+  </title>
 
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-	<!-- mathjax -->
-	
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2023/05/13/PWN%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%87%BA%E5%85%A5%E5%B9%B3%E5%AE%89%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94ROP/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2023/05/09/MK-Physics/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/05/10/MK-Caculus/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/05/10/MK-Caculus/&text=MK_Caculus"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/05/10/MK-Caculus/&is_video=false&description=MK_Caculus"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=MK_Caculus&body=Check out this article: http://example.com/2023/05/10/MK-Caculus/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/05/10/MK-Caculus/&name=MK_Caculus&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/05/10/MK-Caculus/&t=MK_Caculus"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">函数基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E6%9B%B2%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">双曲函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E8%A7%92%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">三角函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%81%E9%99%90"><span class="toc-number">2.</span> <span class="toc-text">极限</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%88%97%E6%9E%81%E9%99%90"><span class="toc-number">2.1.</span> <span class="toc-text">数列极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8F%98%E9%87%8F%E8%B6%8B%E4%BA%8E%E6%97%A0%E7%A9%B7%E5%A4%A7%E6%97%B6%E5%87%BD%E6%95%B0%E6%9E%81%E9%99%90"><span class="toc-number">2.2.</span> <span class="toc-text">自变量趋于无穷大时函数极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8F%98%E9%87%8F%E8%B6%8B%E8%BF%91%E6%9C%89%E9%99%90%E5%80%BC%E6%97%B6%E5%87%BD%E6%95%B0%E6%9E%81%E9%99%90"><span class="toc-number">2.3.</span> <span class="toc-text">自变量趋近有限值时函数极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%A7%E6%9E%81%E9%99%90%EF%BC%9Adddd"><span class="toc-number">2.4.</span> <span class="toc-text">单侧极限：dddd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%88%97%E6%9E%81%E9%99%90%E4%B8%8E%E5%87%BD%E6%95%B0%E6%9E%81%E9%99%90%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.5.</span> <span class="toc-text">数列极限与函数极限的关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%86"><span class="toc-number">2.5.1.</span> <span class="toc-text">定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%B3%95"><span class="toc-number">2.5.2.</span> <span class="toc-text">用法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%B9%E9%80%BC%E5%87%86%E5%88%99"><span class="toc-number">2.6.</span> <span class="toc-text">夹逼准则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E8%B0%83%E6%9C%89%E7%95%8C%E5%87%86%E5%88%99"><span class="toc-number">2.7.</span> <span class="toc-text">单调有界准则</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7"><span class="toc-number">3.</span> <span class="toc-text">无穷</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E5%B0%8F"><span class="toc-number">3.1.</span> <span class="toc-text">无穷小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E5%A4%A7"><span class="toc-number">3.2.</span> <span class="toc-text">无穷大</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E7%90%86-1"><span class="toc-number">3.3.</span> <span class="toc-text">定理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%9E%81%E9%99%90"><span class="toc-number">3.4.</span> <span class="toc-text">重要极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BB%B7%E6%97%A0%E7%A9%B7%E5%B0%8F"><span class="toc-number">3.5.</span> <span class="toc-text">等价无穷小</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E5%AD%A6"><span class="toc-number">4.</span> <span class="toc-text">一元函数积分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%8F%AF%E7%A7%AF%E7%9A%84%E5%85%85%E5%88%86%E6%9D%A1%E4%BB%B6"><span class="toc-number">4.1.</span> <span class="toc-text">函数可积的充分条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E7%90%86-2"><span class="toc-number">4.2.</span> <span class="toc-text">定理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%B0%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">4.2.1.</span> <span class="toc-text">估值定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%AF%E5%88%86%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">4.2.2.</span> <span class="toc-text">积分中值定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%AF%E5%88%86%E4%B8%8A%E9%99%90%E5%87%BD%E6%95%B0"><span class="toc-number">4.3.</span> <span class="toc-text">积分上限函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">4.3.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%86-3"><span class="toc-number">4.3.2.</span> <span class="toc-text">定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E7%A7%AF%E5%88%86%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="toc-number">4.4.</span> <span class="toc-text">微积分基本定理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86"><span class="toc-number">4.5.</span> <span class="toc-text">不定积分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86"><span class="toc-number">4.6.</span> <span class="toc-text">反常积分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E5%8C%BA%E9%97%B4"><span class="toc-number">4.6.1.</span> <span class="toc-text">无穷区间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%95%8C"><span class="toc-number">4.6.2.</span> <span class="toc-text">无界</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E5%BA%94%E7%94%A8"><span class="toc-number">4.7.</span> <span class="toc-text">几何应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%81%E5%9D%90%E6%A0%87%E4%B8%8B%E6%B1%82%E9%9D%A2%E7%A7%AF"><span class="toc-number">4.7.1.</span> <span class="toc-text">极坐标下求面积</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E5%87%BD%E6%95%B0%E5%BE%AE%E5%88%86%E5%AD%A6"><span class="toc-number">5.</span> <span class="toc-text">一元函数微分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">导数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="toc-number">5.1.1.</span> <span class="toc-text">反函数求导</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%BC%8F%E5%87%BD%E6%95%B0%E3%80%81%E5%8F%8D%E5%87%BD%E6%95%B0%E4%BA%8C%E9%98%B6%E6%B1%82%E5%AF%BC"><span class="toc-number">5.1.2.</span> <span class="toc-text">参数式函数、反函数二阶求导</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%90%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="toc-number">5.2.</span> <span class="toc-text">隐函数求导</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%95%B0%E6%B1%82%E5%AF%BC%E6%B3%95"><span class="toc-number">5.2.1.</span> <span class="toc-text">对数求导法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%BC%8F%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="toc-number">5.3.</span> <span class="toc-text">参数式函数求导</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%AF%BC%E6%95%B0"><span class="toc-number">5.4.</span> <span class="toc-text">高阶导数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%88%86"><span class="toc-number">5.5.</span> <span class="toc-text">微分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E8%BF%91%E4%BC%BC"><span class="toc-number">5.5.1.</span> <span class="toc-text">线性近似</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%88%86%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.</span> <span class="toc-text">微分中值定理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%97%E5%B0%94%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.1.</span> <span class="toc-text">罗尔中值定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.2.</span> <span class="toc-text">拉格朗日中值定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%AF%E8%A5%BF%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.3.</span> <span class="toc-text">柯西中值定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%B0%E5%8B%92%E5%85%AC%E5%BC%8F"><span class="toc-number">5.7.</span> <span class="toc-text">泰勒公式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B2%E7%8E%87"><span class="toc-number">5.8.</span> <span class="toc-text">曲率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%A7%E5%BE%AE%E5%88%86%E5%85%AC%E5%BC%8F"><span class="toc-number">5.8.1.</span> <span class="toc-text">弧微分公式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B2%E7%8E%87-1"><span class="toc-number">5.9.</span> <span class="toc-text">曲率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="toc-number">5.9.1.</span> <span class="toc-text">曲率计算公式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E5%AD%A6-1"><span class="toc-number">6.</span> <span class="toc-text">一元函数积分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%BC%8F"><span class="toc-number">6.1.</span> <span class="toc-text">公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B"><span class="toc-number">7.</span> <span class="toc-text">常微分方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B-First-Order-Differential-Equations"><span class="toc-number">7.1.</span> <span class="toc-text">一阶微分方程(First-Order Differential Equations)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BD%90%E6%AC%A1%E6%96%B9%E7%A8%8B"><span class="toc-number">7.1.1.</span> <span class="toc-text">齐次方程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.1.2.</span> <span class="toc-text">一阶线性方程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AF%E5%8A%AA%E5%88%A9-Bernoulli-%E6%96%B9%E7%A8%8B"><span class="toc-number">7.1.3.</span> <span class="toc-text">伯努利(Bernoulli)方程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%99%8D%E4%BB%B7%E7%9A%84%E9%AB%98%E9%98%B6%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B"><span class="toc-number">7.2.</span> <span class="toc-text">可降价的高阶微分方程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E9%BD%90%E6%AC%A1%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.3.</span> <span class="toc-text">二阶齐次线性方程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E5%BE%AE%E5%88%86%E7%AE%97%E5%AD%90"><span class="toc-number">7.3.1.</span> <span class="toc-text">线性微分算子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E5%B8%B8%E7%B3%BB%E6%95%B0%E9%BD%90%E6%AC%A1%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.3.2.</span> <span class="toc-text">二阶常系数齐次线性方程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E9%9D%9E%E9%BD%90%E6%AC%A1%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.3.3.</span> <span class="toc-text">二阶非齐次线性方程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E5%85%83%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E5%AD%A6"><span class="toc-number">8.</span> <span class="toc-text">多元函数积分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E9%87%8F%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">8.1.</span> <span class="toc-text">数量值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%87%8D"><span class="toc-number">8.1.1.</span> <span class="toc-text">二重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E9%87%8D"><span class="toc-number">8.1.2.</span> <span class="toc-text">三重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%E6%9B%B2%E7%BA%BF"><span class="toc-number">8.1.3.</span> <span class="toc-text">第一类曲线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%E6%9B%B2%E9%9D%A2"><span class="toc-number">8.1.4.</span> <span class="toc-text">第一类曲面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%A8%E5%BF%83"><span class="toc-number">8.1.5.</span> <span class="toc-text">质心</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">8.2.</span> <span class="toc-text">向量值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%E6%9B%B2%E7%BA%BF"><span class="toc-number">8.2.1.</span> <span class="toc-text">第二类曲线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%E6%9B%B2%E9%9D%A2"><span class="toc-number">8.2.2.</span> <span class="toc-text">第二类曲面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E5%BC%8F-1"><span class="toc-number">8.2.3.</span> <span class="toc-text">公式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%BC%E6%9E%97%E5%85%AC%E5%BC%8F"><span class="toc-number">8.2.3.1.</span> <span class="toc-text">格林公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E6%96%AF%E5%85%AC%E5%BC%8F"><span class="toc-number">8.2.3.2.</span> <span class="toc-text">高斯公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%AF%E6%89%98%E5%85%8B%E6%96%AF%E5%85%AC%E5%BC%8F"><span class="toc-number">8.2.3.3.</span> <span class="toc-text">斯托克斯公式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E5%BE%84%E6%97%A0%E5%85%B3"><span class="toc-number">8.2.4.</span> <span class="toc-text">路径无关</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E7%BA%A7%E6%95%B0"><span class="toc-number">9.</span> <span class="toc-text">无穷级数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%BA%A7%E6%95%B0"><span class="toc-number">9.1.</span> <span class="toc-text">常用级数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E6%95%B0%E9%A1%B9%E7%BA%A7%E6%95%B0%E5%88%A4%E5%88%AB"><span class="toc-number">9.2.</span> <span class="toc-text">常数项级数判别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E6%95%B0%E9%A1%B9"><span class="toc-number">9.2.1.</span> <span class="toc-text">正数项</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%94%E8%BE%83%E5%88%A4%E6%95%9B%E6%B3%95"><span class="toc-number">9.2.1.1.</span> <span class="toc-text">比较判敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%94%E5%80%BC%E5%88%A4%E6%95%9B%E6%B3%95"><span class="toc-number">9.2.1.2.</span> <span class="toc-text">比值判敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E5%80%BC%E5%88%A4%E6%95%9B%E6%B3%95"><span class="toc-number">9.2.1.3.</span> <span class="toc-text">根值判敛法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E9%94%99%E9%A1%B9"><span class="toc-number">9.2.2.</span> <span class="toc-text">交错项</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8E%B1%E5%B8%83%E5%B0%BC%E5%85%B9"><span class="toc-number">9.2.2.1.</span> <span class="toc-text">莱布尼兹</span></a></li></ol></li></ol></li></ol></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        MK_Caculus
-    </h1>
-
-
-
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">DeePunk</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2023-05-10T02:22:14.000Z" class="dt-published" itemprop="datePublished">2023-05-10</time>
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/%E6%95%B0%E7%90%86%E7%AC%94%E8%AE%B0/">数理笔记</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/caculus/" rel="tag">caculus</a>
-    </div>
-
-
-    </div>
-  </header>
+  
+  <link rel="shortcut icon" href="/icon.svg">
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h1 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h1><h2 id="双曲函数"><a href="#双曲函数" class="headerlink" title="双曲函数"></a>双曲函数</h2><p>$$ 双曲正弦函数\space y&#x3D;sh \space x &#x3D;\frac{e^x-e^{-x}}{2} $$</p>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Whirling-In-Rags</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">MK_Caculus</div>
+  <div class="post-meta">
+    <div class="date">2023 May 10th</div>
+    <div class="tags">
+      
+      <div class="tag-item">caculus</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h1><h2 id="双曲函数"><a href="#双曲函数" class="headerlink" title="双曲函数"></a>双曲函数</h2><p>$$ 双曲正弦函数\space y&#x3D;sh \space x &#x3D;\frac{e^x-e^{-x}}{2} $$</p>
 <p>$$ 双曲余弦函数\space y&#x3D;ch \space x &#x3D;\frac{e^x+e^{-x}}{2} $$</p>
 <p>$$ 双曲正切函数\space y&#x3D;th \space x&#x3D;\frac{sh\space x}{ch\space x} &#x3D;\frac{e^x-e^{-x}}{e^x+e^{-x}} $$</p>
 <h2 id="三角函数"><a href="#三角函数" class="headerlink" title="三角函数"></a>三角函数</h2><p>$$ secA&#x3D;\frac{1}{cosA} $$</p>
@@ -261,144 +161,22 @@
 <p>比值为正数</p>
 <h4 id="比值判敛法"><a href="#比值判敛法" class="headerlink" title="比值判敛法"></a>比值判敛法</h4><p>达朗贝尔</p>
 <h4 id="根值判敛法"><a href="#根值判敛法" class="headerlink" title="根值判敛法"></a>根值判敛法</h4><p>柯西</p>
-<h3 id="交错项"><a href="#交错项" class="headerlink" title="交错项"></a>交错项</h3><h4 id="莱布尼兹"><a href="#莱布尼兹" class="headerlink" title="莱布尼兹"></a>莱布尼兹</h4>
-  </div>
+<h3 id="交错项"><a href="#交错项" class="headerlink" title="交错项"></a>交错项</h3><h4 id="莱布尼兹"><a href="#莱布尼兹" class="headerlink" title="莱布尼兹"></a>莱布尼兹</h4></main>
+
 </article>
 
 
+<script src="/js/highlight.js"></script>
 
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
-
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">Home</a></li>
-        
-          <li><a href="/about/">About</a></li>
-        
-          <li><a href="/archives/">Writing</a></li>
-        
-          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
-        
-      </ul>
-    </div>
-
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">函数基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E6%9B%B2%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">双曲函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E8%A7%92%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">三角函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%81%E9%99%90"><span class="toc-number">2.</span> <span class="toc-text">极限</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%88%97%E6%9E%81%E9%99%90"><span class="toc-number">2.1.</span> <span class="toc-text">数列极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8F%98%E9%87%8F%E8%B6%8B%E4%BA%8E%E6%97%A0%E7%A9%B7%E5%A4%A7%E6%97%B6%E5%87%BD%E6%95%B0%E6%9E%81%E9%99%90"><span class="toc-number">2.2.</span> <span class="toc-text">自变量趋于无穷大时函数极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%8F%98%E9%87%8F%E8%B6%8B%E8%BF%91%E6%9C%89%E9%99%90%E5%80%BC%E6%97%B6%E5%87%BD%E6%95%B0%E6%9E%81%E9%99%90"><span class="toc-number">2.3.</span> <span class="toc-text">自变量趋近有限值时函数极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%A7%E6%9E%81%E9%99%90%EF%BC%9Adddd"><span class="toc-number">2.4.</span> <span class="toc-text">单侧极限：dddd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%88%97%E6%9E%81%E9%99%90%E4%B8%8E%E5%87%BD%E6%95%B0%E6%9E%81%E9%99%90%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.5.</span> <span class="toc-text">数列极限与函数极限的关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%86"><span class="toc-number">2.5.1.</span> <span class="toc-text">定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%B3%95"><span class="toc-number">2.5.2.</span> <span class="toc-text">用法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%B9%E9%80%BC%E5%87%86%E5%88%99"><span class="toc-number">2.6.</span> <span class="toc-text">夹逼准则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E8%B0%83%E6%9C%89%E7%95%8C%E5%87%86%E5%88%99"><span class="toc-number">2.7.</span> <span class="toc-text">单调有界准则</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7"><span class="toc-number">3.</span> <span class="toc-text">无穷</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E5%B0%8F"><span class="toc-number">3.1.</span> <span class="toc-text">无穷小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E5%A4%A7"><span class="toc-number">3.2.</span> <span class="toc-text">无穷大</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E7%90%86-1"><span class="toc-number">3.3.</span> <span class="toc-text">定理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%9E%81%E9%99%90"><span class="toc-number">3.4.</span> <span class="toc-text">重要极限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BB%B7%E6%97%A0%E7%A9%B7%E5%B0%8F"><span class="toc-number">3.5.</span> <span class="toc-text">等价无穷小</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E5%AD%A6"><span class="toc-number">4.</span> <span class="toc-text">一元函数积分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%8F%AF%E7%A7%AF%E7%9A%84%E5%85%85%E5%88%86%E6%9D%A1%E4%BB%B6"><span class="toc-number">4.1.</span> <span class="toc-text">函数可积的充分条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E7%90%86-2"><span class="toc-number">4.2.</span> <span class="toc-text">定理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%B0%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">4.2.1.</span> <span class="toc-text">估值定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%AF%E5%88%86%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">4.2.2.</span> <span class="toc-text">积分中值定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%AF%E5%88%86%E4%B8%8A%E9%99%90%E5%87%BD%E6%95%B0"><span class="toc-number">4.3.</span> <span class="toc-text">积分上限函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">4.3.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%86-3"><span class="toc-number">4.3.2.</span> <span class="toc-text">定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E7%A7%AF%E5%88%86%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="toc-number">4.4.</span> <span class="toc-text">微积分基本定理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86"><span class="toc-number">4.5.</span> <span class="toc-text">不定积分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86"><span class="toc-number">4.6.</span> <span class="toc-text">反常积分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E5%8C%BA%E9%97%B4"><span class="toc-number">4.6.1.</span> <span class="toc-text">无穷区间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%95%8C"><span class="toc-number">4.6.2.</span> <span class="toc-text">无界</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E5%BA%94%E7%94%A8"><span class="toc-number">4.7.</span> <span class="toc-text">几何应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%81%E5%9D%90%E6%A0%87%E4%B8%8B%E6%B1%82%E9%9D%A2%E7%A7%AF"><span class="toc-number">4.7.1.</span> <span class="toc-text">极坐标下求面积</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E5%87%BD%E6%95%B0%E5%BE%AE%E5%88%86%E5%AD%A6"><span class="toc-number">5.</span> <span class="toc-text">一元函数微分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">导数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="toc-number">5.1.1.</span> <span class="toc-text">反函数求导</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%BC%8F%E5%87%BD%E6%95%B0%E3%80%81%E5%8F%8D%E5%87%BD%E6%95%B0%E4%BA%8C%E9%98%B6%E6%B1%82%E5%AF%BC"><span class="toc-number">5.1.2.</span> <span class="toc-text">参数式函数、反函数二阶求导</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%90%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="toc-number">5.2.</span> <span class="toc-text">隐函数求导</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%95%B0%E6%B1%82%E5%AF%BC%E6%B3%95"><span class="toc-number">5.2.1.</span> <span class="toc-text">对数求导法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E5%BC%8F%E5%87%BD%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="toc-number">5.3.</span> <span class="toc-text">参数式函数求导</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%AF%BC%E6%95%B0"><span class="toc-number">5.4.</span> <span class="toc-text">高阶导数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%88%86"><span class="toc-number">5.5.</span> <span class="toc-text">微分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E8%BF%91%E4%BC%BC"><span class="toc-number">5.5.1.</span> <span class="toc-text">线性近似</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E5%88%86%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.</span> <span class="toc-text">微分中值定理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%97%E5%B0%94%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.1.</span> <span class="toc-text">罗尔中值定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.2.</span> <span class="toc-text">拉格朗日中值定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%AF%E8%A5%BF%E4%B8%AD%E5%80%BC%E5%AE%9A%E7%90%86"><span class="toc-number">5.6.3.</span> <span class="toc-text">柯西中值定理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%B0%E5%8B%92%E5%85%AC%E5%BC%8F"><span class="toc-number">5.7.</span> <span class="toc-text">泰勒公式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B2%E7%8E%87"><span class="toc-number">5.8.</span> <span class="toc-text">曲率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%A7%E5%BE%AE%E5%88%86%E5%85%AC%E5%BC%8F"><span class="toc-number">5.8.1.</span> <span class="toc-text">弧微分公式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B2%E7%8E%87-1"><span class="toc-number">5.9.</span> <span class="toc-text">曲率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B2%E7%8E%87%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="toc-number">5.9.1.</span> <span class="toc-text">曲率计算公式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E5%85%83%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E5%AD%A6-1"><span class="toc-number">6.</span> <span class="toc-text">一元函数积分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%BC%8F"><span class="toc-number">6.1.</span> <span class="toc-text">公式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B"><span class="toc-number">7.</span> <span class="toc-text">常微分方程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B-First-Order-Differential-Equations"><span class="toc-number">7.1.</span> <span class="toc-text">一阶微分方程(First-Order Differential Equations)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BD%90%E6%AC%A1%E6%96%B9%E7%A8%8B"><span class="toc-number">7.1.1.</span> <span class="toc-text">齐次方程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.1.2.</span> <span class="toc-text">一阶线性方程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AF%E5%8A%AA%E5%88%A9-Bernoulli-%E6%96%B9%E7%A8%8B"><span class="toc-number">7.1.3.</span> <span class="toc-text">伯努利(Bernoulli)方程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E9%99%8D%E4%BB%B7%E7%9A%84%E9%AB%98%E9%98%B6%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B"><span class="toc-number">7.2.</span> <span class="toc-text">可降价的高阶微分方程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E9%BD%90%E6%AC%A1%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.3.</span> <span class="toc-text">二阶齐次线性方程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E5%BE%AE%E5%88%86%E7%AE%97%E5%AD%90"><span class="toc-number">7.3.1.</span> <span class="toc-text">线性微分算子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E5%B8%B8%E7%B3%BB%E6%95%B0%E9%BD%90%E6%AC%A1%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.3.2.</span> <span class="toc-text">二阶常系数齐次线性方程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E9%9D%9E%E9%BD%90%E6%AC%A1%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B"><span class="toc-number">7.3.3.</span> <span class="toc-text">二阶非齐次线性方程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E5%85%83%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E5%AD%A6"><span class="toc-number">8.</span> <span class="toc-text">多元函数积分学</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E9%87%8F%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">8.1.</span> <span class="toc-text">数量值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%87%8D"><span class="toc-number">8.1.1.</span> <span class="toc-text">二重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E9%87%8D"><span class="toc-number">8.1.2.</span> <span class="toc-text">三重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%E6%9B%B2%E7%BA%BF"><span class="toc-number">8.1.3.</span> <span class="toc-text">第一类曲线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%E6%9B%B2%E9%9D%A2"><span class="toc-number">8.1.4.</span> <span class="toc-text">第一类曲面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%A8%E5%BF%83"><span class="toc-number">8.1.5.</span> <span class="toc-text">质心</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">8.2.</span> <span class="toc-text">向量值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%E6%9B%B2%E7%BA%BF"><span class="toc-number">8.2.1.</span> <span class="toc-text">第二类曲线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%E6%9B%B2%E9%9D%A2"><span class="toc-number">8.2.2.</span> <span class="toc-text">第二类曲面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E5%BC%8F-1"><span class="toc-number">8.2.3.</span> <span class="toc-text">公式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%BC%E6%9E%97%E5%85%AC%E5%BC%8F"><span class="toc-number">8.2.3.1.</span> <span class="toc-text">格林公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E6%96%AF%E5%85%AC%E5%BC%8F"><span class="toc-number">8.2.3.2.</span> <span class="toc-text">高斯公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%AF%E6%89%98%E5%85%8B%E6%96%AF%E5%85%AC%E5%BC%8F"><span class="toc-number">8.2.3.3.</span> <span class="toc-text">斯托克斯公式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E5%BE%84%E6%97%A0%E5%85%B3"><span class="toc-number">8.2.4.</span> <span class="toc-text">路径无关</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E7%BA%A7%E6%95%B0"><span class="toc-number">9.</span> <span class="toc-text">无穷级数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%BA%A7%E6%95%B0"><span class="toc-number">9.1.</span> <span class="toc-text">常用级数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E6%95%B0%E9%A1%B9%E7%BA%A7%E6%95%B0%E5%88%A4%E5%88%AB"><span class="toc-number">9.2.</span> <span class="toc-text">常数项级数判别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E6%95%B0%E9%A1%B9"><span class="toc-number">9.2.1.</span> <span class="toc-text">正数项</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%94%E8%BE%83%E5%88%A4%E6%95%9B%E6%B3%95"><span class="toc-number">9.2.1.1.</span> <span class="toc-text">比较判敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%94%E5%80%BC%E5%88%A4%E6%95%9B%E6%B3%95"><span class="toc-number">9.2.1.2.</span> <span class="toc-text">比值判敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E5%80%BC%E5%88%A4%E6%95%9B%E6%B3%95"><span class="toc-number">9.2.1.3.</span> <span class="toc-text">根值判敛法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E9%94%99%E9%A1%B9"><span class="toc-number">9.2.2.</span> <span class="toc-text">交错项</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8E%B1%E5%B8%83%E5%B0%BC%E5%85%B9"><span class="toc-number">9.2.2.1.</span> <span class="toc-text">莱布尼兹</span></a></li></ol></li></ol></li></ol></li></ol>
-      </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/05/10/MK-Caculus/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/05/10/MK-Caculus/&text=MK_Caculus"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/05/10/MK-Caculus/&is_video=false&description=MK_Caculus"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=MK_Caculus&body=Check out this article: http://example.com/2023/05/10/MK-Caculus/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/05/10/MK-Caculus/&title=MK_Caculus"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/05/10/MK-Caculus/&name=MK_Caculus&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/05/10/MK-Caculus/&t=MK_Caculus"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
-
-  </div>
-</div>
-
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2016-2024
-    DeePunk
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2024 typo</span>
+  
 </footer>
-
-    </div>
-    <!-- styles -->
-
-
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
-  
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
-    })
-  })
-  </script>
-
-
-<script src="/js/main.js"></script>
-
-<!-- search -->
-
-<!-- Baidu Analytics -->
-
-<!-- Cloudflare Analytics -->
-
-<!-- Disqus Comments -->
-
-<!-- utterances Comments -->
+<script src="/js/theme.js"></script>
 
 </body>
+
 </html>
