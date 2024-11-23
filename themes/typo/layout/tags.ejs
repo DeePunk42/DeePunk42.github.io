@@ -1,26 +1,31 @@
 <% if (site.tags.length) { %>
     <script type="text/javascript" charset="utf-8" src="<%- url_for('/js/tagcloud.js') %>"></script>
     <script type="text/javascript" charset="utf-8" src="<%- url_for('/js/tagcanvas.js') %>"></script>
-    <div class="widget-wrap">
-      <!-- <h3 class="widget-title"><%= __('tagcloud') %></h3> -->
-      <div id="myCanvasContainer" class="widget tagcloud">
-        <canvas width="250" height="250" id="resCanvas" style="width:45%">
-          <%- tagcloud() %>
-        </canvas>
-      </div>
-    </div>
 
-    <article class="article article-type-post" itemscope="" itemprop="blogPost">
-        <div class="article-inner">     
-        <header class="article-header">
-        <h1 itemprop="name">
-          <a class="article-title" href="">Tag Cloud</a>
-        </h1>
-        </header>   
-        <footer class="article-footer"></footer>
-            <div class="widget tagcloud">
-              <%- tagcloud({'amount': '1024', 'orderby': 'name', 'order': '1', min_font: 16, max_font: 48}) %>
+    <div class="two-column-layout">
+
+        <div class="widget-wrap">
+            <!-- <h3 class="widget-title"><%= __('tagcloud') %></h3> -->
+            <div id="myCanvasContainer" class="widget tagcloud">
+                <canvas width="250" height="250" id="resCanvas" style="width:100%">
+                    <%- tagcloud() %>
+                </canvas>
             </div>
         </div>
-    </article>
-  <% } %>
+
+        <article class="article article-type-post" itemscope="" itemprop="blogPost">
+            <h1 itemprop="name">
+                <a class="article-title" href="">Tag Cloud</a>
+            </h1>
+            <div class="article-inner">
+                <header class="article-header"></header>
+                <footer class="article-footer"></footer>
+                <div class="widget tagcloud">
+                    <%- tagcloud({'amount': '1024' , 'orderby' : 'name' , 'order' : '1' , min_font: 16, max_font: 48})
+                        %>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <% } %>
