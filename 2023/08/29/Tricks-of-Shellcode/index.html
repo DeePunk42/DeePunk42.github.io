@@ -59,8 +59,6 @@
     <div class="date">2023 August 29th</div>
     <div class="tags">
       
-      <div class="tag-item">CTF</div>
-      
       <div class="tag-item">PWN</div>
       
     </div>
@@ -76,8 +74,11 @@
 <p>这种手法听起来很炫酷，操作却相当简单</p>
 <p>程序运行时的架构，是由<code>cs</code>寄存器控制的。<code>cs=0x23</code>为32位模式，<code>cs=0x33</code>为64位模式。而<code>retfq</code>指令就能实现对<code>cs</code>的赋值</p>
 <p><code>retfq</code>包含<code>ret</code>和<code>pop cs</code>两步，也就是先后pop <code>rip</code>和<code>cs</code>，所以一般可以像这样写：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov rsp, 0x40404040 #arbitrary stack</span><br><span class="line">push 0x23 #or 0x33</span><br><span class="line">push 0x401145 #next shellcode</span><br><span class="line">retfq</span><br></pre></td></tr></table></figure>
-
+<pre><code class="assembly">mov rsp, 0x40404040 #arbitrary stack
+push 0x23 #or 0x33
+push 0x401145 #next shellcode
+retfq
+</code></pre>
 <p>注意这里需要设置<code>rsp</code>，这是因为切换到32位时，寄存器也会被切成32位，所以需要预先调整栈顶的指针</p>
 <p>另外我在操作时发现<code>ret</code>后的地址似乎有一定要求。起初我直接跳到下一条shellcode上，但会在retfq时崩溃，后来我<code>ret</code>到代码段里调用shellcode的地址，再提前设置好寄存器，顺利解决了这个问题</p>
 <h1 id="者行孙"><a href="#者行孙" class="headerlink" title="者行孙"></a>者行孙</h1><p><del>你就说是不是一个东西吧</del></p>

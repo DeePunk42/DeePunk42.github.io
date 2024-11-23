@@ -63,14 +63,14 @@
 5: 0x3807 change role
 struct通过add函数，猜测出heap_list，heap_size的作用，结合free、edit函数找到两个标志位
 结合每个的大小与偏移，推测出数组的数量
-1234567struct house&#123;    char *list[0
+struct house
+&#123;
+    char *list[0x18];
       <a class="read-more" href="/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/"> ... </a>
     </div>
     <div class="post-item-extra">
       <div class="date">2023.07.27</div>
       <div class="tags">
-        
-        <div class="tag-item">CTF</div>
         
         <div class="tag-item">PWN</div>
         
@@ -101,8 +101,6 @@ undefine后，由gdb动调知入口在0x1289处，修复为函数
       <div class="date">2023.07.27</div>
       <div class="tags">
         
-        <div class="tag-item">CTF</div>
-        
         <div class="tag-item">PWN</div>
         
         <div class="tag-item">wp</div>
@@ -128,7 +126,7 @@ undefine后，由gdb动调知入口在0x1289处，修复为函数
       <div class="date">2023.06.12</div>
       <div class="tags">
         
-        <div class="tag-item">pwn</div>
+        <div class="tag-item">PWN</div>
         
         <div class="tag-item">awd</div>
         
@@ -144,14 +142,17 @@ undefine后，由gdb动调知入口在0x1289处，修复为函数
 
 shaokao整型下溢，然后有个栈溢出，直接用ROPgadget生成ropchain
 
-1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495
+#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;)
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot
       <a class="read-more" href="/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/"> ... </a>
     </div>
     <div class="post-item-extra">
       <div class="date">2023.05.29</div>
       <div class="tags">
-        
-        <div class="tag-item">CTF</div>
         
         <div class="tag-item">PWN</div>
         
