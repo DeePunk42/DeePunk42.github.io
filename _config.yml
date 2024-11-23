@@ -123,7 +123,7 @@ sitemap:
   path: sitemap.xml
 
 tag_cloud:
-    textColor: '#d1d5da'
+    textColor: '#FFFFFF'
     textHeight: 18
-    outlineColor: '#E2E1D1'
+    outlineColor: '#0F0F0F'
     maxSpeed: 0.1 
