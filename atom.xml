@@ -6,7 +6,7 @@
   <link href="http://deepunk.icu/atom.xml" rel="self"/>
   
   <link href="http://deepunk.icu/"/>
-  <updated>2024-11-23T09:37:27.304Z</updated>
+  <updated>2024-11-23T13:28:25.584Z</updated>
   <id>http://deepunk.icu/</id>
   
   <author>
@@ -21,17 +21,17 @@
     <link href="http://deepunk.icu/2024/11/23/CVE-2024-38077%20(madlicense)%20reproduction/"/>
     <id>http://deepunk.icu/2024/11/23/CVE-2024-38077%20(madlicense)%20reproduction/</id>
     <published>2024-11-22T16:18:46.000Z</published>
-    <updated>2024-11-23T09:37:27.304Z</updated>
+    <updated>2024-11-23T13:28:25.584Z</updated>
     
     
-    <summary type="html">Talk is cheap, show me your bomb</summary>
+    <summary type="html">Also known as madlicense, a vulnerability on almost every versions of windows server that leads to 0-click RCE</summary>
     
     
     
-    
-    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
+    
+    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
     
     <category term="rpc" scheme="http://deepunk.icu/tags/rpc/"/>
     
@@ -44,7 +44,7 @@
     <link href="http://deepunk.icu/2024/04/30/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/"/>
     <id>http://deepunk.icu/2024/04/30/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/</id>
     <published>2024-04-29T16:00:00.000Z</published>
-    <updated>2024-11-23T09:40:44.200Z</updated>
+    <updated>2024-11-23T13:24:06.714Z</updated>
     
     
     <summary type="html">一些 dl 类型攻击手法的总结</summary>
@@ -54,6 +54,8 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
+    <category term="dl" scheme="http://deepunk.icu/tags/dl/"/>
+    
   </entry>
   
   <entry>
@@ -61,7 +63,7 @@
     <link href="http://deepunk.icu/2024/04/14/GeekCTF2024wp/"/>
     <id>http://deepunk.icu/2024/04/14/GeekCTF2024wp/</id>
     <published>2024-04-13T16:00:00.000Z</published>
-    <updated>2024-11-23T10:25:52.610Z</updated>
+    <updated>2024-11-23T13:24:11.542Z</updated>
     
     
     <summary type="html">出题之余想打打比赛复健一下，没想到题目质量出奇的高，最后pwn方向第二</summary>
@@ -72,6 +74,8 @@
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
+    
+    <category term="dl" scheme="http://deepunk.icu/tags/dl/"/>
     
   </entry>
   
@@ -120,7 +124,7 @@
     <link href="http://deepunk.icu/2023/08/29/Tricks-of-Shellcode/"/>
     <id>http://deepunk.icu/2023/08/29/Tricks-of-Shellcode/</id>
     <published>2023-08-29T13:56:08.000Z</published>
-    <updated>2024-11-23T09:37:27.313Z</updated>
+    <updated>2024-11-23T13:24:36.861Z</updated>
     
     
     <summary type="html">最近打了挺多比赛，碰到一些比较有意思的题和方法</summary>
@@ -131,6 +135,8 @@
     
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
+    
+    <category term="shellcode" scheme="http://deepunk.icu/tags/shellcode/"/>
     
   </entry>
   
@@ -158,7 +164,7 @@
     <link href="http://deepunk.icu/2023/08/12/SROP/"/>
     <id>http://deepunk.icu/2023/08/12/SROP/</id>
     <published>2023-08-12T12:45:49.000Z</published>
-    <updated>2024-11-23T09:41:12.752Z</updated>
+    <updated>2024-11-23T13:24:41.041Z</updated>
     
     
     <summary type="html">这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下</summary>
@@ -170,6 +176,8 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
+    <category term="srop" scheme="http://deepunk.icu/tags/srop/"/>
+    
   </entry>
   
   <entry>
@@ -177,7 +185,7 @@
     <link href="http://deepunk.icu/2023/08/11/IOFILE-exploit/"/>
     <id>http://deepunk.icu/2023/08/11/IOFILE-exploit/</id>
     <published>2023-08-11T08:02:03.000Z</published>
-    <updated>2024-11-23T09:37:27.308Z</updated>
+    <updated>2024-11-23T13:24:25.802Z</updated>
     
     
     <summary type="html">IOFILE阶段性学习成果汇报大会</summary>
@@ -189,6 +197,8 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
+    
   </entry>
   
   <entry>
@@ -196,7 +206,7 @@
     <link href="http://deepunk.icu/2023/07/27/house-of-cat/"/>
     <id>http://deepunk.icu/2023/07/27/house-of-cat/</id>
     <published>2023-07-27T03:20:34.000Z</published>
-    <updated>2024-11-23T09:40:56.109Z</updated>
+    <updated>2024-11-23T13:24:18.793Z</updated>
     
     
     <summary type="html">讲课最后一天的题，水水</summary>
@@ -210,6 +220,8 @@
     
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
     
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
+    
   </entry>
   
   <entry>
@@ -217,7 +229,7 @@
     <link href="http://deepunk.icu/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/"/>
     <id>http://deepunk.icu/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/</id>
     <published>2023-07-27T03:17:56.000Z</published>
-    <updated>2024-11-23T09:37:27.333Z</updated>
+    <updated>2024-11-23T13:24:32.367Z</updated>
     
     
     <summary type="html">阴间堆风水</summary>
@@ -231,6 +243,8 @@
     
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
     
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
+    
   </entry>
   
   <entry>
@@ -238,7 +252,7 @@
     <link href="http://deepunk.icu/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/"/>
     <id>http://deepunk.icu/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/</id>
     <published>2023-07-27T03:12:57.000Z</published>
-    <updated>2024-11-23T09:37:27.330Z</updated>
+    <updated>2024-11-23T13:24:22.010Z</updated>
     
     
     <summary type="html">讲水课，恰大米</summary>
@@ -251,6 +265,8 @@
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
+    
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
     
   </entry>
   
