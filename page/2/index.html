@@ -50,6 +50,37 @@
     <div class="post-list">
   
   <section class="post-item">
+    <a class="post-item-title" href="/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/">house of pig xctf2021final复现</a>
+    <div class="post-item-summary">
+      
+阴间堆风水
+
+逆向修复switch0: 0x3985 invalid
+1: 0x3797 add
+2: 0x37B3 show
+3: 0x37cf edit
+4: 0x37eb delet
+5: 0x3807 change role
+struct通过add函数，猜测出heap_list，heap_size的作用，结合free、edit函数找到两个标志位
+结合每个的大小与偏移，推测出数组的数量
+1234567struct house&#123;    char *list[0
+      <a class="read-more" href="/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2023.07.27</div>
+      <div class="tags">
+        
+        <div class="tag-item">CTF</div>
+        
+        <div class="tag-item">PWN</div>
+        
+        <div class="tag-item">wp</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
     <a class="post-item-title" href="/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/">house of emma 21湖湘杯复现</a>
     <div class="post-item-summary">
       
