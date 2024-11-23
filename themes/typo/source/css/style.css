@@ -288,3 +288,16 @@ a {
   flex: 1;
   margin: 0 10px;
 }
+
+#disqus_thread, .duoshuo, .cloud-tie-wrapper, #SOHUCS, #gitment-ctn, #gitalk-container {
+	padding: 60px 30px 0px 30px;
+	width: 700px;
+	margin: auto;
+	min-height: 20px;
+}
+
+#SOHUCS {
+	#SOHU_MAIN .module-cmt-list .block-cont-gw {
+		border-bottom: 1px dashed #afb9cb !important;
+	}
+}
