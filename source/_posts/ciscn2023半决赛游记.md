@@ -2,11 +2,11 @@
 title: ciscn2023半决赛游记
 date: 2023-06-12 19:14:12
 tags:
-- pwn
-- awd
+  - awd
+  - PWN
 categories:
-- misc
-excerpt: "IDA你真该死啊"
+  - misc
+excerpt: IDA你真该死啊
 ---
 
 # 6.10

@@ -2,12 +2,11 @@
 title: A Brief Introduction to PHP Heap Exploitation
 date: 2023-09-14 19:59:41
 tags:
-- PWN
-- CTF
-- PHP
-- wp
+  - PWN
+  - PHP
+  - wp
 categories:
-- CS
+  - CS
 ---
 
 It`s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it spent me a long time to figure out how ZendMM actually works.
@@ -19,8 +18,6 @@ PHP codes are explained through the **Zend engine**. Instead of directly using t
 ## Basic Structure
 
 As writen in `zend_alloc.c` source code, all allocations are split into 3 categories: huge, large and small. Remember that zend_alloc allocates memory form OS by **CHUNKS**, which contains 2MB memories. Huge allocs are those who exceed a chunk. And zend_alloc use  `mmap` to allocate one. The concept of **PAGE** is commonly used in ZendMM, which usually contains 4KB memories. That`s to say, a chunk contains 512 pages. Small allocs are less than 3/4 of page size. The rest are Large allocs.
-
-![img](https://pic1.xuehuaimg.com/proxy/csdn/https://img-blog.csdnimg.cn/20191230114413519.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzMyNzgzNzAz,size_16,color_FFFFFF,t_70)
 
 Each time a chunk is alloced, the first page of the chunk is used to record basic information about the chunk. The Structure recording information is `_zend_mm_chunk` ,(which doesn`t appear in huge chunk)
 

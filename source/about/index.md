@@ -1,10 +1,11 @@
-# About Me👴
+# About Me
 
 
+​Played ctf at [@CNSS](https://cnss.io/) & [@El3ctronic](https://ctftime.org/team/266401/)
 
-泥电**集成电路与集成系统设计**本科在读
+Intern Researcher at [@DARKNAVY](https://www.darknavy.org/zh/)
 
-​	**凝聚网络安全工作室(Cohesion Network Security Studio)**  pwn手
+
 
 
 
@@ -12,29 +13,4 @@
 
 
 
-
-
-- **二进制安全**爱好者，目标是成为物理大嗨客🥷（电源线都给你薅咯）
-- **Dev&Op**水平堪忧，但对**超算**和**炼丹**莫名向往
-- 正在摸索一些**嵌入式**，虽然摸着摸着就摸了
-- 曾任**HAR我的世界服务器**腐竹，**vivo50**助力服务器东山再起
-- 喜欢写小说，不喜欢更新
-- 看到我在摸鱼请督促我去做以上
-
-
-
-------
-
-
-
-
-
-希望写出一些有价值的东西
-
-~~写不出来就算了~~
-
-
-
-水平有限，文章内容有误请联系我更正
-
-Mail: deepunk@cnss.io
+Mail: deepunk422@gmail.com

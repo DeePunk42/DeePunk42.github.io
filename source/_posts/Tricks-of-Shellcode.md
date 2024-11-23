@@ -2,10 +2,9 @@
 title: Tricks of Shellcode
 date: 2023-08-29 21:56:08
 tags:
-- CTF
-- PWN
+  - PWN
 categories:
-- CS
+  - CS
 ---
 
 > 最近打了挺多比赛，碰到一些比较有意思的题和方法

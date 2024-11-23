@@ -2,12 +2,11 @@
 title: ciscn2023pwn宝宝题解
 date: 2023-05-29 23:26:54
 tags:
-- CTF
-- PWN
-- wp
+  - PWN
+  - wp
 categories:
-- CS
-excerpt: "什么时候出个签到题方向啊"
+  - CS
+excerpt: 什么时候出个签到题方向啊
 ---
 
 > 坐牢了，只会做baby题
