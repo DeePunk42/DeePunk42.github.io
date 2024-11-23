@@ -42,6 +42,8 @@
       
       <li><a href="/archives">archives</a></li>
       
+      <li><a href="/tags">tags</a></li>
+      
       <li><a href="/about">about</a></li>
       
     </ul>
@@ -54,28 +56,17 @@
     <a class="post-item-title" href="/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/">house of pig xctf2021final复现</a>
     <div class="post-item-summary">
       
-阴间堆风水
-
-逆向修复switch0: 0x3985 invalid
-1: 0x3797 add
-2: 0x37B3 show
-3: 0x37cf edit
-4: 0x37eb delet
-5: 0x3807 change role
-struct通过add函数，猜测出heap_list，heap_size的作用，结合free、edit函数找到两个标志位
-结合每个的大小与偏移，推测出数组的数量
-struct house
-&#123;
-    char *list[0x18];
+        阴间堆风水
+      
       <a class="read-more" href="/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/"> ... </a>
     </div>
     <div class="post-item-extra">
       <div class="date">2023.07.27</div>
       <div class="tags">
         
-        <div class="tag-item">PWN</div>
+        <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
         
-        <div class="tag-item">wp</div>
+        <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
         
       </div>
     </div>
@@ -85,26 +76,17 @@ struct house
     <a class="post-item-title" href="/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/">house of emma 21湖湘杯复现</a>
     <div class="post-item-summary">
       
-讲水课，恰大米
-
-沙箱开启，考虑orw
-保护全开
-VM分析循环输入，每次读最多0x500，每次循环分配释放0x2000空间
-注意这里每次循环时的malloc,会影响后面的堆风水
-入口函数分析sub_1288处无法识别
-undefine后，由gdb动调知入口在0x1289处，修复为函数
-将输入的字符串指针存在[rbp-18h]处
-
-随后取第一个byte，与运算0Fh，进行一个没什么用的检查，再将该值*4放入rdx，与一个首地址相加放入eax，符号拓展为rax（因为是负数），再
+        讲水课，恰大米
+      
       <a class="read-more" href="/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/"> ... </a>
     </div>
     <div class="post-item-extra">
       <div class="date">2023.07.27</div>
       <div class="tags">
         
-        <div class="tag-item">PWN</div>
+        <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
         
-        <div class="tag-item">wp</div>
+        <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
         
       </div>
     </div>
@@ -113,23 +95,18 @@ undefine后，由gdb动调知入口在0x1289处，修复为函数
   <section class="post-item">
     <a class="post-item-title" href="/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/">ciscn2023半决赛游记</a>
     <div class="post-item-summary">
-      6.10飞往云南
-东航的空乘小姐姐还给我送来一个生日蛋糕，泪目，还挺好吃
-云大的赛场多少有点寒酸了，大门比我寝室门大不了多少
-没网线转接器，去外面买。老板说不开发票90一个，开发票110
-买了两个，这时西华的队伍也来买转接器。我们眼睁睁看着老板坐地起价，不开发票110，开发票130
-晚上吃了红伞伞、白伞伞、黄伞伞，心满意足地等着小人教我打pwn
-回去把unlink看完，小人还没出现，大抵是鸽了
-6.11本来想的是Beethoven负责补补补，我负责杀杀杀，结果第一波题就给了我
+      
+        IDA你真该死啊
+      
       <a class="read-more" href="/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"> ... </a>
     </div>
     <div class="post-item-extra">
       <div class="date">2023.06.12</div>
       <div class="tags">
         
-        <div class="tag-item">PWN</div>
+        <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
         
-        <div class="tag-item">awd</div>
+        <a class="tag-item" href="/tags/awd" style="color: #d1d5da;">awd</a>
         
       </div>
     </div>
@@ -139,25 +116,17 @@ undefine后，由gdb动调知入口在0x1289处，修复为函数
     <a class="post-item-title" href="/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/">ciscn2023pwn宝宝题解</a>
     <div class="post-item-summary">
       
-坐牢了，只会做baby题
-
-shaokao整型下溢，然后有个栈溢出，直接用ROPgadget生成ropchain
-
-#!/usr/bin/env python2
-from pwn import*
-
-context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;)
-def debug(cmd=&#39;&#39;):
-    cmd += &quot;b main\n&quot
+        什么时候出个签到题方向啊
+      
       <a class="read-more" href="/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/"> ... </a>
     </div>
     <div class="post-item-extra">
       <div class="date">2023.05.29</div>
       <div class="tags">
         
-        <div class="tag-item">PWN</div>
+        <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
         
-        <div class="tag-item">wp</div>
+        <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
         
       </div>
     </div>

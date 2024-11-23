@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2024-11-23T05:08:14.002Z</updated>
+  <updated>2024-11-23T06:39:06.138Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,26 +21,17 @@
     <link href="http://example.com/2024/11/23/CVE-2024-38077%20(madlicense)%20reproduction/"/>
     <id>http://example.com/2024/11/23/CVE-2024-38077%20(madlicense)%20reproduction/</id>
     <published>2024-11-22T16:18:46.000Z</published>
-    <updated>2024-11-23T05:08:14.002Z</updated>
+    <updated>2024-11-23T06:39:06.138Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Talk is cheap, show me your bomb&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&quot;1-Vuln-Analyze&quot;&gt;&lt;a href=&quot;#1-Vuln-Analyze&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">Talk is cheap, show me your bomb</summary>
     
     
     
-    
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
     
     <category term="windows" scheme="http://example.com/tags/windows/"/>
+    
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="rpc" scheme="http://example.com/tags/rpc/"/>
     
@@ -49,50 +40,38 @@
   </entry>
   
   <entry>
-    <title>Geekctf2024-wp</title>
-    <link href="http://example.com/2024/04/30/Geekctf2024-wp/"/>
-    <id>http://example.com/2024/04/30/Geekctf2024-wp/</id>
-    <published>2024-04-29T16:00:00.000Z</published>
-    <updated>2024-11-23T05:08:54.514Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;WriteUp-for-GeekCTF-2024&quot;&gt;&lt;a href=&quot;#WriteUp-for-GeekCTF-2024&quot; class=&quot;headerlink&quot; title=&quot;WriteUp for GeekCTF 2024&quot;&gt;&lt;/a&gt;WriteUp for</summary>
-        
-      
-    
-    
-    
-    
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
-    
-    <category term="wp" scheme="http://example.com/tags/wp/"/>
-    
-  </entry>
-  
-  <entry>
     <title>dl相关攻击</title>
     <link href="http://example.com/2024/04/30/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/"/>
     <id>http://example.com/2024/04/30/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/</id>
     <published>2024-04-29T16:00:00.000Z</published>
-    <updated>2024-11-23T05:08:39.112Z</updated>
+    <updated>2024-11-23T06:38:59.004Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;动态链接&quot;&gt;&lt;a href=&quot;#动态链接&quot; class=&quot;headerlink&quot; title=&quot;动态链接&quot;&gt;&lt;/a&gt;动态链接&lt;/h1&gt;&lt;h2 id=&quot;机制&quot;&gt;&lt;a href=&quot;#机制&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">一些 dl 类型攻击手法的总结</summary>
     
     
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Geekctf2024-wp</title>
+    <link href="http://example.com/2024/04/14/Geekctf2024-wp/"/>
+    <id>http://example.com/2024/04/14/Geekctf2024-wp/</id>
+    <published>2024-04-13T16:00:00.000Z</published>
+    <updated>2024-11-23T06:39:02.822Z</updated>
+    
+    
+    <summary type="html">出题之余想打打比赛复健一下，没想到题目质量出奇的高，最后pwn方向第二</summary>
+    
+    
+    
+    
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
+    
+    <category term="wp" scheme="http://example.com/tags/wp/"/>
     
   </entry>
   
@@ -101,16 +80,10 @@
     <link href="http://example.com/2024/01/01/2023-%E5%9C%A8%E9%80%83%E7%A6%BB%E4%B9%8B%E5%90%8E/"/>
     <id>http://example.com/2024/01/01/2023-%E5%9C%A8%E9%80%83%E7%A6%BB%E4%B9%8B%E5%90%8E/</id>
     <published>2023-12-31T16:00:00.000Z</published>
-    <updated>2024-11-23T05:08:47.777Z</updated>
+    <updated>2024-11-23T06:34:44.880Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;熬过了艰难的期末，终于有点精力写些想表达的东西。这种感觉一如高考完的那个暑假里，在迷茫中写写划划，企图在文字中找到一种力量感。之后的一年，过得像中学墙上的模范议论文，填满了字，读不出意思。即使在人生走马灯里，也是被”a few years</summary>
-        
-      
+    <summary type="html">发点牢骚</summary>
     
     
     
@@ -124,27 +97,21 @@
     <link href="http://example.com/2023/09/14/php-pwn/"/>
     <id>http://example.com/2023/09/14/php-pwn/</id>
     <published>2023-09-14T11:59:41.000Z</published>
-    <updated>2024-11-23T05:10:26.621Z</updated>
+    <updated>2024-11-23T06:39:44.774Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;It&amp;#96;s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it</summary>
-        
-      
+    <summary type="html">It`s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it spent me a long time to figure out how ZendMM actually works.</summary>
     
     
     
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="wp" scheme="http://example.com/tags/wp/"/>
     
-    <category term="PHP" scheme="http://example.com/tags/PHP/"/>
+    <category term="php" scheme="http://example.com/tags/php/"/>
     
   </entry>
   
@@ -153,26 +120,17 @@
     <link href="http://example.com/2023/08/29/Tricks-of-Shellcode/"/>
     <id>http://example.com/2023/08/29/Tricks-of-Shellcode/</id>
     <published>2023-08-29T13:56:08.000Z</published>
-    <updated>2024-11-23T05:09:30.577Z</updated>
+    <updated>2024-11-23T07:22:51.966Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;最近打了挺多比赛，碰到一些比较有意思的题和方法&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;shellcode的题挺多，往往都是加了一些乱七八糟的限制。一般要么限制字符，要么开沙箱。限制字符基本上就通过手搓&lt;del&gt;我不会&lt;/del&gt;或者alpha3</summary>
-        
-      
+    <summary type="html">最近打了挺多比赛，碰到一些比较有意思的题和方法</summary>
     
     
     
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
   </entry>
   
@@ -200,24 +158,17 @@
     <link href="http://example.com/2023/08/12/SROP/"/>
     <id>http://example.com/2023/08/12/SROP/</id>
     <published>2023-08-12T12:45:49.000Z</published>
-    <updated>2024-11-23T05:09:25.202Z</updated>
+    <updated>2024-11-23T06:39:35.238Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;这次比赛第一题就是很明显的&lt;strong&gt;SROP&lt;/strong&gt;，正好啥也不会，学习了一下&lt;/p&gt;
-&lt;h1 id=&quot;SROP&quot;&gt;&lt;a href=&quot;#SROP&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下</summary>
     
     
     
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
   </entry>
   
@@ -226,7 +177,7 @@
     <link href="http://example.com/2023/08/11/IOFILE-exploit/"/>
     <id>http://example.com/2023/08/11/IOFILE-exploit/</id>
     <published>2023-08-11T08:02:03.000Z</published>
-    <updated>2024-11-23T05:09:07.471Z</updated>
+    <updated>2024-11-23T06:39:57.587Z</updated>
     
     
     <summary type="html">IOFILE阶段性学习成果汇报大会</summary>
@@ -236,7 +187,7 @@
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
   </entry>
   
@@ -245,17 +196,17 @@
     <link href="http://example.com/2023/07/27/house-of-cat/"/>
     <id>http://example.com/2023/07/27/house-of-cat/</id>
     <published>2023-07-27T03:20:34.000Z</published>
-    <updated>2024-11-23T05:09:11.788Z</updated>
+    <updated>2024-11-23T06:39:50.005Z</updated>
     
     
-    <summary type="html">mio~</summary>
+    <summary type="html">讲课最后一天的题，水水</summary>
     
     
     
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="wp" scheme="http://example.com/tags/wp/"/>
     
@@ -266,26 +217,17 @@
     <link href="http://example.com/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/"/>
     <id>http://example.com/2023/07/27/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/</id>
     <published>2023-07-27T03:17:56.000Z</published>
-    <updated>2024-11-23T05:09:27.809Z</updated>
+    <updated>2024-11-23T06:39:16.925Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;阴间堆风水&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;逆向&quot;&gt;&lt;a href=&quot;#逆向&quot; class=&quot;headerlink&quot; title=&quot;逆向&quot;&gt;&lt;/a&gt;逆向&lt;/h2&gt;&lt;h3 id=&quot;修复switch&quot;&gt;&lt;a</summary>
-        
-      
+    <summary type="html">阴间堆风水</summary>
     
     
     
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="wp" scheme="http://example.com/tags/wp/"/>
     
@@ -296,28 +238,17 @@
     <link href="http://example.com/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/"/>
     <id>http://example.com/2023/07/27/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0/</id>
     <published>2023-07-27T03:12:57.000Z</published>
-    <updated>2024-11-23T05:09:09.477Z</updated>
+    <updated>2024-11-23T06:39:53.214Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;讲水课，恰大米&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;沙箱开启，考虑orw&lt;/p&gt;
-&lt;p&gt;保护全开&lt;/p&gt;
-&lt;h2 id=&quot;VM分析&quot;&gt;&lt;a href=&quot;#VM分析&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">讲水课，恰大米</summary>
     
     
     
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="wp" scheme="http://example.com/tags/wp/"/>
     
@@ -328,7 +259,7 @@
     <link href="http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"/>
     <id>http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/</id>
     <published>2023-06-12T11:14:12.000Z</published>
-    <updated>2024-11-23T05:09:21.034Z</updated>
+    <updated>2024-11-23T06:39:38.478Z</updated>
     
     
     <summary type="html">IDA你真该死啊</summary>
@@ -338,7 +269,7 @@
     <category term="misc" scheme="http://example.com/categories/misc/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="awd" scheme="http://example.com/tags/awd/"/>
     
@@ -349,7 +280,7 @@
     <link href="http://example.com/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/"/>
     <id>http://example.com/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/</id>
     <published>2023-05-29T15:26:54.000Z</published>
-    <updated>2024-11-23T05:09:05.288Z</updated>
+    <updated>2024-11-23T06:40:03.270Z</updated>
     
     
     <summary type="html">什么时候出个签到题方向啊</summary>
@@ -359,7 +290,7 @@
     <category term="CS" scheme="http://example.com/categories/CS/"/>
     
     
-    <category term="PWN" scheme="http://example.com/tags/PWN/"/>
+    <category term="pwn" scheme="http://example.com/tags/pwn/"/>
     
     <category term="wp" scheme="http://example.com/tags/wp/"/>
     

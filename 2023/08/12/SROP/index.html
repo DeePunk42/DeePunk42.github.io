@@ -47,6 +47,8 @@
       
       <li><a href="/archives">archives</a></li>
       
+      <li><a href="/tags">tags</a></li>
+      
       <li><a href="/about">about</a></li>
       
     </ul>
@@ -60,13 +62,15 @@
     <div class="date">2023 August 12th</div>
     <div class="tags">
       
-      <div class="tag-item">PWN</div>
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
       
     </div>
   </div>
   
 
-  <main class="post-content"><p>这次比赛第一题就是很明显的<strong>SROP</strong>，正好啥也不会，学习了一下</p>
+  <main class="post-content"><blockquote>
+<p>这次比赛第一题就是很明显的<strong>SROP</strong>，正好啥也不会，学习了一下</p>
+</blockquote>
 <h1 id="SROP"><a href="#SROP" class="headerlink" title="SROP"></a>SROP</h1><p><strong>SROP</strong>全称为<strong>Sigreturn Oriented Programming</strong>，其攻击核心为通过伪造一个<strong>Signal Frame</strong>（以下简称<strong>sigFrame</strong>）在栈上，同时触发<strong>sigreturn</strong>系统调用，让内核为我们恢复一个sigFrame所描述的进程，如一个shell、一个wrtie系统调用打印栈地址等，同时通过对sigFrame中rsp和rip的修改，连接多个sigFrame，可通过多次触发sigreturn系统调用，依次恢复多个sigFrame，实现不同的功能，构成SROP攻击。一个sigFrame可理解为一个进程被挂起时，用于保存进程的数据结构，当进程恢复时，通过触发sigreturn来恢复sigFrame，从而恢复一个进程。</p>
 <p>以上内容是抄的，说白了就是：进程受到一个signal进入中断，内核会保存上下文（寄存器状态之类的，这个上下文存在<strong>sigFrame</strong>中），随后进入用户态执行处理函数，处理完最后又进入内核态恢复上下文</p>
 <p><img src="/../img/SROP.assets/image-20230812205434238.png" alt="image-20230812205434238"></p>
