@@ -29,9 +29,9 @@
     
     
     
-    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
-    
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
+    
+    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
     
     <category term="rpc" scheme="http://deepunk.icu/tags/rpc/"/>
     
@@ -84,7 +84,7 @@
     <link href="http://deepunk.icu/2023-%E5%9C%A8%E9%80%83%E7%A6%BB%E4%B9%8B%E5%90%8E/"/>
     <id>http://deepunk.icu/2023-%E5%9C%A8%E9%80%83%E7%A6%BB%E4%B9%8B%E5%90%8E/</id>
     <published>2023-12-31T16:00:00.000Z</published>
-    <updated>2024-11-23T09:27:22.437Z</updated>
+    <updated>2024-11-23T15:54:34.479Z</updated>
     
     
     <summary type="html">发点牢骚</summary>
@@ -145,7 +145,7 @@
     <link href="http://deepunk.icu/%E6%91%B8/"/>
     <id>http://deepunk.icu/%E6%91%B8/</id>
     <published>2023-08-27T08:30:57.000Z</published>
-    <updated>2024-11-23T09:27:22.439Z</updated>
+    <updated>2024-11-23T15:54:49.476Z</updated>
     
     
     <summary type="html">摸摸</summary>
@@ -164,7 +164,7 @@
     <link href="http://deepunk.icu/SROP/"/>
     <id>http://deepunk.icu/SROP/</id>
     <published>2023-08-12T12:45:49.000Z</published>
-    <updated>2024-11-23T13:24:41.041Z</updated>
+    <updated>2024-11-23T15:54:12.121Z</updated>
     
     
     <summary type="html">这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下</summary>
@@ -175,6 +175,8 @@
     
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
+    
+    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
     
     <category term="srop" scheme="http://deepunk.icu/tags/srop/"/>
     
