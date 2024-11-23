@@ -180,14 +180,21 @@
   </url>
   
   <url>
-    <loc>http://deepunk.icu/tags/windows/</loc>
+    <loc>http://deepunk.icu/tags/pwn/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://deepunk.icu/tags/pwn/</loc>
+    <loc>http://deepunk.icu/tags/wp/</loc>
+    <lastmod>2024-11-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://deepunk.icu/tags/windows/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -202,13 +209,6 @@
   
   <url>
     <loc>http://deepunk.icu/tags/cve/</loc>
-    <lastmod>2024-11-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://deepunk.icu/tags/wp/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

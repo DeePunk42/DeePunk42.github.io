@@ -29,9 +29,9 @@
     
     
     
-    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
-    
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
+    
+    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
     
     <category term="rpc" scheme="http://deepunk.icu/tags/rpc/"/>
     
