@@ -4,6 +4,7 @@ date: 2023-08-12 20:45:49
 tags:
   - pwn
   - srop
+  - wp
 categories:
   - CS
 excerpt: 这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下
