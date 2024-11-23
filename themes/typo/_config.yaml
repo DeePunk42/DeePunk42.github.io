@@ -8,3 +8,12 @@ menu:
   about: /about
 
 copyright: 2021 DeePunk
+
+gitalk:
+  enable: true #是否开启
+  githubID: DeePunk42 #你的Github用户名
+  repo: DeePunk42.github.io #Github仓库名称
+  ClientID: Ov23liOeINaDo82m26KW #创建的Application ClientID
+  ClientSecret: 40d0c404806ec19c706fad7b692aba1c3a281818 #创建的Application ClientSecret
+  adminUser: DeePunk # 评论初始化账户(GitHub ID)
+  distractionFreeMode: true # 是否开启分心自由模式 也就是免打扰

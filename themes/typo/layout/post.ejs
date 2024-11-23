@@ -13,6 +13,9 @@
 
   <main class="post-content"><%- page.content %></main>
 
+  <% if(theme.gitalk.enable){ %>
+    <%- partial('_partial/gitalk') %>
+    <% } %>
 </article>
 
 <%- js('js/highlight.js') %>
