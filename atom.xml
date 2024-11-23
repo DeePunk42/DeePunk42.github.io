@@ -6,7 +6,7 @@
   <link href="http://deepunk.icu/atom.xml" rel="self"/>
   
   <link href="http://deepunk.icu/"/>
-  <updated>2024-11-23T13:28:25.584Z</updated>
+  <updated>2024-11-23T14:06:05.866Z</updated>
   <id>http://deepunk.icu/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://deepunk.icu/2024/11/23/CVE-2024-38077%20(madlicense)%20reproduction/"/>
     <id>http://deepunk.icu/2024/11/23/CVE-2024-38077%20(madlicense)%20reproduction/</id>
     <published>2024-11-22T16:18:46.000Z</published>
-    <updated>2024-11-23T13:28:25.584Z</updated>
+    <updated>2024-11-23T14:06:05.866Z</updated>
     
     
     <summary type="html">Also known as madlicense, a vulnerability on almost every versions of windows server that leads to 0-click RCE</summary>
@@ -218,9 +218,9 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
-    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
-    
     <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
+    
+    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
     
   </entry>
   
@@ -241,9 +241,9 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
-    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
-    
     <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
+    
+    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
     
   </entry>
   
@@ -264,9 +264,9 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
-    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
-    
     <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
+    
+    <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
     
   </entry>
   
