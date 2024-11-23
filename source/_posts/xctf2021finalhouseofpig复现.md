@@ -2,7 +2,7 @@
 title: house of pig xctf2021final复现
 date: 2023-07-27 11:17:56
 tags:
-  - pwn
+  - pwnable
   - wp
 categories:
   - CS
