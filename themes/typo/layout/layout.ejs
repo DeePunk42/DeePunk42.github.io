@@ -2,13 +2,20 @@
 <html>
 <%- partial('_partial/head') %>
 
-<body>
-  <%- partial('_partial/header') %>
-  <main class="main">
-    <%- body %>
-  </main>
-  <%- partial('_partial/footer') %>
-  <%- js('js/theme.js') %>
-</body>
+  <body>
+    <%- partial('_partial/header') %>
+      <% if (page.title=='404' ) { %>
+        <main class="main">
+        <%- partial('404') %>
+          <%- body %>
+        </main>
+          <% } else { %>
+            <main class="main">
+              <%- body %>
+            </main>
+            <% } %>
+              <%- partial('_partial/footer') %>
+                <%- js('js/theme.js') %>
+  </body>
 
 </html>
