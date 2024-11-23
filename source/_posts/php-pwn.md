@@ -2,8 +2,8 @@
 title: A Brief Introduction to PHP Heap Exploitation
 date: 2023-09-14 19:59:41
 tags:
-  - pwnable
-  - php_pwn
+  - pwn
+  - php
   - wp
 categories:
   - CS

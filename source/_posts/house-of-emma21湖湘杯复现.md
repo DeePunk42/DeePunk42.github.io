@@ -2,7 +2,7 @@
 title: house of emma 21湖湘杯复现
 date: 2023-07-27 11:12:57
 tags:
-  - pwnable
+  - pwn
   - wp
 categories:
   - CS

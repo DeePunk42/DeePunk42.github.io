@@ -2,7 +2,7 @@
 title: Tricks of Shellcode
 date: 2023-08-29 21:56:08
 tags:
-  - pwnable
+  - pwn
 categories:
   - CS
 excerpt: 最近打了挺多比赛，碰到一些比较有意思的题和方法
