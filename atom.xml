@@ -29,9 +29,9 @@
     
     
     
-    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
-    
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
+    
+    <category term="windows" scheme="http://deepunk.icu/tags/windows/"/>
     
     <category term="rpc" scheme="http://deepunk.icu/tags/rpc/"/>
     
@@ -218,9 +218,9 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
-    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
-    
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
+    
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
     
   </entry>
   
@@ -241,9 +241,9 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
-    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
-    
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
+    
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
     
   </entry>
   
@@ -264,9 +264,9 @@
     
     <category term="pwn" scheme="http://deepunk.icu/tags/pwn/"/>
     
-    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
-    
     <category term="wp" scheme="http://deepunk.icu/tags/wp/"/>
+    
+    <category term="iofile" scheme="http://deepunk.icu/tags/iofile/"/>
     
   </entry>
   
