@@ -16,7 +16,7 @@
             
             <tag> windows </tag>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> rpc </tag>
             
@@ -39,7 +39,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
         </tags>
       
@@ -58,7 +58,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> wp </tag>
             
@@ -104,11 +104,11 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> wp </tag>
             
-            <tag> php_pwn </tag>
+            <tag> php </tag>
             
         </tags>
       
@@ -133,7 +133,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
         </tags>
       
@@ -183,7 +183,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
         </tags>
       
@@ -208,7 +208,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
         </tags>
       
@@ -233,7 +233,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> wp </tag>
             
@@ -260,7 +260,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> wp </tag>
             
@@ -287,7 +287,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> wp </tag>
             
@@ -314,7 +314,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> awd </tag>
             
@@ -341,7 +341,7 @@
       
         <tags>
             
-            <tag> pwnable </tag>
+            <tag> pwn </tag>
             
             <tag> wp </tag>
             

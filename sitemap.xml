@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/about/index.html</loc>
+    <loc>http://example.com/categories/index.html</loc>
     
     <lastmod>2024-11-23</lastmod>
     
@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/categories/index.html</loc>
+    <loc>http://example.com/about/index.html</loc>
     
     <lastmod>2024-11-23</lastmod>
     
@@ -164,13 +164,6 @@
 
   
   <url>
-    <loc>http://example.com/tags/%E6%91%B8/</loc>
-    <lastmod>2024-11-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/windows/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -178,7 +171,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/pwnable/</loc>
+    <loc>http://example.com/tags/pwn/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -199,6 +192,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/%E6%91%B8/</loc>
+    <lastmod>2024-11-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/wp/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -213,7 +213,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/php-pwn/</loc>
+    <loc>http://example.com/tags/php/</loc>
     <lastmod>2024-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
