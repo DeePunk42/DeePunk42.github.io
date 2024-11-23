@@ -278,3 +278,13 @@ a {
   border-bottom: 2px solid var(--font-color);
   cursor: not-allowed;
 }
+
+.two-column-layout {
+  display: flex;
+  justify-content: space-between;
+}
+
+.two-column-layout > * {
+  flex: 1;
+  margin: 0 10px;
+}
