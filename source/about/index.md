@@ -12,5 +12,5 @@ Intern Researcher at [@DARKNAVY](https://www.darknavy.org/zh/)
 ------
 
 
-RSS: deepunk.icu/atom.xml
 Mail: deepunk422@gmail.com
+[RSS](deepunk.icu/atom.xml)
