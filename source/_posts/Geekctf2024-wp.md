@@ -1,5 +1,5 @@
 ---
-title: Geekctf2024-wp
+title: Geekctf2024 wp
 date: 2024-04-14 00:00:00
 tags:
   - pwn

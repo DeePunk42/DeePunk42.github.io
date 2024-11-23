@@ -1,5 +1,5 @@
 ---
-title: ciscn2023半决赛游记
+title: ciscn2023 半决赛游记
 date: 2023-06-12 19:14:12
 tags:
   - awd

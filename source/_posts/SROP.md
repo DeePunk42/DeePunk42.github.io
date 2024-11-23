@@ -1,5 +1,5 @@
 ---
-title: SROP初见杀-NepCTF2023
+title: SROP初见杀 NepCTF2023
 date: 2023-08-12 20:45:49
 tags:
   - pwn

