@@ -4,6 +4,7 @@ date: 2024-04-14 00:00:00
 tags:
   - pwn
   - wp
+  - dl
 excerpt: 出题之余想打打比赛复健一下，没想到题目质量出奇的高，最后pwn方向第二
 ---
 # WriteUp for GeekCTF 2024
