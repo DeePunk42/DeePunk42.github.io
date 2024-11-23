@@ -2,11 +2,11 @@
 title: house of cat强网杯复现
 date: 2023-07-27 11:20:34
 tags:
-  - PWN
+  - pwn
   - wp
 categories:
   - CS
-excerpt: mio~
+excerpt: 讲课最后一天的题，水水
 ---
 
 > 最后一天的题，水水

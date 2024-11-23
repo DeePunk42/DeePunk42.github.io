@@ -2,11 +2,12 @@
 title: A Brief Introduction to PHP Heap Exploitation
 date: 2023-09-14 19:59:41
 tags:
-  - PWN
-  - PHP
+  - pwn
+  - php
   - wp
 categories:
   - CS
+excerpt: It`s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it spent me a long time to figure out how ZendMM actually works.
 ---
 
 It`s my first time encountering this fancy pwn item, known as Web Pwn, on WACON2023. I have few experience on php coding, so it spent me a long time to figure out how ZendMM actually works.

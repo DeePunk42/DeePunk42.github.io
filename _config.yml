@@ -121,3 +121,9 @@ feed:
 
 sitemap:
   path: sitemap.xml
+
+tag_cloud:
+    textColor: '#d1d5da'
+    textHeight: 18
+    outlineColor: '#E2E1D1'
+    maxSpeed: 0.1 

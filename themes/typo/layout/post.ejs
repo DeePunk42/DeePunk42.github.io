@@ -5,7 +5,7 @@
     <div class="date"><%- date(page.date, "YYYY MMMM Do") %></div>
     <div class="tags">
       <% page.tags.map(tag => tag.name).forEach(function (tag) { %>
-      <div class="tag-item"><%- tag %></div>
+      <a class="tag-item" href="/tags/<%- tag %>" style="color: #d1d5da;"><%- tag %></a>
       <% }) %>
     </div>
   </div>

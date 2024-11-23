@@ -2,10 +2,11 @@
 title: house of emma 21湖湘杯复现
 date: 2023-07-27 11:12:57
 tags:
-  - PWN
+  - pwn
   - wp
 categories:
   - CS
+excerpt: 讲水课，恰大米
 ---
 
 > 讲水课，恰大米

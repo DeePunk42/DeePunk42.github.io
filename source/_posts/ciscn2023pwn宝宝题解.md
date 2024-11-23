@@ -2,7 +2,7 @@
 title: ciscn2023pwn宝宝题解
 date: 2023-05-29 23:26:54
 tags:
-  - PWN
+  - pwn
   - wp
 categories:
   - CS

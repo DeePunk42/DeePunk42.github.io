@@ -4,6 +4,7 @@ icon: /icon.svg
 
 menu:
   archives: /archives
+  tags: /tags
   about: /about
 
 copyright: 2021 deepunk

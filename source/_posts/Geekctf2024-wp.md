@@ -1,15 +1,13 @@
 ---
 title: Geekctf2024-wp
-date: 2024-04-30 00:00:00
+date: 2024-04-14 00:00:00
 tags:
-  - PWN
+  - pwn
   - wp
+excerpt: 出题之余想打打比赛复健一下，没想到题目质量出奇的高，最后pwn方向第二
 ---
 # WriteUp for GeekCTF 2024
 
-DeePunk
-
-2024-04-14 (Updated: 2024-04-30)
 
 
 出题之余想打打比赛复健一下，没想到题目质量出奇的高，最后pwn方向第二
