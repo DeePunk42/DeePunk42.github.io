@@ -9,7 +9,7 @@ description: 'un jour je serai de retour près de toi'
 keywords: "blog, binary security, cyber security, technology, programming, linux, python, c, pwn, windows, hacking"
 author: 'DeePunk'
 language: "zh-CN"
-timezone: 'UTC+8'
+timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
