@@ -110,15 +110,7 @@ deploy:
 feed:
   type: atom
   path: atom.xml
-  limit: 20
-  hub:
-  content:
-  content_limit: 
-  content_limit_delim: ' '
-  order_by: -date
-  icon: icon.png
-  autodiscovery: true
-  template:
+  limit: false
 
 sitemap:
   path: sitemap.xml
