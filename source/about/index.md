@@ -6,7 +6,7 @@
 Intern Researcher at [@DARKNAVY](https://www.darknavy.org/zh/)
 
 
-# Friends ❤️
+# Friends
 
 [Shino](https://www.sh1no.icu/)
 [Yaossg](https://yaossg.com/site/)
