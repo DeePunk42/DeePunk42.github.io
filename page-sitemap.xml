@@ -10,6 +10,15 @@
     
     
     <url>
+        <loc>http://deepunk.icu/about/</loc>
+        <lastmod>2024-12-08T06:34:14.590Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    
+    
+    <url>
         <loc>http://deepunk.icu/404.html</loc>
         <lastmod>2024-11-23T10:36:13.458Z</lastmod>
         <changefreq>weekly</changefreq>
