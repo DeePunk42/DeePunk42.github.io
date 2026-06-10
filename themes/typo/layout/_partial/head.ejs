@@ -1,0 +1,41 @@
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>
+    <% if (page.title){ %>
+    <%= page.title %> 丨
+    <% } %>
+
+    <%= theme.title || config.title %>
+  </title>
+
+  <% if (theme.favicon){ %>
+  <%- favicon_tag(theme.favicon) %>
+  <% } %>
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <% if (is_post()){ %>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <script defer src="<%- url_for('js/highlight.min.js') %>"></script>
+  <% } %>
+
+  <%- css('css/root.css') %>
+  <%- css('css/style.css') %>
+  <%- css('css/post.css') %>
+</head>
