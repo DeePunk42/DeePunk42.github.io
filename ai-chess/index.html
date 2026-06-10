@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>
+    
+    版本前瞻：从象棋引擎到代码引擎 丨
+    
+
+    K&#39;s Map | DeePunk&#39;s Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <script defer src="/js/highlight.min.js"></script>
+  
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="K's Map | DeePunk's Blog" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">K&#39;s Map | DeePunk&#39;s Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">版本前瞻：从象棋引擎到代码引擎</div>
+  <div class="post-meta">
+    <div class="date">2026 六月 9日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/chess" style="color: #d1d5da;">chess</a>
+      
+      <a class="tag-item" href="/tags/AI" style="color: #d1d5da;">AI</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><p>最近沉迷于国际象棋。自 1996 年 Kasparov 败给 Deep Blue<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov">^1</a> 以来，象棋引擎<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Chess_engine">^2</a>的地位已经无可撼动。经过多年发展，棋盘上人机的生态关系，也许能为我们今天的困境提供一些前瞻性的启发。</p>
+<h1 id="游戏继续？"><a href="#游戏继续？" class="headerlink" title="游戏继续？"></a>游戏继续？</h1><p>人类技术的发展，一面在拓展人类原有能力的边界，一面在将人类的劳动外包。<br>我们把体力劳动外包给牛马，把技工劳动外包给机械，把计算劳动外包给电脑。智力劳动，也正在被我们外包给 AI。</p>
+<p>机器的能力边界越来越广，人类的「护城河」越来越窄。我们面临一个问题：当机器能把一件事做得比人类更快更好，人类还有什么理由做下去？</p>
+<p>这个问题预设了一种立场，即人类的劳动是「被需要的」，是为了某个外在目的而存在的。人类不过是工具调用栈的一环，自然会被更加先进的工具取代。</p>
+<p>这个视角从反面解释为什么象棋依然繁荣。跳脱出「工具调用栈」的框架，人类仍会主动选择拼豆（而不是用 SMT 贴片机），写诗、做开源。也许在 AI 接管人类工具性部分的那一天，人类终于能为了自身去创造。</p>
+<h1 id="义体还是轮椅？"><a href="#义体还是轮椅？" class="headerlink" title="义体还是轮椅？"></a>义体还是轮椅？</h1><p>快棋大师 Hikaru 在采访中提到了很有趣的一点：他与 Magnus 这一代棋手在没有引擎的环境下成长。在他看来，这天然地训练出了更多「人类直觉」，而这是新生代棋手们可能不具有的<a target="_blank" rel="noopener" href="https://youtu.be/oJNvxYEcVAY">^3</a>。</p>
+<p>这一点呼应了在许多答案唾手可得的今天，人类学习上的困境：动手算答案，似乎变得小众了。但如果没有动手算过，我们真的可以说自己学会了吗？</p>
+<p>我相信答案是否定的。除了需要应对目前AI能力有限、产生幻觉的情况，更重要的是，反复在不同情境中动手所形成的能力，更容易泛化到新的问题中<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Generation_effect">^4</a>。</p>
+<p>象棋大师们通常保留人工复盘棋局的习惯，往往是在某个不确定的点上，为了印证自己的某种判断，才交给引擎进行分析<a target="_blank" rel="noopener" href="https://youtu.be/oJNvxYEcVAY">^3</a>。抛给 AI 的问题，是思考后给出的。以人类做题家的角度来看，AI 在这里扮演着习题册最后一页参考答案的角色。</p>
+<p>尽管动手解决问题存在长期的优势，这在 AI 时代却有着高昂的机会成本。问题的答案变得太廉价，以至于思考变得昂贵了。如果对着对话框许愿就能轻松解决问题，那亲自动手做一遍更像是某种长期主义的童话。或许在未来，学习也会成为奢侈品。</p>
+</main>
+
+  
+    <div id="gitalk-container"></div>
+
+<script>
+(function () {
+  if (!true) return;
+
+  var target = document.getElementById('gitalk-container');
+  var loaded = false;
+
+  function loadGitalk() {
+    if (loaded) return;
+    loaded = true;
+
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css';
+    document.head.appendChild(link);
+
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js';
+    script.onload = function () {
+      var gitalk = new Gitalk({
+        clientID: 'Ov23liOeINaDo82m26KW',
+        clientSecret: '40d0c404806ec19c706fad7b692aba1c3a281818',
+        repo: 'DeePunk42.github.io',
+        owner: 'DeePunk42',
+        admin: ['DeePunk42'],
+        id: 'Tue Jun 09 2026 22:25:16 GMT+0800',
+        distractionFreeMode: true
+      });
+      gitalk.render('gitalk-container');
+    };
+    document.head.appendChild(script);
+  }
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        loadGitalk();
+        io.disconnect();
+      }
+    }, { rootMargin: '300px' });
+    io.observe(target);
+  } else {
+    loadGitalk();
+  }
+})();
+</script>
+
+    
+</article>
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+
+<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>
