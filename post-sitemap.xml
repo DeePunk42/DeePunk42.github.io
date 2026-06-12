@@ -9,24 +9,16 @@
 
 
     <url>
+        <loc>http://deepunk.icu/ai-chess/</loc>
+        <lastmod>2026-06-12T14:06:47.234Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://deepunk.icu/zero-parades/</loc>
         <lastmod>2026-06-12T07:24:12.785Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://deepunk.icu/ai-chess/</loc>
-        <lastmod>2026-06-09T15:23:16.510Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://deepunk.icu/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/</loc>
-        <lastmod>2026-05-27T12:52:23.539Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -42,6 +34,14 @@
 
     <url>
         <loc>http://deepunk.icu/php-pwn/</loc>
+        <lastmod>2026-05-27T12:52:23.539Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://deepunk.icu/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0/</loc>
         <lastmod>2026-05-27T12:52:23.539Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -89,7 +89,7 @@
     </url>
 
     <url>
-        <loc>http://deepunk.icu/house-of-cat/</loc>
+        <loc>http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/</loc>
         <lastmod>2026-05-27T12:52:23.538Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -97,7 +97,7 @@
     </url>
 
     <url>
-        <loc>http://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/</loc>
+        <loc>http://deepunk.icu/house-of-cat/</loc>
         <lastmod>2026-05-27T12:52:23.538Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
