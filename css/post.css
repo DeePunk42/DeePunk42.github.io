@@ -506,7 +506,7 @@ pre code::-webkit-scrollbar-track {
     font-style: normal;
 }
 
-/* 宽屏：浮到正文右侧的留白区，并允许 .main 不裁剪 */
+/* 宽屏：sidenote 浮到右侧；隐藏底部 Ref 列表 */
 @media (min-width: 1200px) {
     .main {
         overflow-x: visible;
@@ -524,20 +524,49 @@ pre code::-webkit-scrollbar-track {
         text-align: left;
         overflow-wrap: anywhere;
     }
+
+    .post-content .footnotes-list {
+        display: none;
+    }
 }
 
-/* 窄屏：折叠成块状嵌入正文 */
+/* 窄屏：隐藏 sidenote，显示底部 Ref 列表 */
 @media (max-width: 1199px) {
     .post-content .sidenote {
+        display: none;
+    }
+
+    .post-content .footnotes-list {
         display: block;
-        margin: 0.75em 0;
-        padding: 0.5em 0.75em;
-        border-left: 3px solid var(--color-link);
-        background: var(--color-list-item-odd);
-        font-size: 0.85em;
-        line-height: 1.5;
-        color: var(--font-color-extra);
-        font-style: italic;
+        margin-top: 3em;
+        padding-top: 1em;
+        border-top: 1px dashed var(--color-hr);
+    }
+
+    .post-content .footnotes-list ol {
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style: none;
+    }
+
+    .post-content .footnotes-list li {
+        margin: 0.4em 0;
+        font-size: 0.9em;
+        line-height: 1.6;
+        color: var(--font-color-secondary);
         overflow-wrap: anywhere;
+    }
+
+    .post-content .footnotes-list .footnote-num {
+        color: var(--color-link);
+        font-weight: 600;
+        margin-right: 0.4em;
+    }
+
+    .post-content .footnotes-list li:target {
+        background: var(--color-list-item-odd);
+        padding: 0.2em 0.4em;
+        margin: 0.4em -0.4em;
+        border-radius: 3px;
     }
 }
