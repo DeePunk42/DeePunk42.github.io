@@ -1,8 +1,8 @@
 hexo.extend.filter.register('after_render:html', function (html) {
-  // 1. 抓取段落形式的脚注定义：<p>[^N]: ...</p>
-  //    （markdown 里写 [^N]: [text](url) 或 [^N]: 任意 markdown，
-  //     marked 不识别为引用定义时会留成普通段落）
   var fnMap = {};
+  var fnOrder = [];
+
+  // 1. 抓取段落形式的脚注定义：<p>[^N]: ...</p>
   html = html.replace(
     /<p>\[\^(\d+)\]:\s*([\s\S]*?)<\/p>\s*/g,
     function (match, num, content) {
@@ -12,7 +12,6 @@ hexo.extend.filter.register('after_render:html', function (html) {
   );
 
   // 2. 兼容旧写法：[^N]: URL 或 [^N]: URL "title"
-  //    被 marked 识别为引用链接定义时，正文 [^N] 会渲染成 <a>...^N</a>
   html = html.replace(
     /<a([^>]*?)>\^(\d+)<\/a>/g,
     function (match, attrs, num) {
@@ -22,10 +21,11 @@ hexo.extend.filter.register('after_render:html', function (html) {
 
       var url = hrefMatch[1];
       var content = titleMatch ? url + ' "' + titleMatch[1] + '"' : url;
+      fnMap[num] = content;
+      if (fnOrder.indexOf(num) === -1) fnOrder.push(num);
 
       var sup =
-        '<sup class="sidenote-ref"><a href="' + url +
-        '" target="_blank" rel="noopener">' + num + '</a></sup>';
+        '<sup class="sidenote-ref"><a href="#fn-' + num + '">' + num + '</a></sup>';
       var sidenote =
         '<span class="sidenote">' +
         '<span class="sidenote-num">' + num + '.</span> ' +
@@ -35,19 +35,16 @@ hexo.extend.filter.register('after_render:html', function (html) {
     }
   );
 
-  // 3. 替换正文里残留的字面 [^N]，用 fnMap 里抓到的脚注内容生成 sidenote
+  // 3. 替换字面 [^N]，用 fnMap 里抓到的内容生成 sidenote
   html = html.replace(
     /\[\^(\d+)\]/g,
     function (match, num) {
       var content = fnMap[num];
       if (!content) return match;
+      if (fnOrder.indexOf(num) === -1) fnOrder.push(num);
 
-      // 若脚注内容里有链接，让上标也指向第一个 URL
-      var firstUrl = (content.match(/href="([^"]+)"/) || [])[1];
-      var sup = firstUrl
-        ? '<sup class="sidenote-ref"><a href="' + firstUrl +
-          '" target="_blank" rel="noopener">' + num + '</a></sup>'
-        : '<sup class="sidenote-ref">' + num + '</sup>';
+      var sup =
+        '<sup class="sidenote-ref"><a href="#fn-' + num + '">' + num + '</a></sup>';
       var sidenote =
         '<span class="sidenote">' +
         '<span class="sidenote-num">' + num + '.</span> ' +
@@ -56,6 +53,24 @@ hexo.extend.filter.register('after_render:html', function (html) {
       return sup + sidenote;
     }
   );
+
+  // 4. 在 .post-content 末尾插入 Ref 章节（窄屏会显示，宽屏 CSS 隐藏）
+  if (fnOrder.length > 0) {
+    var refHtml = '<section class="footnotes-list"><h1>Ref</h1><ol>';
+    fnOrder.forEach(function (num) {
+      refHtml +=
+        '<li id="fn-' + num + '">' +
+        '<span class="footnote-num">' + num + '.</span> ' +
+        fnMap[num] +
+        '</li>';
+    });
+    refHtml += '</ol></section>';
+
+    html = html.replace(
+      /(<main class="post-content">[\s\S]*?)(<\/main>)/,
+      '$1' + refHtml + '$2'
+    );
+  }
 
   return html;
 });
