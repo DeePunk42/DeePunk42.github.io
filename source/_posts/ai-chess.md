@@ -33,7 +33,9 @@ excerpt: 一些下棋时的胡思乱想
 
 
 
-[^1]: https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov
-[^2]: https://en.wikipedia.org/wiki/Chess_engine
-[^3]: https://youtu.be/oJNvxYEcVAY
-[^4]: https://en.wikipedia.org/wiki/Generation_effect
+[^1]: [Deep Blue versus Garry Kasparov](https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov)
+
+[^2]: [Chess engine](https://en.wikipedia.org/wiki/Chess_engine) 截止写作日期，世界最强象棋引擎 Stockfish 18 的 elo 等级分为 3651，而最强人类棋手 Magnus Carlsen 等级分约 2800。
+
+[^3]: [Hikaru Nakamura: Chess, Magnus, Kasparov, and the Psychology of Greatness | Lex Fridman Podcast](https://youtu.be/oJNvxYEcVAY)
+[^4]: [Generation effect](https://en.wikipedia.org/wiki/Generation_effect)

@@ -1,3 +1,18 @@
+// 0. 渲染前：
+//    a) 转义 [^N]: 定义行首的方括号，避免 marked 把它当成
+//       reference link definition（脚注内容以 [text](url) 开头时会被吞掉）
+//    b) 在每个 [^N]: 前插入一个空行，确保每条定义渲染成独立的 <p>，
+//       否则相邻定义会被合并成单个 <p>...<br>...</p>，导致 after_render
+//       的非贪婪正则把后续脚注的内容也吞进首条脚注
+hexo.extend.filter.register('before_post_render', function (data) {
+  if (!data || typeof data.content !== 'string') return data;
+  data.content = data.content.replace(
+    /^[ \t]*\[\^(\d+)\]:/gm,
+    '\n\\[\\^$1\\]:'
+  );
+  return data;
+});
+
 hexo.extend.filter.register('after_render:html', function (html) {
   var fnMap = {};
   var fnOrder = [];
@@ -36,6 +51,8 @@ hexo.extend.filter.register('after_render:html', function (html) {
   );
 
   // 3. 替换字面 [^N]，用 fnMap 里抓到的内容生成 sidenote
+  //    同一脚注重复出现时，只在首次展开内容，后续仅留 sup 跳转链接
+  var fnSeen = {};
   html = html.replace(
     /\[\^(\d+)\]/g,
     function (match, num) {
@@ -45,6 +62,9 @@ hexo.extend.filter.register('after_render:html', function (html) {
 
       var sup =
         '<sup class="sidenote-ref"><a href="#fn-' + num + '">' + num + '</a></sup>';
+      if (fnSeen[num]) return sup;
+      fnSeen[num] = true;
+
       var sidenote =
         '<span class="sidenote">' +
         '<span class="sidenote-num">' + num + '.</span> ' +

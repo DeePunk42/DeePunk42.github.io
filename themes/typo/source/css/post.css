@@ -485,6 +485,53 @@ pre code::-webkit-scrollbar-track {
     line-height: 1.5;
 }
 
+/* 可点击放大的图片提示 */
+.post-content img.zoomable {
+    cursor: zoom-in;
+}
+
+/* 图片放大遮罩层 */
+.image-zoom-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+    cursor: zoom-out;
+    padding: 5vh 5vw;
+}
+
+.image-zoom-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-zoom-target {
+    max-width: 80vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    transform: scale(0.96);
+    transition: transform 0.2s ease;
+}
+
+.image-zoom-overlay.open .image-zoom-target {
+    transform: scale(1);
+}
+
+body.image-zoom-active {
+    overflow: hidden;
+}
+
 /* 脚注上标 */
 .post-content sup.sidenote-ref {
     font-size: 0.75em;
