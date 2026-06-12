@@ -465,3 +465,79 @@ pre code::-webkit-scrollbar-thumb {
 pre code::-webkit-scrollbar-track {
     background-color: transparent;
 }
+
+.post-content figure {
+    margin: 1.5em auto;
+    text-align: center;
+}
+
+.post-content figure img {
+    margin: 0 auto;
+    display: block;
+}
+
+.post-content figcaption {
+    margin-top: 0.6em;
+    font-size: 0.85em;
+    color: var(--font-color-extra);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* 脚注上标 */
+.post-content sup.sidenote-ref {
+    font-size: 0.75em;
+    vertical-align: super;
+    line-height: 0;
+    margin: 0 0.1em;
+}
+
+.post-content sup.sidenote-ref a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+/* sidenote 编号样式 */
+.post-content .sidenote .sidenote-num {
+    color: var(--color-link);
+    font-weight: 600;
+    margin-right: 0.3em;
+    font-style: normal;
+}
+
+/* 宽屏：浮到正文右侧的留白区，并允许 .main 不裁剪 */
+@media (min-width: 1200px) {
+    .main {
+        overflow-x: visible;
+    }
+
+    .post-content .sidenote {
+        float: right;
+        clear: right;
+        width: 220px;
+        margin: 0 -240px 1em 20px;
+        font-size: 0.8em;
+        line-height: 1.5;
+        color: var(--font-color-extra);
+        font-style: italic;
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* 窄屏：折叠成块状嵌入正文 */
+@media (max-width: 1199px) {
+    .post-content .sidenote {
+        display: block;
+        margin: 0.75em 0;
+        padding: 0.5em 0.75em;
+        border-left: 3px solid var(--color-link);
+        background: var(--color-list-item-odd);
+        font-size: 0.85em;
+        line-height: 1.5;
+        color: var(--font-color-extra);
+        font-style: italic;
+        overflow-wrap: anywhere;
+    }
+}
