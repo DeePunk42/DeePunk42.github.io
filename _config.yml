@@ -9,11 +9,11 @@ description: "un jour je serai de retour près de toi"
 keywords: "blog, binary security, cyber security, technology, programming, linux, python, c, pwn, windows, hacking"
 author: "DeePunk"
 language: "zh-CN"
-timezone: ""
+timezone: "Asia/Shanghai"
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://deepunk.icu
+url: https://deepunk.icu
 permalink: :title/
 permalink_defaults:
 pretty_urls:
@@ -113,5 +113,5 @@ feed:
 
 sitemap:
   path: sitemap.xml
-  tag: false
-  category: false
+  tags: false
+  categories: false

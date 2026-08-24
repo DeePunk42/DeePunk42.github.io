@@ -20,7 +20,7 @@ Security Researcher at [@DARKNAVY](https://www.darknavy.org/zh/)
 # Find me on
 
 [e-mail](mailto:deepunk422@gmail.com)
-[RSS](http://deepunk.icu/atom.xml)
+[RSS](https://deepunk.icu/atom.xml)
 [Github](https://github.com/DeePunk42)
 [Twitter](https://x.com/DeePunk422)
 [Telegram Pub Channel](https://t.me/suckthesingularity)
