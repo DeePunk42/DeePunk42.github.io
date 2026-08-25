@@ -71,9 +71,9 @@
     <div class="date">2026 六月 9日</div>
     <div class="tags">
       
-      <a class="tag-item" href="/tags/chess" style="color: #d1d5da;">chess</a>
-      
       <a class="tag-item" href="/tags/AI" style="color: #d1d5da;">AI</a>
+      
+      <a class="tag-item" href="/tags/chess" style="color: #d1d5da;">chess</a>
       
     </div>
   </div>
@@ -92,7 +92,53 @@
 <section class="footnotes-list"><h1>Ref</h1><ol><li id="fn-1"><span class="footnote-num">1.</span> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov">Deep Blue versus Garry Kasparov</a></li><li id="fn-2"><span class="footnote-num">2.</span> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Chess_engine">Chess engine</a> 截止写作日期，世界最强象棋引擎 Stockfish 18 的 elo 等级分为 3651，而最强人类棋手 Magnus Carlsen 等级分约 2800。</li><li id="fn-3"><span class="footnote-num">3.</span> <a target="_blank" rel="noopener" href="https://youtu.be/oJNvxYEcVAY">Hikaru Nakamura: Chess, Magnus, Kasparov, and the Psychology of Greatness | Lex Fridman Podcast</a></li><li id="fn-4"><span class="footnote-num">4.</span> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Generation_effect">Generation effect</a></li></ol></section></main>
 
   
+    <div id="giscus-container"></div>
+
+<script>
+(function () {
+  var container = document.getElementById('giscus-container');
+  var html = document.documentElement;
+
+  function currentGiscusTheme() {
+    return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  var script = document.createElement('script');
+  script.src = 'https://giscus.app/client.js';
+  script.setAttribute('data-repo', 'DeePunk42/DeePunk42.github.io');
+  script.setAttribute('data-repo-id', 'R_kgDOJkjY4A');
+  script.setAttribute('data-category', 'Announcements');
+  script.setAttribute('data-category-id', 'DIC_kwDOJkjY4M4DEKmV');
+  script.setAttribute('data-mapping', 'pathname');
+  script.setAttribute('data-strict', '0');
+  script.setAttribute('data-reactions-enabled', '1');
+  script.setAttribute('data-emit-metadata', '0');
+  script.setAttribute('data-input-position', 'bottom');
+  script.setAttribute('data-theme', currentGiscusTheme());
+  script.setAttribute('data-lang', 'zh-CN');
+  script.setAttribute('data-loading', 'lazy');
+  script.setAttribute('crossorigin', 'anonymous');
+  script.async = true;
+  container.appendChild(script);
+
+  new MutationObserver(function () {
+    var frame = document.querySelector('iframe.giscus-frame');
+    if (!frame || !frame.contentWindow) return;
+
+    frame.contentWindow.postMessage({
+      giscus: {
+        setConfig: {
+          theme: currentGiscusTheme()
+        }
+      }
+    }, 'https://giscus.app');
+  }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
+
+  
 </article>
+
             </main>
             
               <footer class="footer">
