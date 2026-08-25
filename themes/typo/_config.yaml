@@ -7,15 +7,18 @@ menu:
 
 copyright: 2021 DeePunk
 
-gitalk:
-  # Gitalk 会把 OAuth Client Secret 写入公开的网页源码，因此默认关闭。
-  # 请勿把新的 GitHub OAuth Secret 提交到这个仓库；如需评论，建议改用 Giscus。
-  enable: false
-  githubID: DeePunk42
-  repo: DeePunk42.github.io
-  ClientID: ""
-  ClientSecret: ""
-  adminUser: DeePunk42
-  distractionFreeMode: true
+giscus:
+  enable: true
+  repo: DeePunk42/DeePunk42.github.io
+  repoID: R_kgDOJkjY4A
+  category: Announcements
+  categoryID: DIC_kwDOJkjY4M4DEKmV
+  mapping: pathname
+  strict: 0
+  reactionsEnabled: 1
+  emitMetadata: 0
+  inputPosition: bottom
+  lang: zh-CN
+  loading: lazy
 
 rss: /atom.xml

@@ -97,9 +97,9 @@ git push origin hexo
 
 ## 评论与安全说明
 
-Gitalk 原配置会把 GitHub OAuth Client Secret 写入所有文章的公开 HTML，因此评论功能已默认关闭并清除了仓库中的凭据。请立即在 [GitHub Developer settings](https://github.com/settings/developers) 中撤销或重新生成旧 OAuth App 的 secret；仅从当前文件删除并不能使已经公开的 secret 失效。
+评论功能使用 Giscus，评论内容保存在本仓库的 GitHub Discussions 中。相关参数位于 `themes/typo/_config.yaml`，文章与评论按 URL 路径对应。
 
-如果以后需要评论功能，建议迁移到不要求在网页中放置 OAuth Secret 的 Giscus，不要把新的 secret 写回主题配置。
+旧评论方案使用过公开在网页中的 GitHub OAuth Client Secret。请确认已经在 [GitHub Developer settings](https://github.com/settings/developers) 中撤销旧 secret；仅从当前文件删除并不能使历史上公开的凭据失效。
 
 ## 故障排查
 
