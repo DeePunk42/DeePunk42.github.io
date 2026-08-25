@@ -328,11 +328,16 @@ a {
 }
 
 #giscus-container {
+    flex: 0 0 100%;
+    min-width: 0;
     padding-top: 60px;
     width: 100%;
-    max-width: 700px;
-    margin: auto;
     min-height: 20px;
+}
+
+#giscus-container .giscus,
+#giscus-container .giscus-frame {
+    width: 100%;
 }
 
 /* ===== 左侧 TOC ===== */
