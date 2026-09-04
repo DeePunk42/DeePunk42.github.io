@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>
+    
+    逆向工程，版权和壁垒（一） 丨
+    
+
+    K&#39;s Map | DeePunk&#39;s Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.png">
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
+  
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <script defer src="/js/highlight.min.js"></script>
+  <script defer src="/js/image-zoom.js"></script>
+  <script defer src="/js/toc.js"></script>
+  
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="K's Map | DeePunk's Blog" type="application/atom+xml">
+</head>
+
+  <body>
+    <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">K&#39;s Map | DeePunk&#39;s Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+      
+            <main class="main">
+              <article class="post">
+  
+  <div class="post-title">逆向工程，版权和壁垒（一）</div>
+  <div class="post-meta">
+    <div class="date">2026 九月 4日</div>
+    <div class="tags">
+      
+      <a class="tag-item" href="/tags/AI" style="color: #d1d5da;">AI</a>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><p>在遥远的田园时代，AI 还没有统治世界，我还不知道税收为何物。那时人类是自由的，程序也是自由的，和不自由的。不自由的程序为了抵御向往自由的人类的捕食，遂进化出坚硬的外壳<sup class="sidenote-ref"><a href="#fn-1">1</a></sup><span class="sidenote"><span class="sidenote-num">1.</span> 计算机软件里一段专门负责保护软件不被非法修改或反编译的程序，常见的有UPX，VMP等</span>，人类同时也发展出破壳工具。漫漫三十年，程序壳与破壳工具在对抗中共同进化，维持着微妙的生态平衡。</p>
+<p>直到偷食智慧的禁果后，人类才恍然大悟，原来对着一个聊天框动动手指，就能在保持大脑零负载的情况下攻破市面上最强大的商业壳<sup class="sidenote-ref"><a href="#fn-2">2</a></sup><span class="sidenote"><span class="sidenote-num">2.</span> 提供完整测试环境与工具集，gpt5.6基本可以autopilot</span>。</p>
+<p>诚然，软件依然可以沿着旧有路径，以用户设备算力资源为代价，构建更加复杂的壳，但这条路径的边际效益正在严重递减，而模型的能力提升暂时还看不到头<del>（AI 大人：我以为减速带呢）</del>。</p>
+<p>平衡被打破了。传统软件开发商将面临这样一个灰暗的未来：交付到用户手中的软件，会在短时间内将细节赤裸裸地暴露在友商和黑客面前。</p>
+<p>出于版权与安全<sup class="sidenote-ref"><a href="#fn-3">3</a></sup><span class="sidenote"><span class="sidenote-num">3.</span> 当然，我对「通过加壳等手段阻碍逆向能提高系统安全性」这一观点持怀疑</span>的考虑，如果愿意付出更高的成本，有两条比较有效的解决方案，思路都是尽量减少核心逻辑在用户软件侧的暴露：</p>
+<p>第一条是将核心逻辑放在云端，自然无处破解。</p>
+<p>第二条是采用硬件级别的防护。Nintendo Switch 2 在硬件上就采取了近乎完美的防护措施：除了最基础的固件加密签名以外，存储采用难以 dump 的 UFS，部分内存区域采用内存加密，并使用 XOM 等机制提高代码提取难度……这导致其在发售一年以后，依然没有人宣称获得明文固件。</p>
+<p>除了这种极端做法，也有其他物美价廉的硬件防御手段：例如加密狗将部分逻辑外置到独立单片机上；基于 Arm TrustZone 构建 TEE，利用硬件强制隔离，将敏感逻辑与普通操作系统隔离。</p>
+<p>这些硬件级别的防护离开了 AI 的舒适区。通常需要配合真实漏洞乃至硬件级逆向才能破解。</p>
+<p>也许未来的部分逆向对抗会下沉到硬件层面，导致更多产品以硬件的形式呈现。但这也会对攻防双方带来无法忽略的成本。</p>
+<p>也许大部分产品最终将不得不放弃守护代码细节的执念。</p>
+<section class="footnotes-list"><h1>Ref</h1><ol><li id="fn-1"><span class="footnote-num">1.</span> 计算机软件里一段专门负责保护软件不被非法修改或反编译的程序，常见的有UPX，VMP等</li><li id="fn-2"><span class="footnote-num">2.</span> 提供完整测试环境与工具集，gpt5.6基本可以autopilot</li><li id="fn-3"><span class="footnote-num">3.</span> 当然，我对「通过加壳等手段阻碍逆向能提高系统安全性」这一观点持怀疑</li></ol></section></main>
+
+  
+    <div id="giscus-container"></div>
+
+<script>
+(function () {
+  var container = document.getElementById('giscus-container');
+  var html = document.documentElement;
+
+  function currentGiscusTheme() {
+    return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  var script = document.createElement('script');
+  script.src = 'https://giscus.app/client.js';
+  script.setAttribute('data-repo', 'DeePunk42/DeePunk42.github.io');
+  script.setAttribute('data-repo-id', 'R_kgDOJkjY4A');
+  script.setAttribute('data-category', 'Announcements');
+  script.setAttribute('data-category-id', 'DIC_kwDOJkjY4M4DEKmV');
+  script.setAttribute('data-mapping', 'pathname');
+  script.setAttribute('data-strict', '0');
+  script.setAttribute('data-reactions-enabled', '1');
+  script.setAttribute('data-emit-metadata', '0');
+  script.setAttribute('data-input-position', 'bottom');
+  script.setAttribute('data-theme', currentGiscusTheme());
+  script.setAttribute('data-lang', 'zh-CN');
+  script.setAttribute('data-loading', 'lazy');
+  script.setAttribute('crossorigin', 'anonymous');
+  script.async = true;
+  container.appendChild(script);
+
+  new MutationObserver(function () {
+    var frame = document.querySelector('iframe.giscus-frame');
+    if (!frame || !frame.contentWindow) return;
+
+    frame.contentWindow.postMessage({
+      giscus: {
+        setConfig: {
+          theme: currentGiscusTheme()
+        }
+      }
+    }, 'https://giscus.app');
+  }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
+
+  
+</article>
+
+            </main>
+            
+              <footer class="footer">
+  
+  <span>Copyright © 2021 DeePunk</span>
+  
+</footer>
+
+<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
+                
+<script src="/js/theme.js"></script>
+
+  </body>
+
+</html>
