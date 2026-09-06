@@ -11,13 +11,9 @@
       } catch (e) {}
     })();
   </script>
-  <title>
-    <% if (page.title){ %>
-    <%= page.title %> 丨
-    <% } %>
-
-    <%= theme.title || config.title %>
-  </title>
+  <title><%= page.title ? page.title + ' 丨 ' : '' %><%= theme.title || config.title %></title>
+  <link rel="canonical" href="<%= full_url_for(page.path) %>">
+  <%- open_graph({ url: full_url_for(page.path), image: theme.icon }) %>
 
   <% if (theme.favicon){ %>
   <%- favicon_tag(theme.favicon) %>
