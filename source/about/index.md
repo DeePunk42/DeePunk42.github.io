@@ -2,7 +2,7 @@
 
 Security Researcher at [@DARKNAVY](https://www.darknavy.org/zh/)
 
-​Played ctf at [@CNSS](https://cnss.io/) & [@El3ctronic](https://ctftime.org/team/266401/)
+​Used to ~~play ctf at [@CNSS](https://cnss.studio/) & [@El3ctronic](https://ctftime.org/team/266401/)~~
 
 
 ------ 
