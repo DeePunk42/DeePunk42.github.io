@@ -8,10 +8,8 @@
 
 ## ✨ 特性
 
-- 黑夜模式
 - 代码高亮
   - light mode: atom-one-light
-  - dark mode: atom-one-dark
 - 多样字体
   - 文章使用 Montserrat 字体
   - 代码使用 JetBrains Mono 字体
@@ -42,16 +40,6 @@ highlight:
   wrap: false
   hljs: false
 ```
-
-### 黑夜模式
-
-typo 使用媒体查询的 `prefer-color-scheme` 配置实现黑夜模式，当您的设备切换主题时，typo 的主题也会自动切换。
-
-当然，您也可以使用 Chrome DevTools 来模拟切换动作，有以下两种方式：
-
-- 打开 Chrome DevTools 的“绘制”tab，切换 “Emulate CSS media feature prefers-color-scheme”配置即可
-
-- 打开 Chrome DevTools，键入 <kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>p</kbd>，并输入 `prefer-color-scheme`，选择对应模式切换即可
 
 ### theme 配置项
 

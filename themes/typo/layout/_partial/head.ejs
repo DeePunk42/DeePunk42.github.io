@@ -1,19 +1,15 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') {
-          document.documentElement.setAttribute('data-theme', t);
-        }
-      } catch (e) {}
-    })();
-  </script>
   <title><%= page.title ? page.title + ' 丨 ' : '' %><%= theme.title || config.title %></title>
   <link rel="canonical" href="<%= full_url_for(page.path) %>">
-  <%- open_graph({ url: full_url_for(page.path), image: theme.icon }) %>
+  <%
+    var contentImage = page.content && page.content.match(/<img\b[^>]*\bsrc=['"]([^'"]+)['"]/i);
+    var coverImage = page.photos && page.photos.length
+      ? page.photos[0]
+      : (contentImage ? contentImage[1] : theme.icon);
+  %>
+  <%- open_graph({ url: full_url_for(page.path), image: coverImage }) %>
 
   <% if (theme.favicon){ %>
   <%- favicon_tag(theme.favicon) %>
@@ -26,7 +22,7 @@
 
   <% if (is_post()){ %>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   <script defer src="<%- url_for('js/highlight.min.js') %>"></script>
   <script defer src="<%- url_for('js/image-zoom.js') %>"></script>

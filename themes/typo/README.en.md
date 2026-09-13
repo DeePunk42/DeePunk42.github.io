@@ -8,10 +8,8 @@ English ｜ <a href="https://github.com/rankangkang/hexo-theme-typo/blob/main/RE
 
 ## ✨ Features
 
-- Dark mode
 - Code highlighting
   - Light mode: atom-one-light
-  - Dark mode: atom-one-dark
 - Multiple fonts
   - Articles use the Montserrat font
   - Code uses the JetBrains Mono font
@@ -42,15 +40,6 @@ highlight:
   wrap: false
   hljs: false
 ```
-
-### Dark Mode
-
-Typo implements dark mode using the media query prefer-color-scheme. When your device switches themes, Typo's theme switches accordingly.
-
-Of course, you can simulate the switching action using Chrome DevTools in two ways:
-
-- Open the "Rendering" tab in Chrome DevTools and switch the "Emulate CSS media feature prefers-color-scheme" option.
-- Open Chrome DevTools, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type `prefer-color-scheme`, and select the corresponding mode to switch.
 
 ### Theme Config
 

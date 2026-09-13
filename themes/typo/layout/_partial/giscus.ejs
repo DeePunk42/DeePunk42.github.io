@@ -3,11 +3,6 @@
 <script>
 (function () {
   var container = document.getElementById('giscus-container');
-  var html = document.documentElement;
-
-  function currentGiscusTheme() {
-    return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  }
 
   var script = document.createElement('script');
   script.src = 'https://giscus.app/client.js';
@@ -20,24 +15,11 @@
   script.setAttribute('data-reactions-enabled', '<%= theme.giscus.reactionsEnabled %>');
   script.setAttribute('data-emit-metadata', '<%= theme.giscus.emitMetadata %>');
   script.setAttribute('data-input-position', '<%= theme.giscus.inputPosition %>');
-  script.setAttribute('data-theme', currentGiscusTheme());
+  script.setAttribute('data-theme', 'light');
   script.setAttribute('data-lang', '<%= theme.giscus.lang %>');
   script.setAttribute('data-loading', '<%= theme.giscus.loading %>');
   script.setAttribute('crossorigin', 'anonymous');
   script.async = true;
   container.appendChild(script);
-
-  new MutationObserver(function () {
-    var frame = document.querySelector('iframe.giscus-frame');
-    if (!frame || !frame.contentWindow) return;
-
-    frame.contentWindow.postMessage({
-      giscus: {
-        setConfig: {
-          theme: currentGiscusTheme()
-        }
-      }
-    }, 'https://giscus.app');
-  }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
 })();
 </script>
