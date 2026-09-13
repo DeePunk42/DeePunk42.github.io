@@ -3,18 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') {
-          document.documentElement.setAttribute('data-theme', t);
-        }
-      } catch (e) {}
-    })();
-  </script>
   <title>dl 相关攻击 丨 K&#39;s Map | DeePunk&#39;s Blog</title>
   <link rel="canonical" href="https://deepunk.icu/dl%E7%9B%B8%E5%85%B3%E6%94%BB%E5%87%BB/">
+  
   <meta name="description" content="一些 dl 类型攻击手法的总结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="dl 相关攻击">
@@ -42,7 +33,7 @@
 
   
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   <script defer src="/js/highlight.min.js"></script>
   <script defer src="/js/image-zoom.js"></script>
@@ -526,11 +517,6 @@ def <span class="title function_">debug</span><span class="params">(cmd = <span 
 <script>
 (function () {
   var container = document.getElementById('giscus-container');
-  var html = document.documentElement;
-
-  function currentGiscusTheme() {
-    return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  }
 
   var script = document.createElement('script');
   script.src = 'https://giscus.app/client.js';
@@ -543,25 +529,12 @@ def <span class="title function_">debug</span><span class="params">(cmd = <span 
   script.setAttribute('data-reactions-enabled', '1');
   script.setAttribute('data-emit-metadata', '0');
   script.setAttribute('data-input-position', 'bottom');
-  script.setAttribute('data-theme', currentGiscusTheme());
+  script.setAttribute('data-theme', 'light');
   script.setAttribute('data-lang', 'zh-CN');
   script.setAttribute('data-loading', 'lazy');
   script.setAttribute('crossorigin', 'anonymous');
   script.async = true;
   container.appendChild(script);
-
-  new MutationObserver(function () {
-    var frame = document.querySelector('iframe.giscus-frame');
-    if (!frame || !frame.contentWindow) return;
-
-    frame.contentWindow.postMessage({
-      giscus: {
-        setConfig: {
-          theme: currentGiscusTheme()
-        }
-      }
-    }, 'https://giscus.app');
-  }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
 })();
 </script>
 
@@ -575,10 +548,6 @@ def <span class="title function_">debug</span><span class="params">(cmd = <span 
   <span>Copyright © 2021 DeePunk</span>
   
 </footer>
-
-<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
-                
-<script src="/js/theme.js"></script>
 
   </body>
 

@@ -77,8 +77,8 @@
     <author>
       <name>DeePunk</name>
     </author>
-    <category term="pwn" scheme="https://deepunk.icu/tags/pwn/"/>
     <category term="windows" scheme="https://deepunk.icu/tags/windows/"/>
+    <category term="pwn" scheme="https://deepunk.icu/tags/pwn/"/>
     <category term="rpc" scheme="https://deepunk.icu/tags/rpc/"/>
     <category term="cve" scheme="https://deepunk.icu/tags/cve/"/>
     <content>

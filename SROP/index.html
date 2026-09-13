@@ -3,18 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') {
-          document.documentElement.setAttribute('data-theme', t);
-        }
-      } catch (e) {}
-    })();
-  </script>
   <title>SROP初见杀 NepCTF2023 丨 K&#39;s Map | DeePunk&#39;s Blog</title>
   <link rel="canonical" href="https://deepunk.icu/SROP/">
+  
   <meta name="description" content="这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SROP初见杀 NepCTF2023">
@@ -22,7 +13,7 @@
 <meta property="og:site_name" content="K&#39;s Map | DeePunk&#39;s Blog">
 <meta property="og:description" content="这次比赛第一题就是很明显的 SROP，正好啥也不会，学习了一下">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://deepunk.icu/icon.png">
+<meta property="og:image" content="https://deepunk.icu/img/SROP.assets/image-20230812205434238.png">
 <meta property="article:published_time" content="2023-08-12T12:45:49.000Z">
 <meta property="article:modified_time" content="2026-08-24T16:12:53.622Z">
 <meta property="article:author" content="DeePunk">
@@ -30,7 +21,7 @@
 <meta property="article:tag" content="srop">
 <meta property="article:tag" content="wp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://deepunk.icu/icon.png">
+<meta name="twitter:image" content="https://deepunk.icu/img/SROP.assets/image-20230812205434238.png">
 
   
   <link rel="shortcut icon" href="/icon.png">
@@ -43,7 +34,7 @@
 
   
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   <script defer src="/js/highlight.min.js"></script>
   <script defer src="/js/image-zoom.js"></script>
@@ -252,11 +243,6 @@ p.interactive()</code></pre>
 <script>
 (function () {
   var container = document.getElementById('giscus-container');
-  var html = document.documentElement;
-
-  function currentGiscusTheme() {
-    return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  }
 
   var script = document.createElement('script');
   script.src = 'https://giscus.app/client.js';
@@ -269,25 +255,12 @@ p.interactive()</code></pre>
   script.setAttribute('data-reactions-enabled', '1');
   script.setAttribute('data-emit-metadata', '0');
   script.setAttribute('data-input-position', 'bottom');
-  script.setAttribute('data-theme', currentGiscusTheme());
+  script.setAttribute('data-theme', 'light');
   script.setAttribute('data-lang', 'zh-CN');
   script.setAttribute('data-loading', 'lazy');
   script.setAttribute('crossorigin', 'anonymous');
   script.async = true;
   container.appendChild(script);
-
-  new MutationObserver(function () {
-    var frame = document.querySelector('iframe.giscus-frame');
-    if (!frame || !frame.contentWindow) return;
-
-    frame.contentWindow.postMessage({
-      giscus: {
-        setConfig: {
-          theme: currentGiscusTheme()
-        }
-      }
-    }, 'https://giscus.app');
-  }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
 })();
 </script>
 
@@ -301,10 +274,6 @@ p.interactive()</code></pre>
   <span>Copyright © 2021 DeePunk</span>
   
 </footer>
-
-<button id="theme-toggle" type="button" aria-label="切换主题">☾</button>
-                
-<script src="/js/theme.js"></script>
 
   </body>
 
